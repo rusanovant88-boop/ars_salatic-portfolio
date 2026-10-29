@@ -98,3 +98,11 @@ Setka row now displays a small, rotated thumbnail from the already uploaded setk
 
 ### v0.5.9 / Hover preview matches the uploaded visual reference
 Setka Finder hover preview now occupies x=33, y=352 on the reference 1440x900 stage, with 438px width and 16:9 proportions. It is rotated -5 degrees, has 17px rounded corners, and overlaps the left blue Finder border as shown in the user's screenshot. No text, border, frame, shadow, or caption. Finder file list remains visible; the image appears only on the real Setka row hover. The original slide assets, link, eyes and gravity letter fall remain untouched.
+
+### v0.6 / First genuine mobile layout (360–900px)
+- Desktop (over 900px) keeps its exact 1440x900 Figma artboard and all existing hover interactions. Mobile no longer scales down the desktop canvas.
+- Mobile intro: readable username and role, eyes at the top right, original centered interactive folder, smaller original handwritten signature, and a wrapping full-width biography. Bonya can still be opened by tapping her name.
+- Mobile Works: the signature stays at the top as a touch-friendly home button, followed by a full-width cyan-outlined Finder list. Rows use filename/role/type in two compact lines; selecting Setka opens the case. Hover-only previews are hidden on touch layouts.
+- Mobile Setka: back link, title and role, responsive 16:9 Vimeo/KV window with left/right controls, then the original copy beneath it. All six media items remain in the same order.
+- KV tap opens fullscreen, with a fixed-position CSS fallback for mobile browsers where the Fullscreen API is unavailable. Tap again to exit. Vimeo retains its own native fullscreen controls.
+- Main desktop positions, letter-gravity animation, KV assets, and styling remain unchanged. Mobile design is a first adaptation, not an invented Figma export.

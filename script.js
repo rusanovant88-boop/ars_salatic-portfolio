@@ -1,5 +1,5 @@
-// Preserve the Figma 1440 x 900 composition at different desktop viewport sizes.
-// A separate mobile artboard can be implemented when its Figma design arrives.
+// Desktop retains the exact 1440x900 reference artboard.
+// Mobile (<901px) is laid out natively; it must never be scaled down as a desktop image.
 const artboard = document.getElementById('artboard');
 const folder = document.getElementById('worksFolder');
 const comingNext = document.getElementById('comingNext');
@@ -11,7 +11,7 @@ let previousScale=0;
 let dogPinned=false;
 
 function fitStage(){
-  const scale=Math.min(window.innerWidth/1440,window.innerHeight/900);
+  const scale=window.innerWidth<=900?1:Math.min(window.innerWidth/1440,window.innerHeight/900);
   if(Math.abs(scale-previousScale)<0.001)return;
   previousScale=scale;
   document.documentElement.style.setProperty('--stage-scale',String(scale));
@@ -266,6 +266,8 @@ function clearLetters(){
   if(rain){rain.remove();rain=null;}
 }
 function resetScene(){
+  const stage=document.getElementById('caseStage');
+  if(stage)stage.classList.remove('kv-fallback-fullscreen');
   clearLetters();
   scene='home';
   stopWriting();
@@ -320,7 +322,7 @@ signatureHit.addEventListener('click',function(){
   if(scene==='empty')resetScene();
 });
 document.addEventListener('keydown',function(event){
-  if(event.key==='Escape'&&scene!=='home')resetScene();
+  if(event.key==='Escape'&&scene!=='home'&&!document.getElementById('caseStage')?.classList.contains('kv-fallback-fullscreen'))resetScene();
 });
 
 
@@ -337,6 +339,11 @@ function isMediaFullscreen(){
 }
 async function toggleKVFullscreen(){
   if(caseMedia[casePage]?.type!=='kv')return;
+  const fallbackClass='kv-fallback-fullscreen';
+  if(caseStage.classList.contains(fallbackClass)){
+    caseStage.classList.remove(fallbackClass);
+    return;
+  }
   try{
     if(isMediaFullscreen()){
       const exit=document.exitFullscreen||document.webkitExitFullscreen;
@@ -344,10 +351,11 @@ async function toggleKVFullscreen(){
     }else{
       const enter=caseStage.requestFullscreen||caseStage.webkitRequestFullscreen;
       if(enter)await enter.call(caseStage);
-      else console.warn('This browser does not support element fullscreen.');
+      else caseStage.classList.add(fallbackClass);
     }
   }catch(error){
-    console.warn('Could not toggle KV fullscreen:',error);
+    // iOS Safari may not expose requestFullscreen on arbitrary elements.
+    caseStage.classList.add(fallbackClass);
   }
 }
 caseStage.addEventListener('click',function(event){
@@ -367,6 +375,7 @@ const caseMedia=[
 ];
 
 function clearPlayer(){
+  caseStage.classList.remove('kv-fallback-fullscreen');
   // Always stop the previous Vimeo film and remove its iframe.
   for(const media of caseStage.querySelectorAll('iframe, img.case-kv')){
     media.remove();
@@ -413,6 +422,7 @@ function showWorksList(){
   setkaCase.hidden=true;
   scene='empty';
   comingNext.textContent='Selected works. Setka is available.';
+  if(window.innerWidth<=900)window.scrollTo({top:0,behavior:'instant'});
 }
 function showSetkaCase(){
   if(scene!=='empty')return;
@@ -422,6 +432,7 @@ function showSetkaCase(){
   scene='case';
   showCaseMedia(0);
   comingNext.textContent='Setka case, use back to works to return.';
+  if(window.innerWidth<=900)window.scrollTo({top:0,behavior:'instant'});
 }
 const setkaRow=document.getElementById('openSetka');
 const hoverPreview=document.getElementById('setkaHoverPreview');
@@ -437,10 +448,15 @@ setkaRow.addEventListener('blur',()=>previewSetka(false));
 document.getElementById('openSetka').addEventListener('click',showSetkaCase);
 document.getElementById('caseBack').addEventListener('click',showWorksList);
 document.getElementById('caseClose').addEventListener('click',showWorksList);
+document.getElementById('mobileStageLogo').addEventListener('click',resetScene);
 document.getElementById('worksClose').addEventListener('click',resetScene);
 document.getElementById('caseLeft').addEventListener('click',function(){showCaseMedia(casePage-1);});
 document.getElementById('caseRight').addEventListener('click',function(){showCaseMedia(casePage+1);});
 document.addEventListener('keydown',function(event){
+  if(event.key==='Escape'&&caseStage.classList.contains('kv-fallback-fullscreen')){
+    caseStage.classList.remove('kv-fallback-fullscreen');
+    return;
+  }
   if(scene==='case' && event.key==='ArrowRight')showCaseMedia(casePage+1);
   if(scene==='case' && event.key==='ArrowLeft')showCaseMedia(casePage-1);
 });

@@ -307,3 +307,242 @@ button.works-file:hover,button.works-file:focus-visible {background:var(--blue);
  object-fit:cover;
 }
 @media(prefers-reduced-motion:reduce){.eyes svg,.eyes .eye-squint,.works-hover-preview{transition:none!important}}
+
+
+/* v0.6 / Mobile-first layout below 900px. Desktop reference coordinates above
+   are untouched. Mobile is a real document, not a scaled 1440x900 screenshot. */
+.mobile-stage-logo {display:none;}
+@media (max-width:900px) {
+  html,body {width:100%; min-width:0; min-height:100%; overflow-x:hidden;}
+  body {overflow-y:auto; overscroll-behavior-y:auto;}
+  .viewport {
+    display:block;
+    width:100%;
+    min-height:100svh;
+    height:auto;
+    overflow:visible;
+  }
+  .artboard {
+    position:relative;
+    display:block;
+    width:100%;
+    min-width:0;
+    height:auto;
+    min-height:100svh;
+    overflow:visible;
+    transform:none!important;
+    transform-origin:initial;
+    font:14px/20px 'Courier New',Courier,monospace;
+    -webkit-text-size-adjust:100%;
+  }
+  /* Intro: intro copy and artwork flow naturally on a small screen. */
+  .masthead {position:relative;inset:auto; width:100%;height:91px;font-weight:400;letter-spacing:0}
+  .username {left:20px;top:23px;font:13px/17px 'Courier New',Courier,monospace}
+  .role {left:20px;top:51px;font:12px/17px 'Courier New',Courier,monospace}
+  .eyes {right:20px;top:24px;transform:scale(.82);transform-origin:top right}
+  .works-position {position:relative;left:auto;top:auto;width:190px;height:235px;margin:26px auto 7px}
+  .bottom {
+    position:relative;inset:auto;
+    width:100%;height:auto;
+    padding:0 20px calc(34px + env(safe-area-inset-bottom,0px));
+    margin:0;
+  }
+  .bottom .signature-hit {
+    position:relative;
+    display:block;
+    left:0;top:0;
+    width:182px;height:134px;
+    transform:none;
+    transform-origin:top left;
+  }
+  .bottom .signature-hit .signature,
+  .bottom .signature-hit .signature-writing {
+    width:100%;height:100%;
+  }
+  .bio {
+    position:relative;left:auto;top:auto;
+    width:100%;max-width:720px;
+    margin:8px 0 0;
+    font:13.5px/20px 'Courier New',Courier,monospace;
+    font-weight:400;
+    letter-spacing:0;
+    overflow-wrap:break-word;
+    text-transform:lowercase;
+  }
+  .bio span {display:inline;white-space:normal}
+  .bio span:not(:last-child)::after {content:" "}
+  .bonya-trigger {font:inherit;font-weight:400}
+  .bonya-overlay {
+    position:fixed;
+    left:50%;top:47%;
+    width:min(76vw,350px);height:auto;
+    transform:translate(-50%,-50%);
+    z-index:15;
+  }
+  .bonya-overlay img {height:auto}
+  /* Use the falling letters, then swap the intro for a self-contained archive.
+     The smaller signature is a real touch-friendly 'home' control. */
+  .artboard.stage-exiting .bottom .signature-hit {
+    transform:none;
+    opacity:0;
+    pointer-events:none;
+    transition:opacity .14s ease;
+  }
+  .artboard.stage-exiting.stage-exited .masthead,
+  .artboard.stage-exiting.stage-exited .works-position,
+  .artboard.stage-exiting.stage-exited .bottom,
+  .artboard.stage-exiting.stage-exited .bonya-overlay {display:none!important}
+  .portfolio-stage {position:absolute;inset:0;display:none}
+  .artboard.stage-exited .portfolio-stage {
+    position:relative;inset:auto;
+    display:flex;flex-direction:column;
+    width:100%;min-height:100svh;
+    height:auto;
+    padding:18px 18px calc(32px + env(safe-area-inset-bottom,0px));
+    overflow:visible;
+  }
+  .mobile-stage-logo {
+    display:block;
+    width:132px;height:96px;
+    min-height:96px;
+    margin:0 0 16px;
+    padding:0;
+    border:0;
+    background:transparent;
+    cursor:pointer;
+    align-self:flex-start;
+  }
+  .mobile-stage-logo img {display:block;width:100%;height:100%;object-fit:contain}
+  .works-window {
+    position:relative;left:auto;right:auto;top:auto;bottom:auto;
+    width:100%;height:auto;min-height:348px;
+    margin:0;
+    border-radius:16px;
+  }
+  .works-bar {
+    height:60px;min-height:60px;flex-basis:60px;
+    padding:17px 16px;
+    gap:7px;
+  }
+  .works-close,.works-dot {width:15px;height:15px}
+  .works-bar-name {margin:0 0 0 15px;font:13px/17px 'Courier New',Courier,monospace}
+  .works-bar-version {display:none}
+  .works-columns {display:none}
+  .works-file {
+    grid-template-columns:minmax(0,1fr) auto;
+    grid-template-rows:auto auto;
+    column-gap:8px;row-gap:5px;
+    height:82px;
+    padding:14px 16px;
+    font:12px/16px 'Courier New',Courier,monospace;
+  }
+  .works-filename {
+    grid-column:1/-1;
+    grid-row:1;
+    gap:11px;
+    font:14px/19px 'Courier New',Courier,monospace;
+  }
+  .works-filename svg {width:21px;height:25px}
+  .works-file > span:nth-child(2) {grid-column:1;grid-row:2}
+  .works-file > span:nth-child(3) {grid-column:2;grid-row:2}
+  .works-type {gap:7px}
+  .works-type span {font-size:19px}
+  .works-footer {
+    height:48px;min-height:48px;
+    padding:0 16px;
+    font:11px/15px 'Courier New',Courier,monospace;
+  }
+  .works-footer span:last-child {display:none}
+  /* Hover-only preview cannot be triggered on touch screens. It never obscures
+     the mobile file list or intercepts taps. */
+  .works-hover-preview {display:none!important}
+  /* Case: intro information -> media window -> supporting story. */
+  .work-case {
+    position:relative;inset:auto;
+    display:flex;flex-direction:column;
+    gap:0;
+    width:100%;height:auto;
+    padding:0;margin:0;
+  }
+  .work-case[hidden],.works-window[hidden] {display:none!important}
+  .case-description {display:contents}
+  .case-description .case-back {
+    position:relative;left:auto;top:auto;
+    order:0;
+    align-self:flex-start;
+    margin:0 0 23px;
+    padding:2px 0;
+    font:13px/18px 'Courier New',Courier,monospace;
+  }
+  .case-description h1 {
+    order:1;
+    font:16px/20px 'Courier New',Courier,monospace;
+    font-weight:400;
+    margin:0 0 12px;
+  }
+  .case-description p {font:14px/20px 'Courier New',Courier,monospace;font-weight:400}
+  .case-description p:first-of-type {order:2;margin:0 0 23px}
+  .case-description p:nth-of-type(2) {order:4;margin:26px 0 20px}
+  .case-description p:nth-of-type(3) {order:5;margin:0 0 30px}
+  .case-player-window {
+    position:relative;
+    left:auto;right:auto;top:auto;bottom:auto;
+    order:3;
+    width:100%;height:auto;
+    align-self:auto;
+    margin:0;
+    border-radius:16px;
+    overflow:hidden;
+  }
+  .case-player-bar {
+    height:58px;min-height:58px;flex-basis:58px;
+    padding:18px 16px;
+    gap:7px;
+  }
+  .case-stage {
+    width:100%;
+    height:auto;min-height:0;
+    flex:0 0 auto;
+    aspect-ratio:16/9;
+    overflow:hidden;
+  }
+  .case-stage iframe {width:100%;height:100%}
+  .case-navigation {
+    height:64px;min-height:64px;
+    flex:0 0 64px;
+    padding:0 18px;
+  }
+  .case-navigation button {
+    min-width:44px;min-height:44px;
+    padding:0;
+    font:50px/1 'Courier New',Courier,monospace;
+  }
+  #casePagination {font:13px/18px 'Courier New',Courier,monospace}
+  .case-placeholder {padding:20px;font-size:13px}
+  .letter-rain {z-index:100;overflow:hidden}
+  .case-stage:fullscreen,
+  .case-stage:-webkit-full-screen {width:100vw!important;height:100vh!important}
+  .case-stage.kv-fallback-fullscreen {
+    position:fixed!important;
+    z-index:300;
+    inset:0!important;
+    width:100vw!important;
+    height:100dvh!important;
+    aspect-ratio:auto!important;
+    background:#000!important;
+    display:flex!important;
+    align-items:center;
+    justify-content:center;
+  }
+  .case-stage.kv-fallback-fullscreen img.case-kv {
+    position:relative;width:100%!important;height:100%!important;
+    object-fit:contain;cursor:zoom-out;
+  }
+}
+@media (max-width:360px) {
+  .username {font-size:12px}
+  .role {font-size:11px}
+  .eyes {transform:scale(.72)}
+  .works-filename {font-size:12px}
+  .works-file {padding-left:13px;padding-right:13px}
+}
