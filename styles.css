@@ -16,7 +16,7 @@ button:focus-visible { outline:2px dashed var(--blue);outline-offset:4px; }
 .folder-base { position:absolute;left:4.2px;top:48.8px;width:181.562px;height:181.562px;object-fit:contain;user-select:none;pointer-events:none; transition: opacity .12s linear; }
 .folder-name { position:absolute;left:68.9px;top:137px;color:#fff;font-size:16px;font-weight:700;line-height:19px;white-space:nowrap;pointer-events:none;transition:opacity .1s linear; }
 .folder-person { position:absolute;left:14.9px;top:3.97px;width:158.685px;height:195.148px;object-fit:contain; opacity:0;pointer-events:none;user-select:none; transition:opacity .12s linear; }
-.works-folder:is(:hover,:focus-visible) .folder-base { opacity:0; }
+/* Keep the exact original folder image visible at all times. */
 .works-folder:is(:hover,:focus-visible) .folder-name { opacity:0; }
 .works-folder:is(:hover,:focus-visible) .folder-person { opacity:1; }
 .coming-next { position:absolute;top:240px;left:0;width:100%;text-align:center;opacity:0;pointer-events:none; font-size:12px;white-space:nowrap; }
@@ -30,3 +30,12 @@ button:focus-visible { outline:2px dashed var(--blue);outline-offset:4px; }
 .bonya-overlay img { display:block;width:100%;height:100%;object-fit:contain; }
 .bonya-overlay.is-visible { opacity:1; }
 @media (prefers-reduced-motion:reduce) { .folder-base,.folder-name,.folder-person,.bonya-overlay { transition:none; } }
+
+
+/* Exact artwork remains visible until hover. The SVG mask reveals those same pixels. */
+.signature-hit { position:absolute;left:26.4975px;top:6.8724px;width:309.559px;height:227.545px;padding:0;border:0;background:transparent;appearance:none;display:block;cursor:crosshair; }
+.signature-hit .signature { position:absolute;inset:0;left:0;top:0;width:100%;height:100%;object-fit:contain; }
+.signature-writing { position:absolute;inset:0;width:100%;height:100%;display:block;opacity:0;pointer-events:none; }
+.signature-hit.is-writing .signature { opacity:0; }
+.signature-hit.is-writing .signature-writing { opacity:1; }
+.signature-mask-strokes path { stroke-dasharray:100000;stroke-dashoffset:100000; }
