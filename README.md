@@ -1,6 +1,6 @@
 # SALATIC Portfolio
 
-**Version 0.4: falling-letter transition to the future Works stage**, based on the three Figma-exported PDF artboards provided by Anton Rusanov. The scene intentionally reproduces the original layout rather than redesigning it.
+**Version 0.5: list-style Works window and the first Setka case**, based on the three Figma-exported PDF artboards provided by Anton Rusanov. The scene intentionally reproduces the original layout rather than redesigning it.
 
 ## Interactions
 
@@ -9,7 +9,8 @@
 - The eyes at the top-right follow the pointer within a restrained range.
 - Hover/focus on **bonya.** in the biography to display the photo in the center; tap/click to pin or unpin.
 - Clicking `works` breaks the visible header and biography into falling letters. Eyes and folder vanish; the original Salatic signature shrinks and moves to the upper left.
-- A completely black stage remains with only the small Salatic logo. Clicking it (or pressing Escape) returns home. The actual works window will follow the user's new Figma design.
+- After the letters fall, a simple list window in the visual style of the Setka case PDF appears. The logo remains small at the upper left.
+- Click Setka to view the original case description and a Vimeo player. The other two videos and KV are placeholder panels pending supplied media. The two additional rows in the works list are explicitly placeholders, not invented projects.
 
 ## Files
 
@@ -46,3 +47,6 @@ The first v0.2 animation used manually approximated paths. That caused missing s
 ### v0.4 transition / rollback
 
 The original 1440 × 900 design is unchanged before the click. JavaScript measures each glyph with DOM Range, so it falls from its exact rendered location without changing the HTML text. The animated particles are removed after about two seconds, with an immediate alternative for reduced-motion users. No additional libraries or hosting costs. [Previous v0.3 commit](https://github.com/rusanovant88-boop/ars_salatic-portfolio/commit/eacf139d98321c2dceb7a58578d663f51df660c4) can be restored by a safe revert.
+
+### v0.5 / Changes
+This version adds a list-based Finder window with the same cyan outline, black background and three macOS-style dots seen in Frame 4. Only one real project, Setka Career Jungle, is published in the list. Vimeo video ID 1240745678 is embedded on the Setka case page. Two additional videos and a key visual are clearly marked as upcoming. The previous version can be restored from commit 860a1dc9a3dd93efd578a4275e2ec06bab8e08c2. Vimeo playback depends on video embed permissions.

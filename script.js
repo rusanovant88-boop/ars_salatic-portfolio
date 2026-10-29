@@ -314,3 +314,69 @@ signatureHit.addEventListener('click',function(){
 document.addEventListener('keydown',function(event){
   if(event.key==='Escape'&&scene!=='home')resetScene();
 });
+
+
+// v0.5 / Simple list-based Finder. Only Setka is a real project at this point.
+const portfolioStage=document.getElementById('portfolioStage');
+const worksWindow=document.getElementById('worksWindow');
+const setkaCase=document.getElementById('setkaCase');
+const caseStage=document.getElementById('caseStage');
+const casePlaceholder=document.getElementById('casePlaceholder');
+const casePagination=document.getElementById('casePagination');
+let casePage=0;
+const caseMedia=['video 01','video 02 / coming soon','video 03 / coming soon','key visual / coming soon'];
+
+function clearPlayer(){
+  const old=caseStage.querySelector('iframe');
+  if(old)old.remove();
+}
+function showCaseMedia(index){
+  casePage=(index+caseMedia.length)%caseMedia.length;
+  clearPlayer();
+  casePagination.textContent=String(casePage+1).padStart(2,'0')+' / 04';
+  if(casePage===0){
+    casePlaceholder.hidden=true;
+    const iframe=document.createElement('iframe');
+    iframe.src='https://player.vimeo.com/video/1240745678?title=0&byline=0&portrait=0&dnt=1';
+    iframe.title='Setka Career Jungle — Vimeo';
+    iframe.allow='autoplay; fullscreen; picture-in-picture';
+    iframe.setAttribute('allowfullscreen','');
+    iframe.referrerPolicy='strict-origin-when-cross-origin';
+    caseStage.appendChild(iframe);
+  }else{
+    casePlaceholder.hidden=false;
+    casePlaceholder.textContent=caseMedia[casePage];
+  }
+}
+function showWorksList(){
+  clearPlayer();
+  worksWindow.hidden=false;
+  setkaCase.hidden=true;
+  scene='empty';
+  comingNext.textContent='Selected works. Setka is available.';
+}
+function showSetkaCase(){
+  if(scene!=='empty')return;
+  worksWindow.hidden=true;
+  setkaCase.hidden=false;
+  scene='case';
+  showCaseMedia(0);
+  comingNext.textContent='Setka case, use back to works to return.';
+}
+document.getElementById('openSetka').addEventListener('click',showSetkaCase);
+document.getElementById('caseBack').addEventListener('click',showWorksList);
+document.getElementById('caseClose').addEventListener('click',showWorksList);
+document.getElementById('worksClose').addEventListener('click',resetScene);
+document.getElementById('caseLeft').addEventListener('click',function(){showCaseMedia(casePage-1);});
+document.getElementById('caseRight').addEventListener('click',function(){showCaseMedia(casePage+1);});
+document.addEventListener('keydown',function(event){
+  if(scene==='case' && event.key==='ArrowRight')showCaseMedia(casePage+1);
+  if(scene==='case' && event.key==='ArrowLeft')showCaseMedia(casePage-1);
+});
+// Existing classes decide when the letters have finished their exit animation.
+const stageObserver=new MutationObserver(function(){
+  const isVisible=artboard.classList.contains('stage-exited');
+  portfolioStage.setAttribute('aria-hidden',String(!isVisible));
+  if(!isVisible){clearPlayer();worksWindow.hidden=false;setkaCase.hidden=true;casePage=0;}
+});
+stageObserver.observe(artboard,{attributes:true,attributeFilter:['class']});

@@ -54,3 +54,47 @@ button:focus-visible { outline:2px dashed var(--blue);outline-offset:4px; }
 .artboard.stage-exiting .signature-hit .signature {opacity:1!important}
 .artboard.stage-exited .signature-hit {pointer-events:auto;cursor:pointer}
 @media (prefers-reduced-motion:reduce) {.signature-hit,.works-position,.eyes {transition:none!important}}
+
+
+/* SALATIC v0.5 / Archive list uses the same blue outline as the supplied case design. */
+.portfolio-stage {position:absolute;inset:0;z-index:3;pointer-events:none;opacity:0;visibility:hidden;transition:opacity .22s linear}
+.artboard.stage-exited .portfolio-stage {pointer-events:auto;opacity:1;visibility:visible}
+.works-window,.case-player-window {border:2px solid var(--blue);border-radius:20px;background:#000;overflow:hidden}
+.works-window {position:absolute;left:379px;top:56px;width:1037px;height:763px;display:flex;flex-direction:column;font:15px/1.3 'Courier New',Courier,monospace}
+.works-bar,.case-player-bar {display:flex;align-items:flex-start;gap:8px;height:95px;flex:none;padding:25px 27px;border-bottom:1px solid rgba(0,152,226,.37)}
+.works-close,.works-dot {flex:none;width:20px;height:20px;border:0;border-radius:50%;display:flex;align-items:center;justify-content:center}
+.works-close {background:#ff5d52;color:transparent;cursor:pointer;font:15px Arial,sans-serif;padding:0}
+.works-close:hover,.works-close:focus-visible {color:#4c0b0a}
+.works-yellow {background:#ffbd2b}.works-green {background:#23ca40}
+.works-bar-name {margin-left:40px;margin-top:1px;font-size:16px;letter-spacing:.04em}
+.works-bar-version {margin-left:auto;font-size:12px;opacity:.6;margin-top:3px}
+.works-columns {display:grid;grid-template-columns:minmax(0,1.9fr) minmax(0,1fr) minmax(0,.7fr);gap:18px;padding:16px 37px;border-bottom:1px solid rgba(0,152,226,.28);font-size:13px;opacity:.6}
+.works-list {flex:1;overflow:auto;min-height:0}
+.works-file {width:100%;height:90px;display:grid;grid-template-columns:minmax(0,1.9fr) minmax(0,1fr) minmax(0,.7fr);gap:18px;align-items:center;text-align:left;padding:0 37px;border:0;border-bottom:1px solid rgba(0,152,226,.23);background:transparent;color:var(--blue);font:15px/1.3 'Courier New',Courier,monospace;transition:background .16s,color .16s}
+button.works-file {cursor:pointer}
+button.works-file:hover,button.works-file:focus-visible {background:var(--blue);color:#000;outline:none}
+.works-filename {display:flex;align-items:center;gap:19px;white-space:nowrap;min-width:0;overflow:hidden;text-overflow:ellipsis}
+.works-filename svg {width:25px;height:29px;flex:none}
+.works-type {display:flex;align-items:center;justify-content:space-between;gap:10px}
+.works-type span {font-size:24px;line-height:1}
+.works-pending {opacity:.35}
+.works-footer {flex:none;height:63px;padding:0 36px;display:flex;align-items:center;justify-content:space-between;border-top:1px solid rgba(0,152,226,.43);font-size:12px;opacity:.7}
+.work-case {position:absolute;inset:0;display:grid;grid-template-columns:321px minmax(0,1fr);gap:55px;padding:0 23px 0 26px}
+.work-case[hidden] {display:none!important}
+.case-description {margin-top:266px;font:15px/1.27 'Courier New',Courier,monospace;color:var(--blue);text-transform:lowercase}
+.case-description h1 {font:700 16px/1.4 'Courier New',Courier,monospace;margin:0 0 22px}
+.case-description p {margin:0 0 25px}
+.case-back {color:var(--blue);background:none;border:0;margin:0 0 26px;padding:0;font:14px 'Courier New',Courier,monospace;cursor:pointer}
+.case-back:hover {text-decoration:underline}
+.case-player-window {align-self:center;height:763px;display:flex;flex-direction:column;min-width:0}
+.case-player-bar {border-bottom:0;gap:8px}
+.case-stage {flex:1;min-height:0;position:relative;overflow:hidden}
+.case-stage iframe {width:100%;height:100%;display:block;border:0;background:#000}
+.case-placeholder {position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font:16px 'Courier New',Courier,monospace;text-align:center}
+.case-placeholder[hidden] {display:none}
+.case-navigation {height:120px;flex:none;display:flex;align-items:center;justify-content:space-between;padding:0 30px}
+.case-navigation button {background:none;border:0;color:var(--blue);font:70px/.8 'Courier New',Courier,monospace;padding:10px 0;cursor:pointer}
+.case-navigation button:hover {opacity:.65}
+#casePagination {font-size:14px;opacity:.65}
+.artboard.stage-exited .signature-hit {z-index:5;cursor:pointer}
+@media(prefers-reduced-motion:reduce){.portfolio-stage,.works-file {transition:none!important}}

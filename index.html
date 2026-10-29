@@ -56,6 +56,59 @@
       <div class="bonya-overlay" id="bonyaOverlay" aria-hidden="true">
         <img src="assets/bonya-card.webp" width="400" height="505" alt="Bonya the Shar-Pei" draggable="false">
       </div>
+
+      <div class="portfolio-stage" id="portfolioStage" aria-hidden="true">
+        <section class="works-window" id="worksWindow" aria-label="Selected works">
+          <header class="works-bar">
+            <button type="button" class="works-close" id="worksClose" aria-label="Close the works window">×</button>
+            <span class="works-dot works-yellow" aria-hidden="true"></span>
+            <span class="works-dot works-green" aria-hidden="true"></span>
+            <span class="works-bar-name">selected_works</span>
+            <span class="works-bar-version">SALATIC / ARCHIVE</span>
+          </header>
+          <div class="works-columns" aria-hidden="true"><span>filename</span><span>role</span><span>type</span></div>
+          <div class="works-list">
+            <button class="works-file" type="button" id="openSetka" aria-label="Open Setka Career Jungle">
+              <span class="works-filename"><svg viewBox="0 0 24 29" aria-hidden="true"><path d="M3 1H15L22 8V28H3Z M15 1V8H22" fill="none" stroke="currentColor" stroke-width="1.2"/><path d="m9 15 8 4-8 4z" fill="currentColor"/></svg>setka_career_jungle.mov</span>
+              <span>sr. art director</span><span class="works-type">case <span aria-hidden="true">↗</span></span>
+            </button>
+            <div class="works-file works-pending" aria-label="Future project placeholder">
+              <span class="works-filename"><svg viewBox="0 0 24 29" aria-hidden="true"><path d="M3 1H15L22 8V28H3Z M15 1V8H22" fill="none" stroke="currentColor" stroke-width="1.2"/></svg>project_02.pending</span>
+              <span>—</span><span>coming soon</span>
+            </div>
+            <div class="works-file works-pending" aria-label="Future project placeholder">
+              <span class="works-filename"><svg viewBox="0 0 24 29" aria-hidden="true"><path d="M3 1H15L22 8V28H3Z M15 1V8H22" fill="none" stroke="currentColor" stroke-width="1.2"/></svg>project_03.pending</span>
+              <span>—</span><span>coming soon</span>
+            </div>
+          </div>
+          <footer class="works-footer"><span>01 file / 02 placeholders</span><span>select file to open ↗</span></footer>
+        </section>
+
+        <section class="work-case" id="setkaCase" aria-label="Setka Career Jungle case" hidden>
+          <div class="case-description">
+            <button type="button" class="case-back" id="caseBack">← back to works</button>
+            <h1>setka. career jungle</h1>
+            <p>role: senior art director</p>
+            <p>it's easy to get lost or go unnoticed in the career jungle. for setka, a professional networking platform by hh.ru, we created a campaign about making connections and finding your way forward. the challenge was to make the brand more relevant to IT, digital and creative professionals on a limited budget.</p>
+            <p>the visual concept transforms everyday workplaces into a jungle. coffee waterfalls, walls of keyboards, an HR leopard and offices overgrown with vegetation. through this world, we explored three things setka helps people do: connect, share their experience and discover something new.</p>
+          </div>
+          <div class="case-player-window">
+            <header class="case-player-bar">
+              <button type="button" id="caseClose" class="works-close" aria-label="Back to selected works">×</button>
+              <span class="works-dot works-yellow" aria-hidden="true"></span>
+              <span class="works-dot works-green" aria-hidden="true"></span>
+            </header>
+            <div class="case-stage" id="caseStage">
+              <div class="case-placeholder" id="casePlaceholder" hidden></div>
+            </div>
+            <div class="case-navigation">
+              <button type="button" id="caseLeft" aria-label="Previous video or KV">‹</button>
+              <span id="casePagination">01 / 04</span>
+              <button type="button" id="caseRight" aria-label="Next video or KV">›</button>
+            </div>
+          </div>
+        </section>
+      </div>
     </div>
   </main>
 </body>
