@@ -324,24 +324,27 @@ const caseStage=document.getElementById('caseStage');
 const casePlaceholder=document.getElementById('casePlaceholder');
 const casePagination=document.getElementById('casePagination');
 let casePage=0;
-// Three Setka videos in the user's supplied order. Fourth slot is reserved for KV.
+// Three original Vimeo films, then three original Setka key visuals.
 const caseMedia=[
   {type:'video',vimeoId:'1240745678',label:'Setka — Video 01'},
   {type:'video',vimeoId:'1240745680',label:'Setka — Video 02'},
   {type:'video',vimeoId:'1240745679',label:'Setka — Video 03'},
-  {type:'placeholder',label:'key visual / coming soon'}
+  {type:'kv',image:'assets/setka-kv-01.webp',label:'Setka — KV 01 / Свяжись с нанимающим напрямую'},
+  {type:'kv',image:'assets/setka-kv-02.webp',label:'Setka — KV 02 / Получи признание в индустрии'},
+  {type:'kv',image:'assets/setka-kv-03.webp',label:'Setka — KV 03 / Заведи полезные связи'}
 ];
 
 function clearPlayer(){
-  // Removing the previous iframe also stops playback when switching slides.
-  const old=caseStage.querySelector('iframe');
-  if(old)old.remove();
+  // Always stop the previous Vimeo film and remove its iframe.
+  for(const media of caseStage.querySelectorAll('iframe, img.case-kv')){
+    media.remove();
+  }
 }
 function showCaseMedia(index){
   casePage=(index+caseMedia.length)%caseMedia.length;
   clearPlayer();
   const item=caseMedia[casePage];
-  casePagination.textContent=String(casePage+1).padStart(2,'0')+' / 04';
+  casePagination.textContent=String(casePage+1).padStart(2,'0')+' / '+String(caseMedia.length).padStart(2,'0');
   if(item.type==='video'){
     casePlaceholder.hidden=true;
     const iframe=document.createElement('iframe');
@@ -352,8 +355,23 @@ function showCaseMedia(index){
     iframe.referrerPolicy='strict-origin-when-cross-origin';
     caseStage.appendChild(iframe);
   }else{
+    // Gracefully label any KV that has not been uploaded into assets/ yet.
+    casePlaceholder.textContent='loading / '+item.label;
     casePlaceholder.hidden=false;
-    casePlaceholder.textContent=item.label;
+    const image=document.createElement('img');
+    image.className='case-kv';
+    image.alt=item.label;
+    image.decoding='async';
+    image.onload=function(){
+      if(image.isConnected)casePlaceholder.hidden=true;
+    };
+    image.onerror=function(){
+      image.remove();
+      casePlaceholder.textContent='KV not uploaded yet / '+item.label;
+      casePlaceholder.hidden=false;
+    };
+    image.src=item.image;
+    caseStage.appendChild(image);
   }
 }
 function showWorksList(){

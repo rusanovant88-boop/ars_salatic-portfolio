@@ -180,3 +180,13 @@ button.works-file:hover,button.works-file:focus-visible {background:var(--blue);
 .works-footer {opacity:1}
 .works-bar-version {opacity:1}
 #casePagination {opacity:1}
+
+/* v0.5.3 / Three full-frame Setka key visuals; original ratio, no cropping. */
+.case-stage img.case-kv {
+  width:100%;
+  height:100%;
+  display:block;
+  object-fit:contain;
+  object-position:center;
+  background:#000;
+}

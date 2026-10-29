@@ -63,3 +63,11 @@ This version adds a list-based Finder window with the same cyan outline, black b
 - Media 02: Vimeo [1240745680](https://vimeo.com/1240745680)
 - Media 03: Vimeo [1240745679](https://vimeo.com/1240745679)
 - Media 04: KV pending. Arrows cycle through all four items; switching videos removes the previous iframe, stopping its playback. No original MP4 is committed to GitHub.
+
+### v0.5.3 / Setka KV assets
+The gallery is now 6 slides in the supplied order: Vimeo 1240745678, 1240745680, 1240745679, and three original Setka key visuals:
+- `assets/setka-kv-01.webp` — Свяжись с нанимающим напрямую
+- `assets/setka-kv-02.webp` — Получи признание в индустрии
+- `assets/setka-kv-03.webp` — Заведи полезные связи
+
+The images are optimized, full-size (2048px wide), and prepared as a separate upload package. **Important:** This connector cannot transfer uploaded image binaries into the GitHub repository, so these files must be uploaded manually to the existing `assets/` directory. Until then, the gallery shows a clearly labeled placeholder rather than a broken image. No cropping or aspect ratio change.
