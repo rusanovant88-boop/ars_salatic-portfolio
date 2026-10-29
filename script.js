@@ -324,28 +324,36 @@ const caseStage=document.getElementById('caseStage');
 const casePlaceholder=document.getElementById('casePlaceholder');
 const casePagination=document.getElementById('casePagination');
 let casePage=0;
-const caseMedia=['video 01','video 02 / coming soon','video 03 / coming soon','key visual / coming soon'];
+// Three Setka videos in the user's supplied order. Fourth slot is reserved for KV.
+const caseMedia=[
+  {type:'video',vimeoId:'1240745678',label:'Setka — Video 01'},
+  {type:'video',vimeoId:'1240745680',label:'Setka — Video 02'},
+  {type:'video',vimeoId:'1240745679',label:'Setka — Video 03'},
+  {type:'placeholder',label:'key visual / coming soon'}
+];
 
 function clearPlayer(){
+  // Removing the previous iframe also stops playback when switching slides.
   const old=caseStage.querySelector('iframe');
   if(old)old.remove();
 }
 function showCaseMedia(index){
   casePage=(index+caseMedia.length)%caseMedia.length;
   clearPlayer();
+  const item=caseMedia[casePage];
   casePagination.textContent=String(casePage+1).padStart(2,'0')+' / 04';
-  if(casePage===0){
+  if(item.type==='video'){
     casePlaceholder.hidden=true;
     const iframe=document.createElement('iframe');
-    iframe.src='https://player.vimeo.com/video/1240745678?title=0&byline=0&portrait=0&dnt=1&transparent=0';
-    iframe.title='Setka Career Jungle — Vimeo';
+    iframe.src='https://player.vimeo.com/video/'+item.vimeoId+'?title=0&byline=0&portrait=0&dnt=1&transparent=0';
+    iframe.title=item.label+' — Vimeo';
     iframe.allow='autoplay; fullscreen; picture-in-picture';
     iframe.setAttribute('allowfullscreen','');
     iframe.referrerPolicy='strict-origin-when-cross-origin';
     caseStage.appendChild(iframe);
   }else{
     casePlaceholder.hidden=false;
-    casePlaceholder.textContent=caseMedia[casePage];
+    casePlaceholder.textContent=item.label;
   }
 }
 function showWorksList(){

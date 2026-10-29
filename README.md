@@ -57,3 +57,9 @@ This version adds a list-based Finder window with the same cyan outline, black b
 - `[hidden]` now reliably hides the Works list, so the case shows only **one** blue-outlined window.
 - The Vimeo media region now matches the reference precisely: **1033 × 581 px**, at reference coordinates x380, y159. The frame is 16:9; `transparent=0` gives black, not white, fallback pillarboxing. No crop or video zoom is used.
 - Previous version can be restored with a revert of this commit.
+
+### v0.5.2 / All three Setka videos
+- Media 01: Vimeo [1240745678](https://vimeo.com/1240745678)
+- Media 02: Vimeo [1240745680](https://vimeo.com/1240745680)
+- Media 03: Vimeo [1240745679](https://vimeo.com/1240745679)
+- Media 04: KV pending. Arrows cycle through all four items; switching videos removes the previous iframe, stopping its playback. No original MP4 is committed to GitHub.
