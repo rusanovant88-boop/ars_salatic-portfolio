@@ -87,3 +87,6 @@ The images are optimized, full-size (2048px wide), and prepared as a separate up
 
 ### v0.5.6 / Shy eyes interaction
 Hovering over the eyes at the top-right gently scales them to 1.27×, adds two pink cheek blushes, and shifts both pupils inward/downward as if embarrassed. On pointer exit they return to their original scale, lose the blush and resume following the cursor. No other page elements were changed. Reduced-motion preferences disable the scale transition.
+
+### v0.5.7 / Case hover and squinting eyes
+Setka row now displays a small, rotated thumbnail from the already uploaded setka-kv-01.webp on the left side of the list window. It has no pointer hit area and hides on exit or navigation. Eyes enlarge by 27% and squint vertically, with no blush or downward shy gaze. Original pupils continue following the cursor. Previous revision: 9ca65b3.

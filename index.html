@@ -23,14 +23,11 @@
               <clipPath id="left-eye"><ellipse cx="19" cy="10.5" rx="18.4" ry="7.35" /></clipPath>
               <clipPath id="right-eye"><ellipse cx="68" cy="10.5" rx="18.4" ry="7.35" /></clipPath>
             </defs>
-            <ellipse cx="19" cy="10.5" rx="18.4" ry="7.35" fill="#0098e2"/>
-            <ellipse cx="68" cy="10.5" rx="18.4" ry="7.35" fill="#0098e2"/>
-            <g clip-path="url(#left-eye)"><path id="pupil-left" d="M16.5 6.5Q21 10 19 25 L14 25Q13 10 16.5 6.5" fill="black" /></g>
-            <g clip-path="url(#right-eye)"><path id="pupil-right" d="M65.5 6.5Q70 10 68 25 L63 25Q62 10 65.5 6.5" fill="black" /></g>
-            <!-- Soft blush is invisible until the user approaches the eyes. -->
-            <g class="eye-blush" fill="#ff698c" aria-hidden="true">
-              <ellipse cx="19" cy="23.2" rx="8.6" ry="3.1"/>
-              <ellipse cx="68" cy="23.2" rx="8.6" ry="3.1"/>
+            <g class="eye-squint">
+              <ellipse cx="19" cy="10.5" rx="18.4" ry="7.35" fill="#0098e2"/>
+              <ellipse cx="68" cy="10.5" rx="18.4" ry="7.35" fill="#0098e2"/>
+              <g clip-path="url(#left-eye)"><path id="pupil-left" d="M16.5 6.5Q21 10 19 25 L14 25Q13 10 16.5 6.5" fill="black" /></g>
+              <g clip-path="url(#right-eye)"><path id="pupil-right" d="M65.5 6.5Q70 10 68 25 L63 25Q62 10 65.5 6.5" fill="black" /></g>
             </g>
           </svg>
         </div>
@@ -89,7 +86,8 @@
           <footer class="works-footer"><span>01 file / 02 placeholders</span><span>select file to open ↗</span></footer>
         </section>
 
-        <section class="work-case" id="setkaCase" aria-label="Setka Career Jungle case" hidden>
+        <div class="works-hover-preview" id="setkaHoverPreview" aria-hidden="true"><img src="assets/setka-kv-01.webp" width="480" height="270" alt="" loading="lazy" draggable="false"></div>
+                <section class="work-case" id="setkaCase" aria-label="Setka Career Jungle case" hidden>
           <div class="case-description">
             <button type="button" class="case-back" id="caseBack">← back to works</button>
             <h1>setka. career jungle</h1>

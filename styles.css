@@ -272,23 +272,20 @@ button.works-file:hover,button.works-file:focus-visible {background:var(--blue);
 }
 
 
-/* v0.5.6: The eyes get a little bigger, blush, and look shy on hover. */
-.eyes svg {
-  transform-origin:50% 36%;
-  transition:transform .3s cubic-bezier(.2,1.4,.4,1);
+
+/* v0.5.7 / Larger squinting eyes; they retain pointer tracking. */
+.eyes svg {transform-origin:50% 37.5%;transition:transform .26s cubic-bezier(.2,.86,.25,1)}
+.eyes .eye-squint {transform-box:view-box;transform-origin:50% 37.5%;transition:transform .23s ease-out}
+.eyes:hover svg {transform:scale(1.27)}
+.eyes:hover .eye-squint {transform:scaleY(.5)}
+.works-hover-preview {
+ position:absolute;left:96px;top:346px;width:234px;aspect-ratio:16/9;padding:5px;
+ border:1px solid var(--blue);border-radius:5px;background:#000;
+ box-shadow:0 13px 30px rgba(0,0,0,.6);
+ transform:rotate(-9deg) translateY(14px) scale(.93);
+ opacity:0;visibility:hidden;pointer-events:none;z-index:2;
+ transition:opacity .22s ease,transform .32s ease,visibility .22s ease
 }
-.eyes .eye-blush {
-  opacity:0;
-  transform:translateY(2px);
-  transition:opacity .2s ease,transform .3s ease;
-}
-.eyes:hover svg {
-  transform:scale(1.27) rotate(-2deg);
-}
-.eyes:hover .eye-blush {
-  opacity:1;
-  transform:translateY(0);
-}
-@media (prefers-reduced-motion:reduce) {
-  .eyes svg,.eyes .eye-blush {transition:none!important}
-}
+.works-hover-preview.is-visible {opacity:1;visibility:visible;transform:rotate(-9deg) translateY(0) scale(1)}
+.works-hover-preview img {width:100%;height:100%;display:block;object-fit:cover}
+@media(prefers-reduced-motion:reduce){.eyes svg,.eyes .eye-squint,.works-hover-preview{transition:none!important}}

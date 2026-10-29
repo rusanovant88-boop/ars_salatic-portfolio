@@ -42,12 +42,6 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'){dogPinned=false;sho
 let lastPointer=null;
 let animationQueued=false;
 function aimEyes(clientX,clientY){
-  // When hovered, both pupils glance inward and down, instead of tracking the cursor.
-  if(eyes.matches(':hover')){
-    pupils[0].setAttribute('transform','translate(2.5 2.3)');
-    pupils[1].setAttribute('transform','translate(-2.5 2.3)');
-    return;
-  }
   const rect=eyes.getBoundingClientRect();
   const cx=rect.left+rect.width/2;
   const cy=rect.top+rect.height/2;
@@ -413,6 +407,7 @@ function showCaseMedia(index){
   }
 }
 function showWorksList(){
+  previewSetka(false);
   clearPlayer();
   worksWindow.hidden=false;
   setkaCase.hidden=true;
@@ -421,12 +416,24 @@ function showWorksList(){
 }
 function showSetkaCase(){
   if(scene!=='empty')return;
+  previewSetka(false);
   worksWindow.hidden=true;
   setkaCase.hidden=false;
   scene='case';
   showCaseMedia(0);
   comingNext.textContent='Setka case, use back to works to return.';
 }
+const setkaRow=document.getElementById('openSetka');
+const hoverPreview=document.getElementById('setkaHoverPreview');
+function previewSetka(show){
+  const visible=show&&scene==='empty'&&!worksWindow.hidden;
+  hoverPreview.classList.toggle('is-visible',visible);
+  hoverPreview.setAttribute('aria-hidden',String(!visible));
+}
+setkaRow.addEventListener('pointerenter',e=>{if(e.pointerType!=='touch')previewSetka(true)});
+setkaRow.addEventListener('pointerleave',()=>previewSetka(false));
+setkaRow.addEventListener('focus',()=>previewSetka(true));
+setkaRow.addEventListener('blur',()=>previewSetka(false));
 document.getElementById('openSetka').addEventListener('click',showSetkaCase);
 document.getElementById('caseBack').addEventListener('click',showWorksList);
 document.getElementById('caseClose').addEventListener('click',showWorksList);
@@ -441,6 +448,6 @@ document.addEventListener('keydown',function(event){
 const stageObserver=new MutationObserver(function(){
   const isVisible=artboard.classList.contains('stage-exited');
   portfolioStage.setAttribute('aria-hidden',String(!isVisible));
-  if(!isVisible){clearPlayer();worksWindow.hidden=false;setkaCase.hidden=true;casePage=0;}
+  if(!isVisible){previewSetka(false);clearPlayer();worksWindow.hidden=false;setkaCase.hidden=true;casePage=0;}
 });
 stageObserver.observe(artboard,{attributes:true,attributeFilter:['class']});
