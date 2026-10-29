@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#000000">
+  <meta name="description" content="Anton Rusanov aka Salatic — Sr. Creative Art Director, creative and director.">
+  <title>SALATIC — Anton Rusanov</title>
+  <link rel="preload" href="assets/works-folder.webp" as="image" type="image/webp">
+  <link rel="preload" href="assets/salatic-portrait.webp" as="image" type="image/webp">
+  <link rel="stylesheet" href="styles.css">
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <main class="viewport" id="viewport">
+    <div class="artboard" id="artboard">
+      <header class="masthead" aria-label="About">
+        <div class="username">anton_rusanov_aka_salatic</div>
+        <div class="role">sr. art director / creative / director</div>
+        <div class="eyes" id="eyes" aria-hidden="true">
+          <svg viewBox="0 0 88 28" width="88" height="28" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <clipPath id="left-eye"><ellipse cx="19" cy="10.5" rx="18.4" ry="7.35" /></clipPath>
+              <clipPath id="right-eye"><ellipse cx="68" cy="10.5" rx="18.4" ry="7.35" /></clipPath>
+            </defs>
+            <ellipse cx="19" cy="10.5" rx="18.4" ry="7.35" fill="#0098e2"/>
+            <ellipse cx="68" cy="10.5" rx="18.4" ry="7.35" fill="#0098e2"/>
+            <g clip-path="url(#left-eye)"><path id="pupil-left" d="M16.5 6.5Q21 10 19 25 L14 25Q13 10 16.5 6.5" fill="black" /></g>
+            <g clip-path="url(#right-eye)"><path id="pupil-right" d="M65.5 6.5Q70 10 68 25 L63 25Q62 10 65.5 6.5" fill="black" /></g>
+          </svg>
+        </div>
+      </header>
+
+      <section class="works-position" aria-label="Work archive">
+        <button class="works-folder" id="worksFolder" aria-label="Works. Hover to see Salatic. Work archive will be added in a later version." type="button">
+          <img class="folder-base" src="assets/works-folder.webp" width="181.562" height="181.562" alt="" draggable="false">
+          <span class="folder-name">works</span>
+          <img class="folder-person" src="assets/salatic-portrait.webp" width="159" height="195" alt="" draggable="false">
+        </button>
+        <span class="coming-next" id="comingNext" role="status" aria-live="polite">works / coming next</span>
+      </section>
+
+      <footer class="bottom">
+        <img class="signature" src="assets/salatic-signature.webp" width="310" height="228" alt="Salatic signature" draggable="false">
+        <p class="bio" aria-label="Biography">
+          <span>hi! i'm a sr. creative art director with over 10 years of experience in advertising, branding and visual</span>
+          <span>storytelling. i create ideas and shape their visual world from concept to final execution. my work combines</span>
+          <span>creativity, art direction and emerging technologies. in 2026, i started my journey into film directing,</span>
+          <span>bringing ai into my creative process. projects i've worked on have received awards at epica awards, red</span>
+          <span>apple, adcr, mix russia, silver mercury and other advertising festivals. my work has also been featured in</span>
+          <span>the drum, best ads on tv and other international creative platforms. my real boss is a shar-pei named</span>
+          <span><button class="bonya-trigger" id="bonyaTrigger" aria-label="Show Bonya's photo" aria-expanded="false" type="button">bonya.</button></span>
+        </p>
+      </footer>
+
+      <div class="bonya-overlay" id="bonyaOverlay" aria-hidden="true">
+        <img src="assets/bonya-card.webp" width="400" height="505" alt="Bonya the Shar-Pei" draggable="false">
+      </div>
+    </div>
+  </main>
+</body>
+</html>
