@@ -27,6 +27,11 @@
             <ellipse cx="68" cy="10.5" rx="18.4" ry="7.35" fill="#0098e2"/>
             <g clip-path="url(#left-eye)"><path id="pupil-left" d="M16.5 6.5Q21 10 19 25 L14 25Q13 10 16.5 6.5" fill="black" /></g>
             <g clip-path="url(#right-eye)"><path id="pupil-right" d="M65.5 6.5Q70 10 68 25 L63 25Q62 10 65.5 6.5" fill="black" /></g>
+            <!-- Soft blush is invisible until the user approaches the eyes. -->
+            <g class="eye-blush" fill="#ff698c" aria-hidden="true">
+              <ellipse cx="19" cy="23.2" rx="8.6" ry="3.1"/>
+              <ellipse cx="68" cy="23.2" rx="8.6" ry="3.1"/>
+            </g>
           </svg>
         </div>
       </header>

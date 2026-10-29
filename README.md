@@ -84,3 +84,6 @@ The images are optimized, full-size (2048px wide), and prepared as a separate up
 - Hovering over any of the three KV images now shows the small custom cyan magnifying-glass cursor (`assets/zoom-cursor.svg`), matching the site's blue-on-black color palette. The native zoom-in cursor is the fallback.
 - Click a KV to open native fullscreen. Click the KV a second time or press Escape to leave. No thumbnail position, artwork size, or window geometry changed.
 - Previous v0.5.4 commit: `b23949be8a1997a4581d914155831ce8e5f7af44`.
+
+### v0.5.6 / Shy eyes interaction
+Hovering over the eyes at the top-right gently scales them to 1.27×, adds two pink cheek blushes, and shifts both pupils inward/downward as if embarrassed. On pointer exit they return to their original scale, lose the blush and resume following the cursor. No other page elements were changed. Reduced-motion preferences disable the scale transition.

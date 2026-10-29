@@ -42,6 +42,12 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'){dogPinned=false;sho
 let lastPointer=null;
 let animationQueued=false;
 function aimEyes(clientX,clientY){
+  // When hovered, both pupils glance inward and down, instead of tracking the cursor.
+  if(eyes.matches(':hover')){
+    pupils[0].setAttribute('transform','translate(2.5 2.3)');
+    pupils[1].setAttribute('transform','translate(-2.5 2.3)');
+    return;
+  }
   const rect=eyes.getBoundingClientRect();
   const cx=rect.left+rect.width/2;
   const cy=rect.top+rect.height/2;
@@ -58,6 +64,14 @@ document.addEventListener('pointermove',e=>{
   animationQueued=true;
   requestAnimationFrame(()=>{animationQueued=false;if(lastPointer)aimEyes(...lastPointer);});
 },{passive:true});
+
+// Trigger the shy glance on entry, then resume regular cursor-follow on exit.
+eyes.addEventListener('pointerenter',event=>{
+  if(event.pointerType!=='touch')aimEyes(event.clientX,event.clientY);
+});
+eyes.addEventListener('pointerleave',event=>{
+  if(event.pointerType!=='touch')aimEyes(event.clientX,event.clientY);
+});
 
 
 // v0.2: Keep the original folder unchanged when the person appears.
