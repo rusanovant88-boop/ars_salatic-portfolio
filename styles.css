@@ -226,28 +226,6 @@ button.works-file:hover,button.works-file:focus-visible {background:var(--blue);
 .works-window[hidden],
 .work-case[hidden] {display:none!important;}
 .case-stage {background:#000;}
-/* Only a fullscreen control, not a replacement video player. */
-.case-expand {
-  position:absolute;
-  right:15px;
-  top:15px;
-  width:38px;
-  height:38px;
-  padding:0;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  background:rgba(0,0,0,.76);
-  border:1px solid rgba(0,152,226,.85);
-  border-radius:6px;
-  color:var(--blue);
-  cursor:pointer;
-  z-index:15;
-  opacity:.82;
-  transition:opacity .15s ease, background .15s ease;
-}
-.case-expand:hover,.case-expand:focus-visible {opacity:1;background:#000}
-.case-stage .case-kv {cursor:zoom-in}
 .case-stage:fullscreen,
 .case-stage:-webkit-full-screen {
   width:100vw!important;
@@ -281,12 +259,14 @@ button.works-file:hover,button.works-file:focus-visible {background:var(--blue);
 }
 .case-stage:fullscreen .case-kv,
 .case-stage:-webkit-full-screen .case-kv {cursor:default}
-.case-stage:fullscreen .case-expand,
-.case-stage:-webkit-full-screen .case-expand {
-  right:22px;
-  top:20px;
-  width:43px;
-  height:43px;
-  opacity:.85;
+
+
+
+/* v0.5.5 / KV-only magnifier cursor, no overlay or extra fullscreen icon. */
+.case-stage img.case-kv {
+  cursor:url("assets/zoom-cursor.svg") 14 14, zoom-in;
 }
-@media(prefers-reduced-motion:reduce) {.case-expand {transition:none}}
+.case-stage:fullscreen img.case-kv,
+.case-stage:-webkit-full-screen img.case-kv {
+  cursor:zoom-out;
+}

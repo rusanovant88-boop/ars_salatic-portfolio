@@ -78,3 +78,9 @@ The images are optimized, full-size (2048px wide), and prepared as a separate up
 - Fullscreen is native (Fullscreen API), has an exit button, and supports Escape; images retain their 16:9 ratio against a black background.
 - The Finder list window and the case window now share the **identical outer rectangle**: x=380, y=60, width=1033, height=760 on the 1440×900 artboard. Both top bars are 98 px tall, so the three traffic lights and blue border no longer jump.
 - The prior working version is `f5dba7e`, and changes can be reverted without force-pushing history.
+
+### v0.5.5 / KV-only fullscreen cursor
+- Removed the overlaid fullscreen icon from the media area. Vimeo retains its own built-in fullscreen control, with no extra button above it.
+- Hovering over any of the three KV images now shows the small custom cyan magnifying-glass cursor (`assets/zoom-cursor.svg`), matching the site's blue-on-black color palette. The native zoom-in cursor is the fallback.
+- Click a KV to open native fullscreen. Click the KV a second time or press Escape to leave. No thumbnail position, artwork size, or window geometry changed.
+- Previous v0.5.4 commit: `b23949be8a1997a4581d914155831ce8e5f7af44`.

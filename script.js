@@ -323,45 +323,29 @@ const setkaCase=document.getElementById('setkaCase');
 const caseStage=document.getElementById('caseStage');
 const casePlaceholder=document.getElementById('casePlaceholder');
 const casePagination=document.getElementById('casePagination');
-const caseExpand=document.getElementById('caseExpand');
+// Only KV images use the portfolio fullscreen viewer. Vimeo uses its native controls.
 function isMediaFullscreen(){
   return document.fullscreenElement===caseStage || document.webkitFullscreenElement===caseStage;
 }
-function updateMediaFullscreenButton(){
-  const expanded=isMediaFullscreen();
-  caseExpand.setAttribute('aria-label',expanded?'Exit media fullscreen':'Open media fullscreen');
-  caseExpand.setAttribute('title',expanded?'Exit fullscreen':'Fullscreen');
-  // Change the icon rather than changing the size of its surrounding button.
-  caseExpand.querySelector('path').setAttribute('d',expanded
-    ? 'M3 9h6V3M21 9h-6V3M3 15h6v6M21 15h-6v6'
-    : 'M9 3H3v6M15 3h6v6M3 15v6h6M21 15v6h-6');
-}
-async function toggleCaseFullscreen(){
-  try {
+async function toggleKVFullscreen(){
+  if(caseMedia[casePage]?.type!=='kv')return;
+  try{
     if(isMediaFullscreen()){
       const exit=document.exitFullscreen||document.webkitExitFullscreen;
       if(exit)await exit.call(document);
     }else{
       const enter=caseStage.requestFullscreen||caseStage.webkitRequestFullscreen;
-      if(!enter)throw new Error('Element fullscreen unsupported');
-      await enter.call(caseStage);
+      if(enter)await enter.call(caseStage);
+      else console.warn('This browser does not support element fullscreen.');
     }
-  } catch(error) {
-    console.warn('Fullscreen could not be activated in this browser:',error);
+  }catch(error){
+    console.warn('Could not toggle KV fullscreen:',error);
   }
-  updateMediaFullscreenButton();
 }
-caseExpand.addEventListener('click',function(event){
-  event.stopPropagation();
-  toggleCaseFullscreen();
-});
 caseStage.addEventListener('click',function(event){
-  if(event.target.matches('img.case-kv') && !isMediaFullscreen()){
-    toggleCaseFullscreen();
-  }
+  // Click directly on the KV to open it; click again to exit.
+  if(event.target.matches('img.case-kv'))toggleKVFullscreen();
 });
-document.addEventListener('fullscreenchange',updateMediaFullscreenButton);
-document.addEventListener('webkitfullscreenchange',updateMediaFullscreenButton);
 
 let casePage=0;
 // Three original Vimeo films, then three original Setka key visuals.
