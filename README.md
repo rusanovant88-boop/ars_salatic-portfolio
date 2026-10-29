@@ -95,3 +95,6 @@ Setka row now displays a small, rotated thumbnail from the already uploaded setk
 - Letter drop is now roughly 0.6–0.85 seconds (instead of 1–2 seconds), with a short stagger and accelerating gravity-like easing. Reduced horizontal drift and spin keep letters heavy rather than confetti-like. The SALATIC signature travels in 0.72 seconds to arrive with the falling type.
 - Setka hover preview is aligned to the actual mini SALATIC signature: reference left x=27. It now sits below the logo at y=158, width=305, within the existing left column (Finder starts at x=380). Only the original KV is tilted -5 degrees. A straight, regular-weight 16px caption names the case and role, preserving the site's reference typography.
 - No changes to the case screen, video playback, KV fullscreen, eyes or original landing layout.
+
+### v0.5.9 / Hover preview matches the uploaded visual reference
+Setka Finder hover preview now occupies x=33, y=352 on the reference 1440x900 stage, with 438px width and 16:9 proportions. It is rotated -5 degrees, has 17px rounded corners, and overlaps the left blue Finder border as shown in the user's screenshot. No text, border, frame, shadow, or caption. Finder file list remains visible; the image appears only on the real Setka row hover. The original slide assets, link, eyes and gravity letter fall remain untouched.
