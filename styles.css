@@ -190,3 +190,103 @@ button.works-file:hover,button.works-file:focus-visible {background:var(--blue);
   object-position:center;
   background:#000;
 }
+
+
+/* v0.5.4 / Shared window frame: no x/y/size jumps between Finder and case.
+   Anchored to Setka Frame 4.pdf on the fixed 1440 x 900 artboard. */
+.artboard {
+  --archive-window-x:380px;
+  --archive-window-y:60px;
+  --archive-window-w:1033px;
+  --archive-window-h:760px;
+  --archive-header-h:98px;
+}
+.works-window,
+.case-player-window {
+  position:absolute;
+  left:var(--archive-window-x);
+  top:var(--archive-window-y);
+  width:var(--archive-window-w);
+  height:var(--archive-window-h);
+  right:auto;
+  bottom:auto;
+  margin:0;
+  border-radius:20px;
+  box-sizing:border-box;
+}
+.works-bar,
+.case-player-bar {
+  flex:0 0 var(--archive-header-h);
+  height:var(--archive-header-h);
+  min-height:var(--archive-header-h);
+  box-sizing:border-box;
+  padding:25px 27px;
+  gap:8px;
+}
+.works-window[hidden],
+.work-case[hidden] {display:none!important;}
+.case-stage {background:#000;}
+/* Only a fullscreen control, not a replacement video player. */
+.case-expand {
+  position:absolute;
+  right:15px;
+  top:15px;
+  width:38px;
+  height:38px;
+  padding:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:rgba(0,0,0,.76);
+  border:1px solid rgba(0,152,226,.85);
+  border-radius:6px;
+  color:var(--blue);
+  cursor:pointer;
+  z-index:15;
+  opacity:.82;
+  transition:opacity .15s ease, background .15s ease;
+}
+.case-expand:hover,.case-expand:focus-visible {opacity:1;background:#000}
+.case-stage .case-kv {cursor:zoom-in}
+.case-stage:fullscreen,
+.case-stage:-webkit-full-screen {
+  width:100vw!important;
+  height:100vh!important;
+  max-width:none!important;
+  max-height:none!important;
+  background:#000!important;
+  display:flex!important;
+  justify-content:center;
+  align-items:center;
+  overflow:hidden;
+  padding:0;
+  margin:0;
+  border:0;
+}
+.case-stage:fullscreen > iframe,
+.case-stage:fullscreen > img.case-kv,
+.case-stage:-webkit-full-screen > iframe,
+.case-stage:-webkit-full-screen > img.case-kv {
+  position:relative;
+  inset:auto;
+  width:min(100vw, 177.77778vh)!important;
+  height:auto!important;
+  aspect-ratio:16 / 9;
+  max-width:100vw;
+  max-height:100vh;
+  object-fit:contain;
+  display:block;
+  flex:none;
+  background:#000;
+}
+.case-stage:fullscreen .case-kv,
+.case-stage:-webkit-full-screen .case-kv {cursor:default}
+.case-stage:fullscreen .case-expand,
+.case-stage:-webkit-full-screen .case-expand {
+  right:22px;
+  top:20px;
+  width:43px;
+  height:43px;
+  opacity:.85;
+}
+@media(prefers-reduced-motion:reduce) {.case-expand {transition:none}}

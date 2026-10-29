@@ -71,3 +71,10 @@ The gallery is now 6 slides in the supplied order: Vimeo 1240745678, 1240745680,
 - `assets/setka-kv-03.webp` — Заведи полезные связи
 
 The images are optimized, full-size (2048px wide), and prepared as a separate upload package. **Important:** This connector cannot transfer uploaded image binaries into the GitHub repository, so these files must be uploaded manually to the existing `assets/` directory. Until then, the gallery shows a clearly labeled placeholder rather than a broken image. No cropping or aspect ratio change.
+
+### v0.5.4 / Fullscreen + window alignment
+- All three Setka KV images are now present in `assets/` and can be opened fullscreen by clicking the picture or the expand icon at the upper right of the media window.
+- The same expand icon also expands the Vimeo player; the player retains its own native controls.
+- Fullscreen is native (Fullscreen API), has an exit button, and supports Escape; images retain their 16:9 ratio against a black background.
+- The Finder list window and the case window now share the **identical outer rectangle**: x=380, y=60, width=1033, height=760 on the 1440×900 artboard. Both top bars are 98 px tall, so the three traffic lights and blue border no longer jump.
+- The prior working version is `f5dba7e`, and changes can be reverted without force-pushing history.
