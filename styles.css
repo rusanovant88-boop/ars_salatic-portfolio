@@ -98,3 +98,85 @@ button.works-file:hover,button.works-file:focus-visible {background:var(--blue);
 #casePagination {font-size:14px;opacity:.65}
 .artboard.stage-exited .signature-hit {z-index:5;cursor:pointer}
 @media(prefers-reduced-motion:reduce){.portfolio-stage,.works-file {transition:none!important}}
+
+
+/* v0.5.1 / Corrections from SALATIC's Frame 4.pdf reference.
+   The PDF uses 16 px, regular-weight text in the left column.
+   Its media is exactly 1033 x 581 px at x380, y159 in a 1440 x 900 scene.
+   Do not crop, stretch or zoom the Vimeo iframe. */
+.works-window[hidden], .work-case[hidden], .case-placeholder[hidden] {
+  display: none !important;
+}
+/* One window at a time. The case page and archive do not overlap. */
+.works-window, .works-file, .works-columns, .works-footer,
+.works-bar-name, .works-bar-version, .work-case, .case-description,
+.case-description h1, .case-description p, .case-back,
+#casePagination {
+  font-family:'Courier New',Courier,monospace;
+  font-size:16px;
+  line-height:19px;
+  font-weight:400;
+}
+.works-bar-name {letter-spacing:0}
+.case-description {
+  position:absolute;
+  left:27px;
+  top:320px;
+  width:306px;
+  margin:0;
+  text-transform:lowercase;
+}
+.case-description h1 {
+  margin:0 0 19px;
+  font-weight:400;
+}
+.case-description p {margin:0 0 19px;font-weight:400}
+.case-description .case-back {
+  position:absolute;
+  left:0;
+  top:-48px;
+  margin:0;
+  font-weight:400;
+  text-transform:lowercase;
+}
+.work-case {display:block;position:absolute;inset:0;padding:0;margin:0}
+.case-player-window {
+  position:absolute;
+  left:380px;
+  top:60px;
+  width:1033px;
+  height:760px;
+  min-width:0;
+  max-width:none;
+  margin:0;
+  align-self:auto;
+  display:flex;
+  flex-direction:column;
+}
+.case-player-bar {height:98px;min-height:98px;flex:0 0 98px}
+.case-stage {
+  width:100%;
+  flex:0 0 581px;
+  height:581px;
+  min-height:581px;
+  background:#000;
+  overflow:hidden;
+  position:relative;
+}
+.case-stage iframe {
+  display:block;
+  width:100%;
+  height:100%;
+  border:0;
+  background-color:#000;
+  aspect-ratio:16 / 9;
+}
+.case-navigation {
+  flex:1;
+  min-height:0;
+  height:auto;
+}
+.works-columns {opacity:1}
+.works-footer {opacity:1}
+.works-bar-version {opacity:1}
+#casePagination {opacity:1}

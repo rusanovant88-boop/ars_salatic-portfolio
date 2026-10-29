@@ -337,7 +337,7 @@ function showCaseMedia(index){
   if(casePage===0){
     casePlaceholder.hidden=true;
     const iframe=document.createElement('iframe');
-    iframe.src='https://player.vimeo.com/video/1240745678?title=0&byline=0&portrait=0&dnt=1';
+    iframe.src='https://player.vimeo.com/video/1240745678?title=0&byline=0&portrait=0&dnt=1&transparent=0';
     iframe.title='Setka Career Jungle — Vimeo';
     iframe.allow='autoplay; fullscreen; picture-in-picture';
     iframe.setAttribute('allowfullscreen','');

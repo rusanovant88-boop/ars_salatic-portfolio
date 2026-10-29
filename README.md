@@ -50,3 +50,10 @@ The original 1440 × 900 design is unchanged before the click. JavaScript measur
 
 ### v0.5 / Changes
 This version adds a list-based Finder window with the same cyan outline, black background and three macOS-style dots seen in Frame 4. Only one real project, Setka Career Jungle, is published in the list. Vimeo video ID 1240745678 is embedded on the Setka case page. Two additional videos and a key visual are clearly marked as upcoming. The previous version can be restored from commit 860a1dc9a3dd93efd578a4275e2ec06bab8e08c2. Vimeo playback depends on video embed permissions.
+
+### v0.5.1 / PDF geometry and typography fixes
+- The supplied Frame 4.pdf measures 1440 × 900. It specifies **16 px** regular text throughout the left case column, with **19 px** line spacing. The case title and role are no longer bold.
+- Consistent 16 px / 400 / 19 px typographic system is also applied to Finder filenames, labels, metadata and footer.
+- `[hidden]` now reliably hides the Works list, so the case shows only **one** blue-outlined window.
+- The Vimeo media region now matches the reference precisely: **1033 × 581 px**, at reference coordinates x380, y159. The frame is 16:9; `transparent=0` gives black, not white, fallback pillarboxing. No crop or video zoom is used.
+- Previous version can be restored with a revert of this commit.
