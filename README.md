@@ -1,6 +1,6 @@
 # SALATIC Portfolio
 
-**Version 0.3: faithful graffiti-writing animation**, based on the three Figma-exported PDF artboards provided by Anton Rusanov. The scene intentionally reproduces the original layout rather than redesigning it.
+**Version 0.4: falling-letter transition to the future Works stage**, based on the three Figma-exported PDF artboards provided by Anton Rusanov. The scene intentionally reproduces the original layout rather than redesigning it.
 
 ## Interactions
 
@@ -8,7 +8,8 @@
 - Hover/focus on Salatic's original signature to play a faithful, pixel-derived handwriting animation. All strokes are revealed continuously with no final-image pop; after playback the original signature remains visible.
 - The eyes at the top-right follow the pointer within a restrained range.
 - Hover/focus on **bonya.** in the biography to display the photo in the center; tap/click to pin or unpin.
-- Clicking `works` shows a brief `works / coming next` note. The real Finder window will be implemented only after the next Figma artboards are provided.
+- Clicking `works` breaks the visible header and biography into falling letters. Eyes and folder vanish; the original Salatic signature shrinks and moves to the upper left.
+- A completely black stage remains with only the small Salatic logo. Clicking it (or pressing Escape) returns home. The actual works window will follow the user's new Figma design.
 
 ## Files
 
@@ -41,3 +42,7 @@ v0.2 keeps the Figma composition and source images. The folder-size fix isolates
 
 ### v0.3 animation fix
 The first v0.2 animation used manually approximated paths. That caused missing strokes and a sudden reveal at the end. v0.3 replaces the paths with a prerendered animated WebP derived from every painted pixel in the original signature. The previous site is still in commit [`1e1c4d5`](https://github.com/rusanovant88-boop/ars_salatic-portfolio/commit/1e1c4d5bb28382560affb1bc308d2d641eb2ad68). The animated image is loaded once; a fresh object URL starts every replay, and `prefers-reduced-motion` is respected.
+
+### v0.4 transition / rollback
+
+The original 1440 × 900 design is unchanged before the click. JavaScript measures each glyph with DOM Range, so it falls from its exact rendered location without changing the HTML text. The animated particles are removed after about two seconds, with an immediate alternative for reduced-motion users. No additional libraries or hosting costs. [Previous v0.3 commit](https://github.com/rusanovant88-boop/ars_salatic-portfolio/commit/eacf139d98321c2dceb7a58578d663f51df660c4) can be restored by a safe revert.

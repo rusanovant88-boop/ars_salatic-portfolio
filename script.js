@@ -37,12 +37,7 @@ document.addEventListener('pointerdown',e=>{
 });
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){dogPinned=false;showBonya(false);comingNext.classList.remove('show');}});
 
-// The works window is deliberately not invented before the user provides the Finder artboard.
-folder.addEventListener('click',()=>{
-  comingNext.classList.add('show');
-  window.clearTimeout(folder._messageTimeout);
-  folder._messageTimeout=window.setTimeout(()=>comingNext.classList.remove('show'),1700);
-});
+// The Works click transition is defined after the logo initialization.
 
 let lastPointer=null;
 let animationQueued=false;
@@ -164,7 +159,7 @@ function stopWriting() {
 
 async function startWriting() {
   stopWriting();
-  if (reducedMotion.matches) return;
+  if (artboard.classList.contains('stage-exiting') || reducedMotion.matches) return;
   writingActive = true;
   const token = writingToken;
   try {
@@ -201,4 +196,121 @@ signatureHit.addEventListener('click',event=>{
 });
 document.addEventListener('keydown',event=>{
   if(event.key==='Escape') stopWriting();
+});
+
+
+// v0.4: letters fall away; original signature becomes the only remaining UI.
+let scene='home', rain=null, endRainTimer=null;
+const charRange=document.createRange();
+
+function randomUnit(seed){
+  let n=Math.imul(seed+1,2654435761)>>>0;
+  n^=n>>>16; n=Math.imul(n,2246822507); n^=n>>>13;
+  return (n>>>0)/4294967295;
+}
+function createLetters(){
+  const overlay=document.createElement('div');
+  overlay.className='letter-rain';overlay.setAttribute('aria-hidden','true');
+  const fragment=document.createDocumentFragment();
+  const chars=[],scale=previousScale||1;
+  for(const selector of ['.username','.role','.folder-name','.bio']){
+    const root=artboard.querySelector(selector);
+    if(!root||Number(getComputedStyle(root).opacity)<0.05)continue;
+    const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);
+    let node;
+    while((node=walker.nextNode())){
+      const parent=node.parentElement,content=node.nodeValue||'';
+      if(!parent||!content)continue;
+      const style=getComputedStyle(parent);
+      if(style.display==='none'||style.visibility==='hidden'||Number(style.opacity)<0.05)continue;
+      let start=0;
+      for(const character of content){
+        const end=start+character.length;
+        if(character.trim()){
+          charRange.setStart(node,start);charRange.setEnd(node,end);
+          const rect=charRange.getBoundingClientRect();
+          if(rect.width>0&&rect.height>0){
+            const span=document.createElement('span');
+            span.className='falling-letter';
+            span.textContent=character;
+            span.style.left=rect.left+'px';span.style.top=rect.top+'px';
+            span.style.fontFamily=style.fontFamily;
+            span.style.fontWeight=style.fontWeight;
+            span.style.fontStyle=style.fontStyle;
+            span.style.fontSize=(parseFloat(style.fontSize)*scale)+'px';
+            span.style.letterSpacing='0px';
+            span.style.lineHeight=rect.height+'px';
+            span.style.color=style.color;
+            fragment.appendChild(span);
+            chars.push({el:span,rect});
+          }
+        }
+        start=end;
+      }
+    }
+  }
+  overlay.appendChild(fragment);
+  document.body.appendChild(overlay);
+  return {overlay,chars};
+}
+function clearLetters(){
+  if(endRainTimer!==null){clearTimeout(endRainTimer);endRainTimer=null;}
+  if(rain){rain.remove();rain=null;}
+}
+function resetScene(){
+  clearLetters();
+  scene='home';
+  stopWriting();
+  artboard.classList.remove('stage-exiting','stage-exited');
+  signatureHit.setAttribute('aria-label','Replay Salatic signature writing animation');
+  comingNext.textContent='';
+  dogPinned=false;showBonya(false);
+}
+function openWorks(){
+  if(scene!=='home')return;
+  scene='falling';stopWriting();dogPinned=false;showBonya(false);
+  comingNext.textContent='Opening works.';
+  let chars=[];
+  if(!reducedMotion.matches){
+    const collected=createLetters();
+    rain=collected.overlay;chars=collected.chars;
+  }
+  // Hide source text after measuring every rendered letter.
+  artboard.classList.add('stage-exiting');
+  signatureHit.setAttribute('aria-label','Return to SALATIC home screen');
+  if(reducedMotion.matches){
+    scene='empty';artboard.classList.add('stage-exited');
+    comingNext.textContent='Works stage. Activate the logo to return.';
+    return;
+  }
+  let lastEnd=1150;
+  chars.forEach(function(item,i){
+    const a=randomUnit(i*11+7), b=randomUnit(i*17+173), c=randomUnit(i*31+29);
+    const drift=(a-.5)*Math.min(window.innerWidth*.42,260);
+    const fall=Math.max(190,window.innerHeight-item.rect.top+90);
+    const spin=(b>.5?1:-1)*(140+c*520);
+    const delay=Math.round(c*255+(item.rect.top/window.innerHeight)*95);
+    const duration=Math.round(1080+b*710);
+    lastEnd=Math.max(lastEnd,delay+duration);
+    const motion=[
+      {offset:0,transform:'translate3d(0,0,0) rotate(0deg)',opacity:1},
+      {offset:.17,transform:'translate3d('+(drift*.06).toFixed(1)+'px,'+(fall*.016).toFixed(1)+'px,0) rotate('+(spin*.03).toFixed(1)+'deg)',opacity:1},
+      {offset:.60,transform:'translate3d('+(drift*.46).toFixed(1)+'px,'+(fall*.35).toFixed(1)+'px,0) rotate('+(spin*.4).toFixed(1)+'deg)',opacity:1},
+      {offset:1,transform:'translate3d('+drift.toFixed(1)+'px,'+fall.toFixed(1)+'px,0) rotate('+spin.toFixed(1)+'deg)',opacity:0}
+    ];
+    item.el.animate(motion,{duration,delay,easing:'linear',fill:'both'});
+  });
+  endRainTimer=setTimeout(function(){
+    clearLetters();
+    if(scene!=='falling')return;
+    scene='empty';artboard.classList.add('stage-exited');
+    comingNext.textContent='Works stage. Activate the logo to return.';
+  },lastEnd+80);
+}
+folder.addEventListener('click',openWorks);
+signatureHit.addEventListener('click',function(){
+  if(scene==='empty')resetScene();
+});
+document.addEventListener('keydown',function(event){
+  if(event.key==='Escape'&&scene!=='home')resetScene();
 });
