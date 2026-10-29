@@ -291,29 +291,29 @@ function openWorks(){
     comingNext.textContent='Works stage. Activate the logo to return.';
     return;
   }
-  let lastEnd=1150;
+  // Quick, gravity-led collapse: minimal stagger, tight sideways movement,
+  // short spins, and travel time scaled to the distance each glyph falls.
+  // The ease-in curve starts near rest and accelerates downwards.
+  let lastEnd=0;
   chars.forEach(function(item,i){
     const a=randomUnit(i*11+7), b=randomUnit(i*17+173), c=randomUnit(i*31+29);
-    const drift=(a-.5)*Math.min(window.innerWidth*.42,260);
-    const fall=Math.max(190,window.innerHeight-item.rect.top+90);
-    const spin=(b>.5?1:-1)*(140+c*520);
-    const delay=Math.round(c*255+(item.rect.top/window.innerHeight)*95);
-    const duration=Math.round(1080+b*710);
+    const drift=(a-.5)*110;
+    const fall=Math.max(190,window.innerHeight-item.rect.top+105);
+    const spin=(b>.5?1:-1)*(23+c*70);
+    const delay=Math.round(c*58+(item.rect.top/window.innerHeight)*20);
+    const duration=Math.round(430+Math.sqrt(fall/Math.max(window.innerHeight,1))*280+b*65);
     lastEnd=Math.max(lastEnd,delay+duration);
-    const motion=[
-      {offset:0,transform:'translate3d(0,0,0) rotate(0deg)',opacity:1},
-      {offset:.17,transform:'translate3d('+(drift*.06).toFixed(1)+'px,'+(fall*.016).toFixed(1)+'px,0) rotate('+(spin*.03).toFixed(1)+'deg)',opacity:1},
-      {offset:.60,transform:'translate3d('+(drift*.46).toFixed(1)+'px,'+(fall*.35).toFixed(1)+'px,0) rotate('+(spin*.4).toFixed(1)+'deg)',opacity:1},
-      {offset:1,transform:'translate3d('+drift.toFixed(1)+'px,'+fall.toFixed(1)+'px,0) rotate('+spin.toFixed(1)+'deg)',opacity:0}
-    ];
-    item.el.animate(motion,{duration,delay,easing:'linear',fill:'both'});
+    item.el.animate([
+      {transform:'translate3d(0,0,0) rotate(0deg)',opacity:1},
+      {transform:'translate3d('+drift.toFixed(1)+'px,'+fall.toFixed(1)+'px,0) rotate('+spin.toFixed(1)+'deg)',opacity:1}
+    ],{duration,delay,easing:'cubic-bezier(.42,0,1,1)',fill:'both'});
   });
   endRainTimer=setTimeout(function(){
     clearLetters();
     if(scene!=='falling')return;
     scene='empty';artboard.classList.add('stage-exited');
     comingNext.textContent='Works stage. Activate the logo to return.';
-  },lastEnd+80);
+  },lastEnd+35);
 }
 folder.addEventListener('click',openWorks);
 signatureHit.addEventListener('click',function(){

@@ -44,7 +44,7 @@ button:focus-visible { outline:2px dashed var(--blue);outline-offset:4px; }
 .letter-rain {position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:100;contain:layout style}
 .falling-letter {position:absolute;display:block;white-space:pre;line-height:1;transform-origin:center;pointer-events:none;user-select:none}
 .works-position,.eyes {transition:opacity .35s ease}
-.signature-hit {transform-origin:top left;transition:transform 1.15s cubic-bezier(.21,.78,.2,1)}
+.signature-hit {transform-origin:top left;transition:transform .72s cubic-bezier(.24,.7,.28,1)}
 .artboard.stage-exiting .username,.artboard.stage-exiting .role,.artboard.stage-exiting .folder-name,.artboard.stage-exiting .bio {visibility:hidden}
 .artboard.stage-exiting .works-position {opacity:0;pointer-events:none}
 .artboard.stage-exiting .eyes,.artboard.stage-exiting .bonya-overlay {opacity:0!important}
@@ -278,14 +278,35 @@ button.works-file:hover,button.works-file:focus-visible {background:var(--blue);
 .eyes .eye-squint {transform-box:view-box;transform-origin:50% 37.5%;transition:transform .23s ease-out}
 .eyes:hover svg {transform:scale(1.27)}
 .eyes:hover .eye-squint {transform:scaleY(.5)}
+/* The whole preview uses the same left edge as the small SALATIC signature (x=26.5).
+   It forms a clean left column alongside the Finder window at x=380. */
 .works-hover-preview {
- position:absolute;left:96px;top:346px;width:234px;aspect-ratio:16/9;padding:5px;
- border:1px solid var(--blue);border-radius:5px;background:#000;
- box-shadow:0 13px 30px rgba(0,0,0,.6);
- transform:rotate(-9deg) translateY(14px) scale(.93);
- opacity:0;visibility:hidden;pointer-events:none;z-index:2;
- transition:opacity .22s ease,transform .32s ease,visibility .22s ease
+ position:absolute;
+ left:27px;
+ top:158px;
+ width:305px;
+ z-index:2;
+ opacity:0;
+ visibility:hidden;
+ pointer-events:none;
+ transition:opacity .18s ease,visibility .18s ease;
+ font:16px/19px 'Courier New',Courier,monospace;
+ font-weight:400;
+ color:var(--blue);
 }
-.works-hover-preview.is-visible {opacity:1;visibility:visible;transform:rotate(-9deg) translateY(0) scale(1)}
-.works-hover-preview img {width:100%;height:100%;display:block;object-fit:cover}
-@media(prefers-reduced-motion:reduce){.eyes svg,.eyes .eye-squint,.works-hover-preview{transition:none!important}}
+.works-hover-preview.is-visible {opacity:1;visibility:visible}
+.works-hover-picture {
+ width:100%;
+ aspect-ratio:16/9;
+ padding:3px;
+ border:1px solid var(--blue);
+ background:#000;
+ transform:rotate(-5deg) translateY(9px);
+ transform-origin:50% 50%;
+ box-shadow:0 10px 24px rgba(0,0,0,.55);
+ transition:transform .22s cubic-bezier(.18,.75,.3,1);
+}
+.works-hover-preview.is-visible .works-hover-picture {transform:rotate(-5deg) translateY(0)}
+.works-hover-picture img {display:block;width:100%;height:100%;object-fit:contain}
+.works-hover-caption {display:flex;flex-direction:column;gap:3px;margin-top:21px;text-transform:lowercase}
+@media(prefers-reduced-motion:reduce){.eyes svg,.eyes .eye-squint,.works-hover-preview,.works-hover-picture{transition:none!important}}

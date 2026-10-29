@@ -90,3 +90,8 @@ Hovering over the eyes at the top-right gently scales them to 1.27×, adds two p
 
 ### v0.5.7 / Case hover and squinting eyes
 Setka row now displays a small, rotated thumbnail from the already uploaded setka-kv-01.webp on the left side of the list window. It has no pointer hit area and hides on exit or navigation. Eyes enlarge by 27% and squint vertically, with no blush or downward shy gaze. Original pupils continue following the cursor. Previous revision: 9ca65b3.
+
+### v0.5.8 / Weighted letter fall + aligned case preview
+- Letter drop is now roughly 0.6–0.85 seconds (instead of 1–2 seconds), with a short stagger and accelerating gravity-like easing. Reduced horizontal drift and spin keep letters heavy rather than confetti-like. The SALATIC signature travels in 0.72 seconds to arrive with the falling type.
+- Setka hover preview is aligned to the actual mini SALATIC signature: reference left x=27. It now sits below the logo at y=158, width=305, within the existing left column (Finder starts at x=380). Only the original KV is tilted -5 degrees. A straight, regular-weight 16px caption names the case and role, preserving the site's reference typography.
+- No changes to the case screen, video playback, KV fullscreen, eyes or original landing layout.
