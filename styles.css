@@ -546,3 +546,33 @@ button.works-file:hover,button.works-file:focus-visible {background:var(--blue);
   .works-filename {font-size:12px}
   .works-file {padding-left:13px;padding-right:13px}
 }
+
+
+/* v0.7 / Thin identical vector chevrons as in the supplied portfolio mockups.
+   No font-glyph variation or thickened arrowheads. */
+.case-navigation button {
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:var(--blue);
+}
+.case-navigation button svg {
+  display:block;
+  width:25px;
+  height:44px;
+  fill:none;
+  stroke:currentColor;
+  stroke-width:1.35;
+  stroke-linecap:butt;
+  stroke-linejoin:miter;
+  flex:none;
+}
+.case-description h1 {white-space:pre-line;}
+.case-description p[hidden] {display:none!important;}
+.work-case[data-project="litres"] .case-description {top:304px;}
+/* The third Litres paragraph is a role statement; the Setka case has none. */
+@media (max-width:900px){
+  .work-case[data-project="litres"] .case-description {top:auto;}
+  .case-description p:nth-of-type(4) {order:6;margin:0 0 30px;}
+  .case-navigation button svg {width:20px;height:35px;}
+}

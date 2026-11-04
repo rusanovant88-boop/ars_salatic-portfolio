@@ -106,3 +106,11 @@ Setka Finder hover preview now occupies x=33, y=352 on the reference 1440x900 st
 - Mobile Setka: back link, title and role, responsive 16:9 Vimeo/KV window with left/right controls, then the original copy beneath it. All six media items remain in the same order.
 - KV tap opens fullscreen, with a fixed-position CSS fallback for mobile browsers where the Fullscreen API is unavailable. Tap again to exit. Vimeo retains its own native fullscreen controls.
 - Main desktop positions, letter-gravity animation, KV assets, and styling remain unchanged. Mobile design is a first adaptation, not an invented Figma export.
+
+### v0.7 / Litres + unified case template + thin chevrons
+- Second real case: Litres / Discover New Releases First (role: Senior Art Director); the three text paragraphs are faithfully transcribed from the user's case screenshot.
+- Its single Vimeo video: `1240748705`; no nonexistent KV or videos are invented.
+- One shared case template dynamically loads either project, keeping the same window alignment, case styling, desktop layout, and mobile layout. Setka retains its existing three videos and three KV.
+- Both items in the Finder are clickable and have a left-overlapping, tilted, text-free hover preview. The Litres preview temporarily uses a Vimeo-sourced thumbnail until `assets/litres-hover.webp` is uploaded.
+- Replaced thick Unicode ‹ › glyphs with matching thin-stroke SVG chevrons in all case screens. When the selected case has only one media item, chevrons navigate between the two projects. Once Litres gets more items, chevrons cycle through those media instead.
+- The unrelated third Finder row remains a `.pending` placeholder.

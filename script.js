@@ -329,7 +329,12 @@ document.addEventListener('keydown',function(event){
 // v0.5 / Simple list-based Finder. Only Setka is a real project at this point.
 const portfolioStage=document.getElementById('portfolioStage');
 const worksWindow=document.getElementById('worksWindow');
-const setkaCase=document.getElementById('setkaCase');
+const setkaCase=document.getElementById('projectCase');
+const caseTitle=document.getElementById('caseTitle');
+const caseRole=document.getElementById('caseRole');
+const caseIntro=document.getElementById('caseIntro');
+const caseConcept=document.getElementById('caseConcept');
+const caseContribution=document.getElementById('caseContribution');
 const caseStage=document.getElementById('caseStage');
 const casePlaceholder=document.getElementById('casePlaceholder');
 const casePagination=document.getElementById('casePagination');
@@ -364,15 +369,38 @@ caseStage.addEventListener('click',function(event){
 });
 
 let casePage=0;
-// Three original Vimeo films, then three original Setka key visuals.
-const caseMedia=[
-  {type:'video',vimeoId:'1240745678',label:'Setka — Video 01'},
-  {type:'video',vimeoId:'1240745680',label:'Setka — Video 02'},
-  {type:'video',vimeoId:'1240745679',label:'Setka — Video 03'},
-  {type:'kv',image:'assets/setka-kv-01.webp',label:'Setka — KV 01 / Свяжись с нанимающим напрямую'},
-  {type:'kv',image:'assets/setka-kv-02.webp',label:'Setka — KV 02 / Получи признание в индустрии'},
-  {type:'kv',image:'assets/setka-kv-03.webp',label:'Setka — KV 03 / Заведи полезные связи'}
-];
+let activeProject='setka';
+const projects={
+  setka:{
+    title:'setka. career jungle',
+    role:'role: senior art director',
+    paragraphs:[
+      "it's easy to get lost or go unnoticed in the career jungle. for setka, a professional networking platform by hh.ru, we created a campaign about making connections and finding your way forward. the challenge was to make the brand more relevant to IT, digital and creative professionals on a limited budget.",
+      "the visual concept transforms everyday workplaces into a jungle. coffee waterfalls, walls of keyboards, an HR leopard and offices overgrown with vegetation. through this world, we explored three things setka helps people do: connect, share their experience and discover something new."
+    ],
+    media:[
+      {type:'video',vimeoId:'1240745678',label:'Setka — Video 01'},
+      {type:'video',vimeoId:'1240745680',label:'Setka — Video 02'},
+      {type:'video',vimeoId:'1240745679',label:'Setka — Video 03'},
+      {type:'kv',image:'assets/setka-kv-01.webp',label:'Setka — KV 01'},
+      {type:'kv',image:'assets/setka-kv-02.webp',label:'Setka — KV 02'},
+      {type:'kv',image:'assets/setka-kv-03.webp',label:'Setka — KV 03'}
+    ]
+  },
+  litres:{
+    title:'litres.\ndiscover new releases first',
+    role:'role: senior art director',
+    paragraphs:[
+      'litres has over a million books in its catalog, but instead of focusing on its size, we wanted to highlight a different advantage: new releases often arrive on litres before anywhere else.',
+      'this led to the idea of turning readers into literary explorers, with every new book becoming uncharted territory. in the campaign, victoria isakova played three different explorers, each setting off to discover new stories.',
+      "responsible for the project's art direction at every stage, from developing the visual concept to overseeing final execution."
+    ],
+    media:[
+      {type:'video',vimeoId:'1240748705',label:'Litres — Discover New Releases First'}
+    ]
+  }
+};
+let caseMedia=projects[activeProject].media;
 
 function clearPlayer(){
   caseStage.classList.remove('kv-fallback-fullscreen');
@@ -415,55 +443,95 @@ function showCaseMedia(index){
     caseStage.appendChild(image);
   }
 }
+function hideCasePreviews(){
+  for(const preview of [document.getElementById('setkaHoverPreview'),document.getElementById('litresHoverPreview')]){
+    preview.classList.remove('is-visible');
+    preview.setAttribute('aria-hidden','true');
+  }
+}
 function showWorksList(){
-  previewSetka(false);
+  hideCasePreviews();
   clearPlayer();
   worksWindow.hidden=false;
   setkaCase.hidden=true;
   scene='empty';
-  comingNext.textContent='Selected works. Setka is available.';
+  comingNext.textContent='Selected works. Setka and Litres are available.';
   if(window.innerWidth<=900)window.scrollTo({top:0,behavior:'instant'});
 }
-function showSetkaCase(){
-  if(scene!=='empty')return;
-  previewSetka(false);
+function showProjectCase(key){
+  if(scene!=='empty'||!projects[key])return;
+  hideCasePreviews();
+  activeProject=key;
+  const project=projects[key];
+  caseMedia=project.media;
+  caseTitle.textContent=project.title;
+  caseRole.textContent=project.role;
+  caseIntro.textContent=project.paragraphs[0]||'';
+  caseConcept.textContent=project.paragraphs[1]||'';
+  caseContribution.textContent=project.paragraphs[2]||'';
+  caseContribution.hidden=!project.paragraphs[2];
+  setkaCase.dataset.project=key;
+  setkaCase.setAttribute('aria-label',project.title.replace('\n',' ')+' case');
   worksWindow.hidden=true;
   setkaCase.hidden=false;
   scene='case';
   showCaseMedia(0);
-  comingNext.textContent='Setka case, use back to works to return.';
+  comingNext.textContent=key+' case, use back to works to return.';
   if(window.innerWidth<=900)window.scrollTo({top:0,behavior:'instant'});
 }
-const setkaRow=document.getElementById('openSetka');
-const hoverPreview=document.getElementById('setkaHoverPreview');
-function previewSetka(show){
-  const visible=show&&scene==='empty'&&!worksWindow.hidden;
-  hoverPreview.classList.toggle('is-visible',visible);
-  hoverPreview.setAttribute('aria-hidden',String(!visible));
+function bindCaseRow(rowId,previewId,projectKey){
+  const row=document.getElementById(rowId);
+  const preview=document.getElementById(previewId);
+  function toggle(show){
+    const visible=show&&scene==='empty'&&!worksWindow.hidden;
+    if(visible)hideCasePreviews();
+    preview.classList.toggle('is-visible',visible);
+    preview.setAttribute('aria-hidden',String(!visible));
+  }
+  row.addEventListener('pointerenter',event=>{if(event.pointerType!=='touch')toggle(true)});
+  row.addEventListener('pointerleave',()=>toggle(false));
+  row.addEventListener('focus',()=>toggle(true));
+  row.addEventListener('blur',()=>toggle(false));
+  row.addEventListener('click',()=>showProjectCase(projectKey));
 }
-setkaRow.addEventListener('pointerenter',e=>{if(e.pointerType!=='touch')previewSetka(true)});
-setkaRow.addEventListener('pointerleave',()=>previewSetka(false));
-setkaRow.addEventListener('focus',()=>previewSetka(true));
-setkaRow.addEventListener('blur',()=>previewSetka(false));
-document.getElementById('openSetka').addEventListener('click',showSetkaCase);
+bindCaseRow('openSetka','setkaHoverPreview','setka');
+bindCaseRow('openLitres','litresHoverPreview','litres');
+// Locally prepared screenshot-based thumbnail is preferred; a Vimeo thumbnail
+// provides a temporary fallback until the WebP is committed to assets/.
+const litresPreviewImage=document.querySelector('#litresHoverPreview img');
+litresPreviewImage.addEventListener('error',function(){
+  if(!this.dataset.fallback){
+    this.dataset.fallback='true';
+    this.src='https://vumbnail.com/1240748705.jpg';
+  }
+});
 document.getElementById('caseBack').addEventListener('click',showWorksList);
 document.getElementById('caseClose').addEventListener('click',showWorksList);
 document.getElementById('mobileStageLogo').addEventListener('click',resetScene);
 document.getElementById('worksClose').addEventListener('click',resetScene);
-document.getElementById('caseLeft').addEventListener('click',function(){showCaseMedia(casePage-1);});
-document.getElementById('caseRight').addEventListener('click',function(){showCaseMedia(casePage+1);});
+function stepCaseMedia(direction){
+  if(caseMedia.length===1){
+    // With one film, arrows navigate between finished portfolio cases.
+    showWorksList();
+    showProjectCase(activeProject==='setka'?'litres':'setka');
+    return;
+  }
+  showCaseMedia(casePage+direction);
+}
+document.getElementById('caseLeft').addEventListener('click',function(){stepCaseMedia(-1);});
+document.getElementById('caseRight').addEventListener('click',function(){stepCaseMedia(1);});
 document.addEventListener('keydown',function(event){
   if(event.key==='Escape'&&caseStage.classList.contains('kv-fallback-fullscreen')){
     caseStage.classList.remove('kv-fallback-fullscreen');
     return;
   }
-  if(scene==='case' && event.key==='ArrowRight')showCaseMedia(casePage+1);
-  if(scene==='case' && event.key==='ArrowLeft')showCaseMedia(casePage-1);
+  if(scene==='case' && event.key==='ArrowRight')stepCaseMedia(1);
+  if(scene==='case' && event.key==='ArrowLeft')stepCaseMedia(-1);
 });
 // Existing classes decide when the letters have finished their exit animation.
 const stageObserver=new MutationObserver(function(){
   const isVisible=artboard.classList.contains('stage-exited');
   portfolioStage.setAttribute('aria-hidden',String(!isVisible));
-  if(!isVisible){previewSetka(false);clearPlayer();worksWindow.hidden=false;setkaCase.hidden=true;casePage=0;}
+  if(!isVisible){hideCasePreviews();clearPlayer();worksWindow.hidden=false;setkaCase.hidden=true;casePage=0;}
 });
 stageObserver.observe(artboard,{attributes:true,attributeFilter:['class']});
