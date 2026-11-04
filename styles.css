@@ -659,3 +659,11 @@ button.works-file:hover,button.works-file:focus-visible {background:var(--blue);
 @media (max-width:900px) {
   .work-case[data-project="dodoMath"] .case-description {top:auto;}
 }
+
+/* Positions from supplied Frame 12 and Frame 13 case references. */
+.work-case[data-project="kazakhstan"] .case-description {top:290px}
+.work-case[data-project="avionero"] .case-description {top:282px}
+@media (max-width:900px) {
+  .work-case[data-project="kazakhstan"] .case-description,
+  .work-case[data-project="avionero"] .case-description {top:auto}
+}
