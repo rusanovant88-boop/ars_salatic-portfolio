@@ -400,7 +400,7 @@ const projects={
     ]
   },
   dodo:{
-    title:'dodo pizza. 15 years of\\ndreaming out loud',
+    title:'dodo pizza. 15 years of\ndreaming out loud',
     role:'role: senior art director',
     paragraphs:[
       "they say you should keep your wishes to yourself, or they won't come true. but dodo pizza has always done things differently. for the brand's 15th anniversary, we created the campaign \"15 years of dreaming out loud,\" encouraging people to stop keeping their dreams quiet and start saying them out loud.",
