@@ -968,3 +968,38 @@ button.works-file:hover,button.works-file:focus-visible {background:var(--blue);
 @media(prefers-reduced-motion:reduce){
   .awards-band::after {display:none;}
 }
+
+
+/* v6: One stream; typography provides the impact, optical depth stays at edges. */
+.awards-glass{left:250px;right:250px;top:0;bottom:0;overflow:hidden;isolation:isolate}
+.awards-viewport{width:100%;height:100%;position:relative;overflow:hidden;z-index:2;mask-image:linear-gradient(to bottom,transparent 0%,#000 14%,#000 82%,transparent 100%);-webkit-mask-image:linear-gradient(to bottom,transparent 0%,#000 14%,#000 82%,transparent 100%)}
+.awards-track{width:100%;animation:awards-flow var(--awards-duration,90s) linear infinite;will-change:transform}
+.awards-set{width:100%;padding:90px 0 135px;text-align:center}
+.awards-item{width:100%;padding:0 14px;margin:0 auto 56px;position:relative;transform-origin:center center;will-change:transform;backface-visibility:hidden;text-align:center}
+.awards-primary{max-width:790px;margin:0 auto;color:#2dc5ff;font:900 36px/1.05 Impact,'Arial Narrow','Arial Black',sans-serif;letter-spacing:.015em;text-transform:uppercase;text-shadow:0 0 1px rgba(85,220,255,.5)}
+.awards-project{max-width:680px;margin:10px auto 0;color:#1cb7f4;font:700 15px/1.4 'Courier New',Courier,monospace;opacity:1}
+.awards-source{display:inline-block;max-width:680px;margin:8px auto 0;font:400 12px/1.45 'Courier New',Courier,monospace;color:#159cd4;opacity:.75;text-decoration:none}
+.awards-source:hover,.awards-source:focus-visible{color:#9beaff;opacity:1;text-decoration:underline}
+.awards-category{max-width:680px;margin:68px auto 42px;color:#19ade8;font:700 13px/1.4 'Courier New',Courier,monospace;letter-spacing:.14em;text-align:center;opacity:.9}
+.awards-end{margin:65px 0;color:#1897ca;font:12px/1.4 'Courier New',Courier,monospace}
+.awards-viewport:hover .awards-track,.awards-viewport:focus-within .awards-track{animation-play-state:paused}
+.awards-band{display:none!important}
+.awards-glass::before,.awards-glass::after{content:'';display:block;position:absolute;left:50%;width:100%;height:195px;z-index:4;pointer-events:none;mix-blend-mode:screen;transform:translateX(-50%);opacity:.74;background:radial-gradient(ellipse 65% 88% at center,transparent 46%,rgba(0,152,226,.04) 66%,rgba(0,152,226,.18) 93%,transparent 100%),linear-gradient(95deg,transparent 20%,rgba(40,170,250,.06) 42%,transparent 59%,rgba(40,170,250,.04) 69%,transparent 84%);filter:blur(2px)}
+.awards-glass::before{top:0;mask-image:linear-gradient(to bottom,#000,transparent)}
+.awards-glass::after{bottom:0;mask-image:linear-gradient(to top,#000,transparent)}
+.awards-portrait{right:26px;bottom:96px;width:200px;height:200px;object-fit:cover;border-radius:16px;box-shadow:none;filter:none}
+@media(max-width:900px){
+ .awards-glass{left:13px;right:13px;top:115px;bottom:25px}
+ .awards-set{padding:65px 0 100px}
+ .awards-primary{font-size:clamp(21px,6.4vw,30px)}
+ .awards-project{font-size:12px}.awards-source{font-size:10px}
+ .awards-item{margin-bottom:47px;padding:0 12px}
+ .awards-category{font-size:11px}
+ .awards-portrait{display:none}
+}
+@media(prefers-reduced-motion:reduce){
+ .awards-track{animation:none!important}
+ .awards-viewport{mask-image:none;-webkit-mask-image:none;overflow-y:auto}
+ .awards-glass::before,.awards-glass::after{display:none}
+ .awards-item,.awards-category,.awards-end{transform:none!important;filter:none!important;opacity:1!important}
+}
