@@ -917,3 +917,49 @@ button.works-file:hover,button.works-file:focus-visible {background:var(--blue);
  .awards-band {display:none!important;}
  .awards-viewport {-webkit-mask-image:none;mask-image:none;}
 }
+
+
+/* awards / press v5: retain the curved-glass refraction while the
+   perspective funnels the text toward / away from the viewer.
+   Central copy remains untouched and readable. */
+.awards-band { perspective:720px; }
+.awards-band-top .awards-band-optics {
+  transform:perspective(650px) rotateX(64deg) skewX(-5deg) scaleX(.75) scaleY(.9);
+  filter:blur(.75px) contrast(1.16) saturate(1.22);
+}
+.awards-band-bottom .awards-band-optics {
+  transform:perspective(650px) rotateX(-60deg) skewX(5deg) scaleX(1.46) scaleY(.95);
+  filter:blur(.95px) contrast(1.2) saturate(1.25);
+}
+/* A localized convex-glass sheen refracts the top/bottom edges; it is not
+   a global blur or a second moving text layer. */
+.awards-band::after {
+  content:'';
+  position:absolute;
+  inset:0;
+  z-index:5;
+  pointer-events:none;
+  opacity:.54;
+  mix-blend-mode:screen;
+  background:
+    radial-gradient(ellipse 58% 84% at 51% 50%,transparent 49%,rgba(0,152,226,.07) 76%,rgba(0,152,226,.19) 100%),
+    linear-gradient(96deg,transparent 17%,rgba(0,152,226,.07) 36%,transparent 53%,rgba(0,152,226,.045) 68%,transparent 87%);
+  filter:blur(3px);
+}
+.awards-band-top::after {transform:skewX(-5deg);}
+.awards-band-bottom::after {transform:skewX(5deg);}
+.awards-band .awards-primary {
+  text-shadow:-1px 0 rgba(31,66,255,.34),1px 0 rgba(19,241,179,.23);
+}
+@media(max-width:900px) {
+  .awards-band-top .awards-band-optics {
+    transform:perspective(580px) rotateX(48deg) skewX(-3deg) scaleX(.86) scaleY(.93);
+  }
+  .awards-band-bottom .awards-band-optics {
+    transform:perspective(580px) rotateX(-50deg) skewX(3deg) scaleX(1.2) scaleY(.97);
+  }
+  .awards-band::after {opacity:.38;filter:blur(2px);}
+}
+@media(prefers-reduced-motion:reduce){
+  .awards-band::after {display:none;}
+}
