@@ -120,6 +120,8 @@ preparePersonOverlay();
 // Signature handwriting v1.0: pristine source pixels, no encoded in-between frames.
 // A smooth, time-coded pen trace reveals the EXACT original image alpha and RGB.
 // The original, unmodified logo remains the non-animated fallback.
+// SVG handwriting: animate complete continuous strokes instead of revealing pixels.
+// The original Salatic image stays unchanged and is restored on hover exit.
 const signatureImg = document.querySelector('.signature');
 const signatureHit = document.createElement('button');
 signatureHit.type = 'button';
@@ -129,23 +131,21 @@ signatureHit.setAttribute('aria-label','Replay Salatic signature writing animati
 signatureImg.parentElement.insertBefore(signatureHit,signatureImg);
 signatureHit.appendChild(signatureImg);
 
-const writingCanvas = document.createElement('canvas');
-writingCanvas.className = 'signature-writing';
-writingCanvas.setAttribute('aria-hidden','true');
-signatureHit.appendChild(writingCanvas);
+const writingOverlay = document.createElement('div');
+writingOverlay.className = 'signature-writing';
+writingOverlay.setAttribute('aria-hidden','true');
+signatureHit.appendChild(writingOverlay);
 
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-const writingDurationMs = 4300;
-const writingDrawMs = 3700;
+const writingDurationMs = 4200;
+const writingDrawMs = 3500;
 let writingToken = 0;
-let writingFrame = null;
 let writingDoneTimer = null;
-let writingActive = false;
-let inkRendererPromise = null;
+let writingAnimations = [];
+let signatureSvgReady = false;
 
-// Traces follow the visual gesture of the original lettering, not the outer edge.
-// The routes are a *reveal guide*, not a redraw; the exact source artwork
-// supplies every finished pixel, including original texture and antialiasing.
+// Centerline gestures based on the original signature. They are drawn as
+// smooth SVG strokes, not used to reveal independent raster-pixel fragments.
 const signatureRoutes = [
  {w:32,r:30,p:[[308,39],[290,59],[264,98],[240,147],[219,203],[214,263],[198,247],[182,204],[163,150],[144,115],[116,96],[90,100],[66,122],[48,163],[49,208],[69,244],[103,274],[151,304],[203,333],[252,365],[288,397],[316,437],[328,480],[312,533],[269,568],[211,592],[151,589],[95,568],[48,531],[14,480],[4,419],[15,371],[38,352],[83,362]]},
  {w:7,r:28,p:[[298,181],[291,219],[287,270],[286,334],[288,414],[291,493]]},
@@ -163,148 +163,94 @@ const signatureRoutes = [
  {w:7,r:28,p:[[617,394],[649,417],[692,451],[729,487],[762,523]]}
 ];
 
-function smoothSignatureSamples(points, sx, sy){
-  const samples = [];
-  for(let i=0;i<points.length-1;i++){
-    const p0=points[Math.max(0,i-1)], p1=points[i], p2=points[i+1];
+function signaturePath(points) {
+  if(!points || points.length < 2) return '';
+  let d = 'M '+points[0][0]+' '+points[0][1];
+  for(let i=0;i<points.length-1;i++) {
+    const p0=points[Math.max(0,i-1)];
+    const p1=points[i];
+    const p2=points[i+1];
     const p3=points[Math.min(points.length-1,i+2)];
-    const steps=Math.max(2,Math.ceil(Math.hypot((p2[0]-p1[0])*sx,(p2[1]-p1[1])*sy)/3));
-    for(let j=0;j<steps;j++){
-      const t=j/steps, t2=t*t, t3=t2*t;
-      const f=(a,b,c,d)=>0.5*((2*b)+(-a+c)*t+(2*a-5*b+4*c-d)*t2+(-a+3*b-3*c+d)*t3);
-      samples.push([f(p0[0],p1[0],p2[0],p3[0])*sx, f(p0[1],p1[1],p2[1],p3[1])*sy]);
-    }
+    const c1x=p1[0]+(p2[0]-p0[0])/6;
+    const c1y=p1[1]+(p2[1]-p0[1])/6;
+    const c2x=p2[0]-(p3[0]-p1[0])/6;
+    const c2y=p2[1]-(p3[1]-p1[1])/6;
+    d+=' C '+c1x+' '+c1y+' '+c2x+' '+c2y+' '+p2[0]+' '+p2[1];
   }
-  const last=points[points.length-1];
-  samples.push([last[0]*sx,last[1]*sy]);
-  return samples;
+  return d;
 }
 
-async function prepareSignatureInk(){
-  if(inkRendererPromise)return inkRendererPromise;
-  inkRendererPromise=(async()=>{
-    await signatureImg.decode();
-    const width=signatureImg.naturalWidth, height=signatureImg.naturalHeight;
-    if(!width||!height)throw new Error('Signature image has no dimensions');
-    writingCanvas.width=width;
-    writingCanvas.height=height;
-    const sourceCanvas=document.createElement('canvas');
-    sourceCanvas.width=width;
-    sourceCanvas.height=height;
-    const sourceCtx=sourceCanvas.getContext('2d',{willReadFrequently:true});
-    const outputCtx=writingCanvas.getContext('2d',{alpha:true,willReadFrequently:false});
-    if(!sourceCtx||!outputCtx)throw new Error('Canvas unavailable');
-    sourceCtx.drawImage(signatureImg,0,0,width,height);
-    const source=sourceCtx.getImageData(0,0,width,height);
-    const output=outputCtx.createImageData(width,height);
-    output.data.set(source.data);
-    const alpha=new Uint8Array(width*height);
-    const arrival=new Float32Array(width*height);
-    arrival.fill(Infinity);
-    const inkPixels=[];
-    for(let i=0;i<alpha.length;i++){
-      alpha[i]=source.data[i*4+3];
-      if(alpha[i]>5)inkPixels.push(i);
-    }
-    const sx=width/816, sy=height/600, scale=Math.min(sx,sy);
-    const weightTotal=signatureRoutes.reduce((sum,route)=>sum+route.w,0);
-    let timeline=0;
-    for(const route of signatureRoutes){
-      const samples=smoothSignatureSamples(route.p,sx,sy);
-      const cumulative=new Float32Array(samples.length);
-      for(let k=1;k<samples.length;k++){
-        cumulative[k]=cumulative[k-1]+Math.hypot(samples[k][0]-samples[k-1][0],samples[k][1]-samples[k-1][1]);
-      }
-      const distanceTotal=Math.max(1,cumulative[cumulative.length-1]);
-      const span=route.w/weightTotal*0.956;
-      const radius=(route.r||27)*scale;
-      const rr=radius*radius;
-      for(let k=0;k<samples.length;k++){
-        const x=samples[k][0], y=samples[k][1];
-        const stampTime=timeline+span*(cumulative[k]/distanceTotal);
-        const x0=Math.max(0,Math.floor(x-radius)),x1=Math.min(width-1,Math.ceil(x+radius));
-        const y0=Math.max(0,Math.floor(y-radius)),y1=Math.min(height-1,Math.ceil(y+radius));
-        for(let yy=y0;yy<=y1;yy++){
-          const dy2=(yy-y)*(yy-y);
-          for(let xx=x0;xx<=x1;xx++){
-            const d2=(xx-x)*(xx-x)+dy2;
-            if(d2>rr)continue;
-            const index=yy*width+xx;
-            if(alpha[index]<=5)continue;
-            const time=stampTime+Math.sqrt(d2/rr)*0.006;
-            if(time<arrival[index])arrival[index]=time;
-          }
-        }
-      }
-      timeline+=span+0.003;
-    }
-    // Let small source-pixel details inherit a nearby stroke's timing.
-    // This is the key difference from the old frame-slicing method:
-    // tiny antialiased edges never become detached moving fragments.
-    const queue=new Int32Array(inkPixels.length);
-    let head=0,tail=0;
-    for(const i of inkPixels){if(arrival[i]!==Infinity)queue[tail++]=i;}
-    while(head<tail){
-      const i=queue[head++], x=i%width;
-      const neigh=[i-width,i+width,x?i-1:-1,x+1<width?i+1:-1];
-      for(const k of neigh){
-        if(k<0||k>=alpha.length||alpha[k]<=5||arrival[k]!==Infinity)continue;
-        arrival[k]=Math.min(.995,arrival[i]+.0015);
-        queue[tail++]=k;
-      }
-    }
-    // A few fully isolated, low-opacity specks are only made visible at the finish.
-    for(const i of inkPixels)if(arrival[i]===Infinity)arrival[i]=.995;
-    const framePixels=output.data;
-    function render(progress){
-      if(progress>=1){
-        outputCtx.putImageData(source,0,0);
-        return;
-      }
-      for(const i of inkPixels){
-        const fade=Math.max(0,Math.min(1,(progress-arrival[i])/.014));
-        framePixels[i*4+3]=Math.round(alpha[i]*fade);
-      }
-      outputCtx.putImageData(output,0,0);
-    }
-    return {render};
-  })().catch(err=>{inkRendererPromise=null;throw err});
-  return inkRendererPromise;
+function ensureSignatureSvg(){
+  if(signatureSvgReady) return;
+  const ns='http://www.w3.org/2000/svg';
+  const svg=document.createElementNS(ns,'svg');
+  svg.setAttribute('viewBox','0 0 816 600');
+  svg.setAttribute('preserveAspectRatio','xMidYMid meet');
+  svg.setAttribute('aria-hidden','true');
+  svg.classList.add('signature-writing-svg');
+  for(const route of signatureRoutes){
+    const path=document.createElementNS(ns,'path');
+    path.setAttribute('d',signaturePath(route.p));
+    path.setAttribute('fill','none');
+    path.setAttribute('stroke','#1099df');
+    path.setAttribute('stroke-width',String(Math.max(15,Math.min(26,route.r*.79))));
+    path.setAttribute('stroke-linecap','round');
+    path.setAttribute('stroke-linejoin','round');
+    svg.appendChild(path);
+  }
+  writingOverlay.appendChild(svg);
+  signatureSvgReady=true;
 }
 
 function stopWriting(){
   writingToken++;
-  writingActive=false;
-  if(writingFrame!==null){cancelAnimationFrame(writingFrame);writingFrame=null;}
-  if(writingDoneTimer!==null){clearTimeout(writingDoneTimer);writingDoneTimer=null;}
+  if(writingDoneTimer!==null){
+    clearTimeout(writingDoneTimer);
+    writingDoneTimer=null;
+  }
+  for(const animation of writingAnimations) animation.cancel();
+  writingAnimations=[];
   signatureHit.classList.remove('is-writing');
 }
+
 async function startWriting(){
   stopWriting();
-  if(artboard.classList.contains('stage-exiting')||reducedMotion.matches)return;
+  if(reducedMotion.matches||artboard.classList.contains('stage-exiting'))return;
   const token=writingToken;
   try{
-    const ink=await prepareSignatureInk();
+    await signatureImg.decode();
     if(token!==writingToken||artboard.classList.contains('stage-exiting'))return;
-    writingActive=true;
-    ink.render(0);
+    ensureSignatureSvg();
+    const paths=[...writingOverlay.querySelectorAll('path')];
+    const totalWeight=signatureRoutes.reduce((sum,route)=>sum+route.w,0);
+    let delay=0;
+    for(let i=0;i<paths.length;i++){
+      const path=paths[i];
+      const length=path.getTotalLength();
+      const duration=writingDrawMs*signatureRoutes[i].w/totalWeight;
+      path.style.strokeDasharray=String(length);
+      path.style.strokeDashoffset=String(length);
+      const animation=path.animate([
+        {strokeDashoffset:String(length)},
+        {strokeDashoffset:'0'}
+      ],{
+        duration,delay,easing:'cubic-bezier(.33,0,.18,1)',fill:'forwards'
+      });
+      writingAnimations.push(animation);
+      delay+=duration*.93;
+    }
     signatureHit.classList.add('is-writing');
-    const began=performance.now();
-    const tick=(now)=>{
-      if(token!==writingToken||!writingActive)return;
-      const progress=Math.min(1,(now-began)/writingDrawMs);
-      ink.render(progress);
-      if(progress<1)writingFrame=requestAnimationFrame(tick);
-      else{
-        writingFrame=null;
-        writingDoneTimer=setTimeout(()=>{if(token===writingToken)stopWriting();},writingDurationMs-writingDrawMs);
-      }
-    };
-    writingFrame=requestAnimationFrame(tick);
-  }catch(err){
-    if(token===writingToken){stopWriting();console.warn('Signature animation skipped; original preserved',err);}
+    writingDoneTimer=setTimeout(()=>{
+      if(token===writingToken)stopWriting();
+    },writingDurationMs);
+  }catch(error){
+    if(token===writingToken){
+      stopWriting();
+      console.warn('Signature animation unavailable, original image preserved',error);
+    }
   }
 }
+
 signatureHit.addEventListener('pointerenter',event=>{
   if(event.pointerType!=='touch')startWriting();
 });
@@ -319,9 +265,6 @@ signatureHit.addEventListener('click',event=>{
 document.addEventListener('keydown',event=>{
   if(event.key==='Escape')stopWriting();
 });
-
-// Prepare once when the image is ready; fallback remains the original if unavailable.
-prepareSignatureInk().catch(err=>console.warn('Signature ink preparation unavailable',err));
 
 
 // v0.4: letters fall away; original signature becomes the only remaining UI.
