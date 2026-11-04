@@ -132,6 +132,7 @@ signatureImg.parentElement.insertBefore(signatureHit,signatureImg);
 signatureHit.appendChild(signatureImg);
 // Kept for callers in the Works transition; intentionally no handwriting animation.
 function stopWriting(){}
+const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
 
 // v0.4: letters fall away; original signature becomes the only remaining UI.
@@ -199,7 +200,7 @@ function resetScene(){
   scene='home';
   stopWriting();
   artboard.classList.remove('stage-exiting','stage-exited');
-  signatureHit.setAttribute('aria-label','Replay Salatic signature writing animation');
+  signatureHit.setAttribute('aria-label','Return to SALATIC home screen');
   comingNext.textContent='';
   dogPinned=false;showBonya(false);
 }
@@ -246,7 +247,8 @@ function openWorks(){
 }
 folder.addEventListener('click',openWorks);
 signatureHit.addEventListener('click',function(){
-  if(scene==='empty')resetScene();
+  // Same action from Works list, every case, and during the transition.
+  if(scene!=='home')resetScene();
 });
 document.addEventListener('keydown',function(event){
   if(event.key==='Escape'&&scene!=='home'&&!document.getElementById('caseStage')?.classList.contains('kv-fallback-fullscreen'))resetScene();
