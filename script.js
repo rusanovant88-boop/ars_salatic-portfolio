@@ -614,7 +614,7 @@ stageObserver.observe(artboard,{attributes:true,attributeFilter:['class']});
 })();
 
 
-/* awards / press: independent archive, never mixed with Works navigation */
+/* awards / press v6: single scrolling text layer, perspective on existing rows. */
 (function initAwardsPress(){
   const entry=document.getElementById('awardsEntry');
   const panel=document.getElementById('awardsStage');
@@ -622,78 +622,71 @@ stageObserver.observe(artboard,{attributes:true,attributeFilter:['class']});
   const logo=document.getElementById('awardsHome');
   const track=document.getElementById('awardsTrack');
   const original=document.getElementById('awardsSet');
-  if(!entry||!panel||!track||!original)return;
-
-  // One complete duplicate produces a truly seamless linear loop.
+  const viewport=document.getElementById('awardsViewport');
+  if(!entry||!panel||!track||!original||!viewport)return;
   const duplicate=original.cloneNode(true);
-  duplicate.removeAttribute('id');
-  duplicate.setAttribute('aria-hidden','true');
-  duplicate.querySelectorAll('a').forEach(a=>a.setAttribute('tabindex','-1'));
+  duplicate.removeAttribute('id');duplicate.setAttribute('aria-hidden','true');
+  duplicate.querySelectorAll('a').forEach(a=>a.tabIndex=-1);
   track.appendChild(duplicate);
-  // Both optical bands have their own pixel-identical copies of the moving content.
-  // Every layer shares duration and animation phase; only the band optics differ.
-  const opticsMotion=[document.getElementById('awardsTopMotion'),document.getElementById('awardsBottomMotion')].filter(Boolean);
-  const awardsViewport=document.getElementById('awardsViewport');
-  const bottomBand=panel.querySelector('.awards-band-bottom');
-  for(const motion of opticsMotion){
-    for(let i=0;i<2;i++){
-      const copy=original.cloneNode(true);
-      copy.removeAttribute('id');
-      copy.setAttribute('aria-hidden','true');
-      copy.querySelectorAll('a').forEach(link=>link.setAttribute('tabindex','-1'));
-      motion.appendChild(copy);
-    }
-  }
-  function restartFlow(){
-    const layers=[track,...opticsMotion];
-    layers.forEach(layer=>layer.style.animation='none');
-    void track.offsetHeight;
-    layers.forEach(layer=>layer.style.removeProperty('animation'));
-  }
+  const items=Array.from(track.querySelectorAll('.awards-item,.awards-category,.awards-end'));
+  const reducedMotion=window.matchMedia('(prefers-reduced-motion: reduce)');
+  const mobile=window.matchMedia('(max-width:900px)');
+  let frame=0,running=false;
+  const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+  const ease=v=>v*v*(3-2*v);
   function measure(){
-    const height=original.getBoundingClientRect().height;
-    // The artboard may be uniformly scaled on desktop; CSS pixels still
-    // describe the scroll distance. Keep reading speed near 32 px/s.
-    const duration=Math.max(45,Math.round(height/32))+'s';
-    track.style.setProperty('--awards-duration',duration);
-    for(const motion of opticsMotion)motion.style.setProperty('--awards-duration',duration);
-    if(awardsViewport&&bottomBand){
-      const offset=Math.max(0,awardsViewport.clientHeight-bottomBand.clientHeight);
-      const bottomOffset=bottomBand.querySelector('.awards-band-offset');
-      if(bottomOffset)bottomOffset.style.transform='translateY(-'+offset+'px)';
-    }
+    const seconds=Math.max(65,Math.round(original.offsetHeight/30));
+    track.style.setProperty('--awards-duration',seconds+'s');
+  }
+  function draw(){
+    if(!running)return;
+    const view=viewport.getBoundingClientRect();
+    if(view.height<10){frame=requestAnimationFrame(draw);return;}
+    const centers=items.map(el=>{const r=el.getBoundingClientRect();return (r.top+r.bottom)/2;});
+    const narrow=mobile.matches;
+    items.forEach((el,i)=>{
+      const p=(centers[i]-view.top)/view.height;
+      const far=ease(clamp((.43-p)/.43,0,1));
+      const near=ease(clamp((p-.57)/.43,0,1));
+      const scaleX=1-(narrow?.23:.42)*far+(narrow?.24:.43)*near;
+      const scaleY=1-.07*far+.09*near;
+      const tilt=(narrow?22:32)*far-(narrow?19:27)*near;
+      const blur=(narrow?.25:.55)*Math.pow(Math.max(far,near),1.5);
+      el.style.transform='perspective(1000px) rotateX('+tilt.toFixed(2)+'deg) scale('+scaleX.toFixed(3)+','+scaleY.toFixed(3)+')';
+      el.style.filter='blur('+blur.toFixed(2)+'px)';
+      el.style.opacity=(1-.16*Math.max(far,near)).toFixed(3);
+    });
+    frame=requestAnimationFrame(draw);
+  }
+  function start(){
+    running=false;cancelAnimationFrame(frame);
+    if(!reducedMotion.matches){running=true;draw();}
   }
   function open(){
     if(scene!=='home')return;
-    stopWriting();
-    dogPinned=false;
-    showBonya(false);
-    panel.hidden=false;
-    artboard.classList.add('awards-open');
-    panel.setAttribute('aria-hidden','false');
-    entry.setAttribute('aria-expanded','true');
-    requestAnimationFrame(()=>{measure();restartFlow();});
+    stopWriting();dogPinned=false;showBonya(false);
+    panel.hidden=false;artboard.classList.add('awards-open');
+    panel.setAttribute('aria-hidden','false');entry.setAttribute('aria-expanded','true');
+    requestAnimationFrame(()=>{
+      measure();track.style.animation='none';void track.offsetHeight;
+      track.style.removeProperty('animation');start();
+    });
     back.focus({preventScroll:true});
   }
   function close(){
     if(!artboard.classList.contains('awards-open'))return;
-    artboard.classList.remove('awards-open');
-    panel.setAttribute('aria-hidden','true');
-    panel.hidden=true;
-    entry.setAttribute('aria-expanded','false');
+    running=false;cancelAnimationFrame(frame);
+    artboard.classList.remove('awards-open');panel.hidden=true;
+    panel.setAttribute('aria-hidden','true');entry.setAttribute('aria-expanded','false');
     entry.focus({preventScroll:true});
   }
   entry.setAttribute('aria-expanded','false');
-  entry.addEventListener('click',open);
-  back.addEventListener('click',close);
-  logo.addEventListener('click',close);
+  entry.addEventListener('click',open);back.addEventListener('click',close);logo.addEventListener('click',close);
   document.addEventListener('keydown',event=>{
     if(event.key==='Escape'&&artboard.classList.contains('awards-open')){
-      event.preventDefault();
-      event.stopImmediatePropagation();
-      close();
+      event.preventDefault();event.stopImmediatePropagation();close();
     }
   },true);
   window.addEventListener('resize',measure,{passive:true});
-  measure();
+  reducedMotion.addEventListener('change',start);
 })();
