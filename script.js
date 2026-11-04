@@ -344,7 +344,33 @@ const projects={
       "when the school year begins, it's not just kids who go back to school. parents find themselves struggling with tricky homework problems all over again. we built dodo pizza's commercial around this contrast: school math can be complicated, but saving money should be simple.",
       "in the commercial, a son brings his parents a geometry textbook, leaving them completely puzzled. but when three pizzas arrive, everything starts to make sense. mathematical formulas come to life on screen, turning an ordinary family dinner into a lesson in simple math: three pizzas for 900 rubles."
     ],
-    media:[{type:'video',vimeoId:'1243208592',label:'Dodo Pizza — Simple Math'}]
+    media:[{type:'video',vimeoId:'1243208592',label:'Dodo Pizza — Simple Math'}]  },
+  kion:{
+    title:'kion top',
+    role:'role: senior art director',
+    paragraphs:[
+      "with more information and content around us than ever before, there's simply not enough time to take it all in. we decided to take this idea to the extreme: what if a person had three heads?",
+      "in the commercial for kion, we brought this idea to life, turning three heads into a visual metaphor. because sometimes, to watch more, you need to push the boundaries of perception."
+    ],
+    media:[{type:'video',vimeoId:'1243214506',label:'KION — TOP'}]
+  },
+  dixy:{
+    title:'dixy. cracked',
+    role:'role: senior art director',
+    paragraphs:[
+      "we created an anime-style animated commercial for dixy's \"cracked\" collectible toy promotion. with just three weeks to complete the project, we quickly assembled a team of artists and animators from around the world, including kazakhstan, dubai, bali, khanty-mansiysk, and argentina.",
+      "working across different time zones, we ran production in parallel to meet the campaign's launch deadline."
+    ],
+    media:[{type:'video',vimeoId:'1243234014',label:'Dixy — Cracked'}]
+  },
+  triazavirin:{
+    title:'triazavirin. what is care?',
+    role:'role: senior art director',
+    paragraphs:[
+      "when triazavirin became available over the counter, the brand needed to reach a wider audience for the first time. instead of relying on typical pharmaceutical advertising clichés, we decided to tell a simple, human story about caring for one another.",
+      "the result was \"care is the best medicine,\" a commercial that follows a day in the life of an ordinary family through the eyes of the one who needs love and support the most. at its heart is a simple idea: caring for our loved ones starts with the little things we do."
+    ],
+    media:[{type:'video',vimeoId:'1243246229',label:'Triazavirin — What Is Care?'}]
   }
 };
 let caseMedia=projects[activeProject].media;
@@ -391,7 +417,7 @@ function showCaseMedia(index){
   }
 }
 function hideCasePreviews(){
-  for(const preview of [document.getElementById('setkaHoverPreview'),document.getElementById('litresHoverPreview'),document.getElementById('dodoHoverPreview'),document.getElementById('dodoMathHoverPreview')]){
+  for(const preview of document.querySelectorAll('.works-hover-preview')){
     preview.classList.remove('is-visible');
     preview.setAttribute('aria-hidden','true');
   }
@@ -402,7 +428,7 @@ function showWorksList(){
   worksWindow.hidden=false;
   setkaCase.hidden=true;
   scene='empty';
-  comingNext.textContent='Selected works. Four projects are available.';
+  comingNext.textContent='Selected works. Seven projects are available.';
   if(window.innerWidth<=900)window.scrollTo({top:0,behavior:'instant'});
 }
 function showProjectCase(key){
@@ -445,6 +471,9 @@ bindCaseRow('openSetka','setkaHoverPreview','setka');
 bindCaseRow('openLitres','litresHoverPreview','litres');
 bindCaseRow('openDodo','dodoHoverPreview','dodo');
 bindCaseRow('openDodoMath','dodoMathHoverPreview','dodoMath');
+bindCaseRow('openKion','kionHoverPreview','kion');
+bindCaseRow('openDixy','dixyHoverPreview','dixy');
+bindCaseRow('openTriazavirin','triazavirinHoverPreview','triazavirin');
 // Locally prepared screenshot-based thumbnail is preferred; a Vimeo thumbnail
 // provides a temporary fallback until the WebP is committed to assets/.
 const dodoPreviewImage=document.querySelector('#dodoHoverPreview img');
@@ -467,7 +496,7 @@ document.getElementById('caseBack').addEventListener('click',showWorksList);
 document.getElementById('caseClose').addEventListener('click',showWorksList);
 document.getElementById('mobileStageLogo').addEventListener('click',resetScene);
 document.getElementById('worksClose').addEventListener('click',resetScene);
-const projectOrder=['setka','litres','dodo','dodoMath'];
+const projectOrder=['setka','litres','dodo','dodoMath','kion','dixy','triazavirin'];
 function stepCaseMedia(direction){
   if(caseMedia.length===1){
     const index=projectOrder.indexOf(activeProject);
