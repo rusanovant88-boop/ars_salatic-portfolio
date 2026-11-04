@@ -799,3 +799,6 @@ button.works-file:hover,button.works-file:focus-visible {background:var(--blue);
   .awards-viewport{overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--blue) #000}
   .awards-glass:before,.awards-glass:after{display:none}
 }
+
+/* Never expose the archive in an unstyled or unopened state. */
+.awards-stage[hidden]{display:none!important}
