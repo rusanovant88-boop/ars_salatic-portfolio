@@ -120,8 +120,9 @@ preparePersonOverlay();
 // Signature handwriting v1.0: pristine source pixels, no encoded in-between frames.
 // A smooth, time-coded pen trace reveals the EXACT original image alpha and RGB.
 // The original, unmodified logo remains the non-animated fallback.
-// SVG handwriting: animate complete continuous strokes instead of revealing pixels.
-// The original Salatic image stays unchanged and is restored on hover exit.
+// Signature v2.1: ALWAYS render the original artwork, even during the reveal.
+// SVG trajectories define only a transparent REVEAL MASK over the SAME image.
+// They never render replacement blue paths, so the lettering cannot change shape.
 const signatureImg = document.querySelector('.signature');
 const signatureHit = document.createElement('button');
 signatureHit.type = 'button';
@@ -143,9 +144,10 @@ let writingToken = 0;
 let writingDoneTimer = null;
 let writingAnimations = [];
 let signatureSvgReady = false;
+let signatureRevealPaths = [];
+let signatureRevealFinish = null;
 
-// Centerline gestures based on the original signature. They are drawn as
-// smooth SVG strokes, not used to reveal independent raster-pixel fragments.
+// Paths describe pen movement only, never the image's rendered appearance.
 const signatureRoutes = [
  {w:32,r:30,p:[[308,39],[290,59],[264,98],[240,147],[219,203],[214,263],[198,247],[182,204],[163,150],[144,115],[116,96],[90,100],[66,122],[48,163],[49,208],[69,244],[103,274],[151,304],[203,333],[252,365],[288,397],[316,437],[328,480],[312,533],[269,568],[211,592],[151,589],[95,568],[48,531],[14,480],[4,419],[15,371],[38,352],[83,362]]},
  {w:7,r:28,p:[[298,181],[291,219],[287,270],[286,334],[288,414],[291,493]]},
@@ -180,6 +182,7 @@ function signaturePath(points) {
   return d;
 }
 
+
 function ensureSignatureSvg(){
   if(signatureSvgReady) return;
   const ns='http://www.w3.org/2000/svg';
@@ -188,16 +191,51 @@ function ensureSignatureSvg(){
   svg.setAttribute('preserveAspectRatio','xMidYMid meet');
   svg.setAttribute('aria-hidden','true');
   svg.classList.add('signature-writing-svg');
+
+  const defs=document.createElementNS(ns,'defs');
+  const mask=document.createElementNS(ns,'mask');
+  mask.setAttribute('id','salatic-original-ink-reveal');
+  mask.setAttribute('maskUnits','userSpaceOnUse');
+  mask.setAttribute('maskContentUnits','userSpaceOnUse');
+  mask.setAttribute('x','0');mask.setAttribute('y','0');
+  mask.setAttribute('width','816');mask.setAttribute('height','600');
+  mask.setAttribute('style','mask-type:alpha');
+
   for(const route of signatureRoutes){
-    const path=document.createElementNS(ns,'path');
-    path.setAttribute('d',signaturePath(route.p));
-    path.setAttribute('fill','none');
-    path.setAttribute('stroke','#1099df');
-    path.setAttribute('stroke-width',String(Math.max(15,Math.min(26,route.r*.79))));
-    path.setAttribute('stroke-linecap','round');
-    path.setAttribute('stroke-linejoin','round');
-    svg.appendChild(path);
+    const stroke=document.createElementNS(ns,'path');
+    stroke.setAttribute('d',signaturePath(route.p));
+    stroke.setAttribute('fill','none');
+    stroke.setAttribute('stroke','#fff');
+    // Wide paint coverage reveals real ink, but does not add artificial ink.
+    stroke.setAttribute('stroke-width',String(Math.max(60,route.r*2.4)));
+    stroke.setAttribute('stroke-linecap','round');
+    stroke.setAttribute('stroke-linejoin','round');
+    mask.appendChild(stroke);
+    signatureRevealPaths.push(stroke);
   }
+
+  // Finish by smoothly revealing any remaining pixels from the real logo.
+  // It also makes the end frame pixel-identical to the untouched source.
+  signatureRevealFinish=document.createElementNS(ns,'rect');
+  signatureRevealFinish.setAttribute('x','0');
+  signatureRevealFinish.setAttribute('y','0');
+  signatureRevealFinish.setAttribute('width','816');
+  signatureRevealFinish.setAttribute('height','600');
+  signatureRevealFinish.setAttribute('fill','#fff');
+  signatureRevealFinish.setAttribute('opacity','0');
+  mask.appendChild(signatureRevealFinish);
+  defs.appendChild(mask);
+  svg.appendChild(defs);
+
+  const source=document.createElementNS(ns,'image');
+  source.setAttribute('href',signatureImg.getAttribute('src'));
+  source.setAttribute('x','0');
+  source.setAttribute('y','0');
+  source.setAttribute('width','816');
+  source.setAttribute('height','600');
+  source.setAttribute('preserveAspectRatio','xMidYMid meet');
+  source.setAttribute('mask','url(#salatic-original-ink-reveal)');
+  svg.appendChild(source);
   writingOverlay.appendChild(svg);
   signatureSvgReady=true;
 }
@@ -211,6 +249,7 @@ function stopWriting(){
   for(const animation of writingAnimations) animation.cancel();
   writingAnimations=[];
   signatureHit.classList.remove('is-writing');
+  if(signatureRevealFinish)signatureRevealFinish.setAttribute('opacity','0');
 }
 
 async function startWriting(){
@@ -221,24 +260,24 @@ async function startWriting(){
     await signatureImg.decode();
     if(token!==writingToken||artboard.classList.contains('stage-exiting'))return;
     ensureSignatureSvg();
-    const paths=[...writingOverlay.querySelectorAll('path')];
     const totalWeight=signatureRoutes.reduce((sum,route)=>sum+route.w,0);
     let delay=0;
-    for(let i=0;i<paths.length;i++){
-      const path=paths[i];
-      const length=path.getTotalLength();
+    for(let i=0;i<signatureRevealPaths.length;i++){
+      const stroke=signatureRevealPaths[i];
+      const length=stroke.getTotalLength();
       const duration=writingDrawMs*signatureRoutes[i].w/totalWeight;
-      path.style.strokeDasharray=String(length);
-      path.style.strokeDashoffset=String(length);
-      const animation=path.animate([
+      stroke.style.strokeDasharray=String(length);
+      stroke.style.strokeDashoffset=String(length);
+      writingAnimations.push(stroke.animate([
         {strokeDashoffset:String(length)},
         {strokeDashoffset:'0'}
-      ],{
-        duration,delay,easing:'cubic-bezier(.33,0,.18,1)',fill:'forwards'
-      });
-      writingAnimations.push(animation);
+      ],{duration,delay,easing:'cubic-bezier(.33,0,.18,1)',fill:'forwards'}));
       delay+=duration*.93;
     }
+    signatureRevealFinish.setAttribute('opacity','0');
+    writingAnimations.push(signatureRevealFinish.animate([
+      {opacity:0},{opacity:1}
+    ],{duration:350,delay:writingDrawMs,easing:'ease-out',fill:'forwards'}));
     signatureHit.classList.add('is-writing');
     writingDoneTimer=setTimeout(()=>{
       if(token===writingToken)stopWriting();
@@ -246,7 +285,7 @@ async function startWriting(){
   }catch(error){
     if(token===writingToken){
       stopWriting();
-      console.warn('Signature animation unavailable, original image preserved',error);
+      console.warn('Signature animation unavailable; original artwork preserved',error);
     }
   }
 }
