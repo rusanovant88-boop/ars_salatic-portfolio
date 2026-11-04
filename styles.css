@@ -9,9 +9,20 @@ button:focus-visible { outline:2px dashed var(--blue);outline-offset:4px; }
 .masthead { position:absolute; inset:0 0 auto; height:90px; font-weight:700; letter-spacing:.015em; }
 .username { position:absolute; top:34px; left:27.5px; white-space:nowrap; cursor:pointer; }
 .username-photo {
-  position:absolute;left:calc(50% - 155px);top:155px;
-  width:310px;height:310px;object-fit:contain;
-  z-index:12;opacity:0;visibility:hidden;pointer-events:none;
+  position:absolute;
+  left:50%;
+  top:450px;
+  width:360px;
+  height:360px;
+  max-width:none;
+  object-fit:cover;
+  border-radius:16px;
+  transform:translate(-50%,-50%) rotate(-5deg);
+  transform-origin:center center;
+  z-index:12;
+  opacity:0;
+  visibility:hidden;
+  pointer-events:none;
   transition:opacity .14s linear,visibility .14s linear;
 }
 .masthead:has(.username:hover),.masthead:has(.username:focus-visible) {z-index:12}
@@ -769,5 +780,17 @@ button.works-file:hover,button.works-file:focus-visible {background:var(--blue);
     grid-row:2;
     justify-self:end;
     font-size:19px;
+  }
+}
+
+/* Keep the hover portrait centered in the actual mobile viewport, not in the 91px header. */
+@media (max-width:900px) {
+  .username-photo {
+    position:fixed;
+    left:50vw;
+    top:50svh;
+    width:min(78vw,360px);
+    height:auto;
+    aspect-ratio:1 / 1;
   }
 }
