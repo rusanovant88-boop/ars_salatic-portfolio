@@ -697,3 +697,23 @@ button.works-file:hover,button.works-file:focus-visible {background:var(--blue);
 @media (hover:none), (pointer:coarse) {
   .salatic-cursor {display:none!important;}
 }
+
+/* Unified desktop case typography: anchor the LAST text line to the same baseline
+   in every case, 20px above the right player's bottom edge (y=820).
+   Keep mobile's independent flow layout and preserve all copy. */
+@media (min-width:901px) {
+  .work-case[data-project] .case-description {
+    top:auto;
+    bottom:100px;
+    margin:0;
+  }
+  /* Remove the last paragraph's old bottom margin so cases with two
+     or three paragraphs land on the same baseline. */
+  .work-case[data-project] .case-description #caseConcept {
+    margin-bottom:0;
+  }
+  .work-case[data-project] .case-description #caseContribution:not([hidden]) {
+    margin-top:19px;
+    margin-bottom:0;
+  }
+}
