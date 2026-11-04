@@ -260,6 +260,7 @@ const portfolioStage=document.getElementById('portfolioStage');
 const worksWindow=document.getElementById('worksWindow');
 const setkaCase=document.getElementById('projectCase');
 const caseTitle=document.getElementById('caseTitle');
+const caseTag=document.getElementById('caseTag');
 const caseRole=document.getElementById('caseRole');
 const caseIntro=document.getElementById('caseIntro');
 const caseConcept=document.getElementById('caseConcept');
@@ -370,7 +371,37 @@ const projects={
       "when triazavirin became available over the counter, the brand needed to reach a wider audience for the first time. instead of relying on typical pharmaceutical advertising clichés, we decided to tell a simple, human story about caring for one another.",
       "the result was \"care is the best medicine,\" a commercial that follows a day in the life of an ordinary family through the eyes of the one who needs love and support the most. at its heart is a simple idea: caring for our loved ones starts with the little things we do."
     ],
-    media:[{type:'video',vimeoId:'1243246229',label:'Triazavirin — What Is Care?'}]
+    media:[{type:'video',vimeoId:'1243246229',label:'Triazavirin — What Is Care?'}]  },
+  kazakhstan:{
+    "title": "kazakhstan chocolate",
+    "tag": "spec ad · unofficial concept",
+    "role": "role: senior art director",
+    "paragraphs": [
+      "kazakhstan chocolate has long been one of the country's most recognizable symbols. its iconic blue-and-gold wrapper and distinctive taste are known far beyond kazakhstan. people bring it back from their travels and give it to friends and loved ones as a little piece of their homeland.",
+      "the name \"kazakhstan\" can be interpreted as \"the land of free people.\" this inspired the idea behind our unofficial commercial: kazakhstan chocolate is the taste of a free land. the taste of freedom."
+    ],
+    "media": [
+      {
+        "type": "video",
+        "vimeoId": "1243259860",
+        "label": "Kazakhstan Chocolate — Unofficial Spec Ad"
+      }
+    ]
+  },
+  avionero:{
+    "title": "avionero. seeing is believing",
+    "role": "role: senior art director",
+    "paragraphs": [
+      "for avionero, we created a minimalist commercial where sound takes center stage. instead of showing typical travel footage, we let the audience hear people witnessing a whale emerging from the water. the sounds of nature, the whale itself, and the excited reactions of onlookers create a sense of being there.",
+      "we built the commercial around asmr and the viewer's imagination, leaving the most spectacular moment unseen. because some experiences are better witnessed with your own eyes. the idea comes together in the final tagline: \"it's better to see once. travel with avionero.\""
+    ],
+    "media": [
+      {
+        "type": "video",
+        "vimeoId": "1243258410",
+        "label": "Avionero — Seeing Is Believing"
+      }
+    ]
   }
 };
 let caseMedia=projects[activeProject].media;
@@ -428,7 +459,7 @@ function showWorksList(){
   worksWindow.hidden=false;
   setkaCase.hidden=true;
   scene='empty';
-  comingNext.textContent='Selected works. Seven projects are available.';
+  comingNext.textContent='Selected works. Nine projects are available.';
   if(window.innerWidth<=900)window.scrollTo({top:0,behavior:'instant'});
 }
 function showProjectCase(key){
@@ -438,6 +469,8 @@ function showProjectCase(key){
   const project=projects[key];
   caseMedia=project.media;
   caseTitle.textContent=project.title;
+  caseTag.textContent=project.tag||'';
+  caseTag.hidden=!project.tag;
   caseRole.textContent=project.role;
   caseIntro.textContent=project.paragraphs[0]||'';
   caseConcept.textContent=project.paragraphs[1]||'';
@@ -474,6 +507,8 @@ bindCaseRow('openDodoMath','dodoMathHoverPreview','dodoMath');
 bindCaseRow('openKion','kionHoverPreview','kion');
 bindCaseRow('openDixy','dixyHoverPreview','dixy');
 bindCaseRow('openTriazavirin','triazavirinHoverPreview','triazavirin');
+bindCaseRow('openKazakhstan','kazakhstanHoverPreview','kazakhstan');
+bindCaseRow('openAvionero','avioneroHoverPreview','avionero');
 // Locally prepared screenshot-based thumbnail is preferred; a Vimeo thumbnail
 // provides a temporary fallback until the WebP is committed to assets/.
 const dodoPreviewImage=document.querySelector('#dodoHoverPreview img');
@@ -496,7 +531,7 @@ document.getElementById('caseBack').addEventListener('click',showWorksList);
 document.getElementById('caseClose').addEventListener('click',showWorksList);
 document.getElementById('mobileStageLogo').addEventListener('click',resetScene);
 document.getElementById('worksClose').addEventListener('click',resetScene);
-const projectOrder=['setka','litres','dodo','dodoMath','kion','dixy','triazavirin'];
+const projectOrder=['setka','litres','dodo','dodoMath','kion','dixy','triazavirin','kazakhstan','avionero'];
 function stepCaseMedia(direction){
   if(caseMedia.length===1){
     const index=projectOrder.indexOf(activeProject);
