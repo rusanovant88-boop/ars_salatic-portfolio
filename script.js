@@ -559,3 +559,40 @@ const stageObserver=new MutationObserver(function(){
   if(!isVisible){hideCasePreviews();clearPlayer();worksWindow.hidden=false;setkaCase.hidden=true;casePage=0;}
 });
 stageObserver.observe(artboard,{attributes:true,attributeFilter:['class']});
+
+// The dot is a real DOM element so mix-blend-mode:difference inverts it
+// against *each rendered pixel*, including cyan text, outlines and icons.
+(function initSalaticCursor(){
+  const finePointer=window.matchMedia('(hover:hover) and (pointer:fine)');
+  if(!finePointer.matches)return;
+  const cursor=document.createElement('div');
+  cursor.className='salatic-cursor';
+  cursor.setAttribute('aria-hidden','true');
+  document.body.appendChild(cursor);
+  const hide=()=>{cursor.style.visibility='hidden';};
+  const move=(event)=>{
+    if(event.pointerType==='touch'||document.fullscreenElement||document.webkitFullscreenElement){
+      hide();
+      return;
+    }
+    const hoveredElement=document.elementFromPoint(event.clientX,event.clientY);
+    if(hoveredElement && hoveredElement.closest('iframe')) {
+      hide();
+      return;
+    }
+    cursor.style.left=event.clientX+'px';
+    cursor.style.top=event.clientY+'px';
+    cursor.style.visibility='visible';
+  };
+  window.addEventListener('pointermove',move,{passive:true});
+  document.addEventListener('pointerout',event=>{
+    if(!event.relatedTarget)hide();
+  },{passive:true});
+  window.addEventListener('blur',hide);
+  document.addEventListener('fullscreenchange',hide);
+  document.addEventListener('webkitfullscreenchange',hide);
+  // The Vimeo iframe consumes pointer events, so hide our dot on entry.
+  document.addEventListener('pointerover',event=>{
+    if(event.target instanceof Element && event.target.closest('iframe'))hide();
+  },{passive:true});
+})();
