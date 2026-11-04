@@ -642,7 +642,9 @@ stageObserver.observe(artboard,{attributes:true,attributeFilter:['class']});
     if(!running)return;
     const view=viewport.getBoundingClientRect();
     if(view.height<10){frame=requestAnimationFrame(draw);return;}
-    const centers=items.map(el=>{const r=el.getBoundingClientRect();return (r.top+r.bottom)/2;});
+    const rect=track.getBoundingClientRect();
+    const ratio=track.offsetWidth?rect.width/track.offsetWidth:1;
+    const centers=items.map(el=>rect.top+(el.offsetTop+el.offsetHeight/2)*ratio);
     const narrow=mobile.matches;
     items.forEach((el,i)=>{
       const p=(centers[i]-view.top)/view.height;
