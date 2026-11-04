@@ -114,3 +114,10 @@ Setka Finder hover preview now occupies x=33, y=352 on the reference 1440x900 st
 - Both items in the Finder are clickable and have a left-overlapping, tilted, text-free hover preview. The Litres preview temporarily uses a Vimeo-sourced thumbnail until `assets/litres-hover.webp` is uploaded.
 - Replaced thick Unicode ‹ › glyphs with matching thin-stroke SVG chevrons in all case screens. When the selected case has only one media item, chevrons navigate between the two projects. Once Litres gets more items, chevrons cycle through those media instead.
 - The unrelated third Finder row remains a `.pending` placeholder.
+
+### v0.9 / Dodo Pizza — Simple Math
+- Fourth case, sourced from the supplied one-page Frame 8.pdf. Role: Senior Art Director.
+- The two case paragraphs and title reflect the reference PDF, with lowercase presentation and regular Courier in the existing case layout.
+- Vimeo embed: `1243208592`. One video only, with no fabricated extras.
+- Fourth Finder row `dodo_pizza_simple_math.mov`, click/tap navigation, rotated text-free preview. Image path `assets/dodo-simple-math-hover.webp` with Vimeo thumbnail fallback until the exact PDF still is uploaded.
+- The existing 2px equal-stroke SVG chevrons, geometry, mobile layout, other three cases, and intro remain unchanged.

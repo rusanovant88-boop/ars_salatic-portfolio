@@ -407,6 +407,15 @@ const projects={
       "we brought the same idea into a commercial for dodo's big prize giveaway. the brand makes a wish for viewers to see the ad and discover their chance to win an apartment, a car, a year's supply of pizza, and millions of other prizes. and the wish comes true the moment they're watching."
     ],
     media:[{type:'video',vimeoId:'1243201685',label:'Dodo Pizza — 15 Years of Dreaming Out Loud'}]
+  },
+  dodoMath:{
+    title:'dodo pizza. simple math',
+    role:'role: senior art director',
+    paragraphs:[
+      "when the school year begins, it's not just kids who go back to school. parents find themselves struggling with tricky homework problems all over again. we built dodo pizza's commercial around this contrast: school math can be complicated, but saving money should be simple.",
+      "in the commercial, a son brings his parents a geometry textbook, leaving them completely puzzled. but when three pizzas arrive, everything starts to make sense. mathematical formulas come to life on screen, turning an ordinary family dinner into a lesson in simple math: three pizzas for 900 rubles."
+    ],
+    media:[{type:'video',vimeoId:'1243208592',label:'Dodo Pizza — Simple Math'}]
   }
 };
 let caseMedia=projects[activeProject].media;
@@ -453,7 +462,7 @@ function showCaseMedia(index){
   }
 }
 function hideCasePreviews(){
-  for(const preview of [document.getElementById('setkaHoverPreview'),document.getElementById('litresHoverPreview'),document.getElementById('dodoHoverPreview')]){
+  for(const preview of [document.getElementById('setkaHoverPreview'),document.getElementById('litresHoverPreview'),document.getElementById('dodoHoverPreview'),document.getElementById('dodoMathHoverPreview')]){
     preview.classList.remove('is-visible');
     preview.setAttribute('aria-hidden','true');
   }
@@ -464,7 +473,7 @@ function showWorksList(){
   worksWindow.hidden=false;
   setkaCase.hidden=true;
   scene='empty';
-  comingNext.textContent='Selected works. Setka, Litres and Dodo Pizza are available.';
+  comingNext.textContent='Selected works. Four projects are available.';
   if(window.innerWidth<=900)window.scrollTo({top:0,behavior:'instant'});
 }
 function showProjectCase(key){
@@ -506,10 +515,18 @@ function bindCaseRow(rowId,previewId,projectKey){
 bindCaseRow('openSetka','setkaHoverPreview','setka');
 bindCaseRow('openLitres','litresHoverPreview','litres');
 bindCaseRow('openDodo','dodoHoverPreview','dodo');
+bindCaseRow('openDodoMath','dodoMathHoverPreview','dodoMath');
 // Locally prepared screenshot-based thumbnail is preferred; a Vimeo thumbnail
 // provides a temporary fallback until the WebP is committed to assets/.
 const dodoPreviewImage=document.querySelector('#dodoHoverPreview img');
 dodoPreviewImage.addEventListener('error',function(){if(!this.dataset.fallback){this.dataset.fallback='true';this.src='https://vumbnail.com/1243201685.jpg';}});
+const dodoMathPreviewImage=document.querySelector('#dodoMathHoverPreview img');
+dodoMathPreviewImage.addEventListener('error',function(){
+  if(!this.dataset.fallback){
+    this.dataset.fallback='true';
+    this.src='https://vumbnail.com/1243208592.jpg';
+  }
+});
 const litresPreviewImage=document.querySelector('#litresHoverPreview img');
 litresPreviewImage.addEventListener('error',function(){
   if(!this.dataset.fallback){
@@ -521,7 +538,7 @@ document.getElementById('caseBack').addEventListener('click',showWorksList);
 document.getElementById('caseClose').addEventListener('click',showWorksList);
 document.getElementById('mobileStageLogo').addEventListener('click',resetScene);
 document.getElementById('worksClose').addEventListener('click',resetScene);
-const projectOrder=['setka','litres','dodo'];
+const projectOrder=['setka','litres','dodo','dodoMath'];
 function stepCaseMedia(direction){
   if(caseMedia.length===1){
     const index=projectOrder.indexOf(activeProject);

@@ -580,3 +580,9 @@ button.works-file:hover,button.works-file:focus-visible {background:var(--blue);
 /* v0.8 / Dodo reference case-column offset. */
 .work-case[data-project="dodo"] .case-description {top:286px}
 @media(max-width:900px){.work-case[data-project="dodo"] .case-description {top:auto}.works-filename {min-width:0;overflow:hidden;text-overflow:ellipsis}}
+
+/* v0.9 / Dodo Pizza Simple Math: match Frame 8's copy position at y≈296. */
+.work-case[data-project="dodoMath"] .case-description {top:296px;}
+@media (max-width:900px) {
+  .work-case[data-project="dodoMath"] .case-description {top:auto;}
+}
