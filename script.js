@@ -641,6 +641,7 @@ stageObserver.observe(artboard,{attributes:true,attributeFilter:['class']});
     stopWriting();
     dogPinned=false;
     showBonya(false);
+    panel.hidden=false;
     artboard.classList.add('awards-open');
     panel.setAttribute('aria-hidden','false');
     entry.setAttribute('aria-expanded','true');
@@ -651,6 +652,7 @@ stageObserver.observe(artboard,{attributes:true,attributeFilter:['class']});
     if(!artboard.classList.contains('awards-open'))return;
     artboard.classList.remove('awards-open');
     panel.setAttribute('aria-hidden','true');
+    panel.hidden=true;
     entry.setAttribute('aria-expanded','false');
     entry.focus({preventScroll:true});
   }
