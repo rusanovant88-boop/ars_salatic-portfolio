@@ -668,17 +668,32 @@ button.works-file:hover,button.works-file:focus-visible {background:var(--blue);
   .work-case[data-project="avionero"] .case-description {top:auto}
 }
 
-/* Unified SALATIC cursor: small blue dot, no glow or trailing effect.
-   Applies to site content only; embedded Vimeo controls keep their own cursor. */
+/* Custom pixel-level cursor: difference blends cyan to black on cyan pixels.
+   An OS cursor cannot use mix-blend-mode. No trails, glows or animations. */
+.salatic-cursor {
+  position:fixed;
+  left:0;
+  top:0;
+  width:10px;
+  height:10px;
+  border-radius:50%;
+  background:#0098e2;
+  transform:translate(-50%,-50%);
+  mix-blend-mode:difference;
+  pointer-events:none;
+  z-index:2147483647;
+  visibility:hidden;
+}
 @media (hover:hover) and (pointer:fine) {
-  html, body, body * {
-    cursor: url("assets/cursor-dot.svg") 8 8, auto !important;
+  html, body, body *, body *::before, body *::after {
+    cursor:none!important;
   }
-  /* Invert the dot on the actual cyan-filled hover backgrounds. */
-  button.works-file:hover,
-  button.works-file:hover *,
-  button.works-file:focus-visible,
-  button.works-file:focus-visible * {
-    cursor: url("assets/cursor-dot-black.svg") 8 8, auto !important;
-  }
+  /* Vimeo is cross-origin; its native player retains its own pointer. */
+  iframe, iframe * {cursor:auto!important;}
+  /* Fullscreen elements are promoted above the page's cursor layer. */
+  :fullscreen, :fullscreen * {cursor:auto!important;}
+  :-webkit-full-screen, :-webkit-full-screen * {cursor:auto!important;}
+}
+@media (hover:none), (pointer:coarse) {
+  .salatic-cursor {display:none!important;}
 }
