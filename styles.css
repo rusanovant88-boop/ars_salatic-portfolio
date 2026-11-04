@@ -76,20 +76,25 @@ button:focus-visible { outline:2px dashed var(--blue);outline-offset:4px; }
   100% { transform:scale(1); }
 }
 .signature-hit .signature,
-.mobile-stage-logo img { transform-origin:center center; }
+.mobile-stage-logo img,
+.awards-home img { transform-origin:center center; }
 @media (hover:hover) and (pointer:fine) {
   .signature-hit:hover .signature,
-  .mobile-stage-logo:hover img {
+  .mobile-stage-logo:hover img,
+  .awards-home:hover img {
     animation:salaticLogoBounce .64s both;
   }
 }
 .signature-hit:focus-visible .signature,
-.mobile-stage-logo:focus-visible img { animation:salaticLogoBounce .64s both; }
+.mobile-stage-logo:focus-visible img,
+.awards-home:focus-visible img { animation:salaticLogoBounce .64s both; }
 @media (prefers-reduced-motion:reduce) {
   .signature-hit:hover .signature,
   .mobile-stage-logo:hover img,
+  .awards-home:hover img,
   .signature-hit:focus-visible .signature,
-  .mobile-stage-logo:focus-visible img { animation:none!important; }
+  .mobile-stage-logo:focus-visible img,
+  .awards-home:focus-visible img { animation:none!important; }
 }
 
 /* v0.4 / Falling letter transition. All original artboard positions are preserved. */
@@ -102,7 +107,7 @@ button:focus-visible { outline:2px dashed var(--blue);outline-offset:4px; }
 .artboard.stage-exiting .works-position {opacity:0;pointer-events:none}
 .artboard.stage-exiting .eyes,.artboard.stage-exiting .bonya-overlay {opacity:0!important}
 .artboard.stage-exiting .bottom {pointer-events:none}
-.artboard.stage-exiting .signature-hit {transform:translate3d(0,-600px,0) scale(.36);cursor:default}
+.artboard.stage-exiting .signature-hit {transform:translate3d(.5px,-585.44px,0) scale(.6253);cursor:pointer}
 .artboard.stage-exiting .signature-hit .signature {opacity:1!important}
 .artboard.stage-exited .signature-hit {pointer-events:auto;cursor:pointer}
 @media (prefers-reduced-motion:reduce) {.signature-hit,.works-position,.eyes {transition:none!important}}
@@ -476,8 +481,8 @@ button.works-file:hover,button.works-file:focus-visible {background:var(--blue);
   }
   .mobile-stage-logo {
     display:block;
-    width:132px;height:96px;
-    min-height:96px;
+    width:140px;height:103px;
+    min-height:103px;
     margin:0 0 16px;
     padding:0;
     border:0;
@@ -752,7 +757,7 @@ button.works-file:hover,button.works-file:focus-visible {background:var(--blue);
   font-size:16px;letter-spacing:.015em;
 }
 .awards-close{border:0;background:transparent;color:var(--blue);font:inherit;cursor:pointer}
-.awards-close:hover,.awards-home:hover{filter:brightness(1.4)}
+.awards-close:hover{filter:brightness(1.4)}
 .awards-glass{
   position:absolute;top:116px;bottom:85px;left:380px;right:28px;
   overflow:hidden;isolation:isolate;
@@ -840,7 +845,7 @@ button.works-file:hover,button.works-file:focus-visible {background:var(--blue);
 /* awards / press v4 — a single perspective column through two localized glass lenses.
    The middle stays sharp; optical and perspective distortions are confined to
    synchronized top/bottom copies of the same scrolling content. */
-.awards-home {left:20px;top:23px;width:207px;height:171px;}
+.awards-home {left:27px;top:41.43px;width:193.57px;height:142.29px;}
 .awards-headline {left:auto;right:25px;top:47px;z-index:10;}
 .awards-headline > span {display:none;}
 .awards-close {font-size:14px;letter-spacing:.02em;}
@@ -897,7 +902,7 @@ button.works-file:hover,button.works-file:focus-visible {background:var(--blue);
 }
 .awards-footnote {display:none;}
 @media(max-width:900px) {
- .awards-home {left:10px;top:5px;width:112px;height:82px;}
+ .awards-home {left:18px;top:18px;width:140px;height:103px;}
  .awards-headline {left:auto;right:20px;top:48px;}
  .awards-glass {left:18px;right:18px;top:115px;bottom:35px;}
  .awards-viewport {width:100%;}
