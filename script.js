@@ -630,11 +630,38 @@ stageObserver.observe(artboard,{attributes:true,attributeFilter:['class']});
   duplicate.setAttribute('aria-hidden','true');
   duplicate.querySelectorAll('a').forEach(a=>a.setAttribute('tabindex','-1'));
   track.appendChild(duplicate);
+  // Both optical bands have their own pixel-identical copies of the moving content.
+  // Every layer shares duration and animation phase; only the band optics differ.
+  const opticsMotion=[document.getElementById('awardsTopMotion'),document.getElementById('awardsBottomMotion')].filter(Boolean);
+  const awardsViewport=document.getElementById('awardsViewport');
+  const bottomBand=panel.querySelector('.awards-band-bottom');
+  for(const motion of opticsMotion){
+    for(let i=0;i<2;i++){
+      const copy=original.cloneNode(true);
+      copy.removeAttribute('id');
+      copy.setAttribute('aria-hidden','true');
+      copy.querySelectorAll('a').forEach(link=>link.setAttribute('tabindex','-1'));
+      motion.appendChild(copy);
+    }
+  }
+  function restartFlow(){
+    const layers=[track,...opticsMotion];
+    layers.forEach(layer=>layer.style.animation='none');
+    void track.offsetHeight;
+    layers.forEach(layer=>layer.style.removeProperty('animation'));
+  }
   function measure(){
     const height=original.getBoundingClientRect().height;
     // The artboard may be uniformly scaled on desktop; CSS pixels still
     // describe the scroll distance. Keep reading speed near 32 px/s.
-    track.style.setProperty('--awards-duration',Math.max(45,Math.round(height/32))+'s');
+    const duration=Math.max(45,Math.round(height/32))+'s';
+    track.style.setProperty('--awards-duration',duration);
+    for(const motion of opticsMotion)motion.style.setProperty('--awards-duration',duration);
+    if(awardsViewport&&bottomBand){
+      const offset=Math.max(0,awardsViewport.clientHeight-bottomBand.clientHeight);
+      const bottomOffset=bottomBand.querySelector('.awards-band-offset');
+      if(bottomOffset)bottomOffset.style.transform='translateY(-'+offset+'px)';
+    }
   }
   function open(){
     if(scene!=='home')return;
@@ -645,7 +672,7 @@ stageObserver.observe(artboard,{attributes:true,attributeFilter:['class']});
     artboard.classList.add('awards-open');
     panel.setAttribute('aria-hidden','false');
     entry.setAttribute('aria-expanded','true');
-    requestAnimationFrame(measure);
+    requestAnimationFrame(()=>{measure();restartFlow();});
     back.focus({preventScroll:true});
   }
   function close(){
