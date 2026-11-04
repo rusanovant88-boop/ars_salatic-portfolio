@@ -398,6 +398,15 @@ const projects={
     media:[
       {type:'video',vimeoId:'1240748705',label:'Litres — Discover New Releases First'}
     ]
+  },
+  dodo:{
+    title:'dodo pizza. 15 years of\\ndreaming out loud',
+    role:'role: senior art director',
+    paragraphs:[
+      "they say you should keep your wishes to yourself, or they won't come true. but dodo pizza has always done things differently. for the brand's 15th anniversary, we created the campaign \"15 years of dreaming out loud,\" encouraging people to stop keeping their dreams quiet and start saying them out loud.",
+      "we brought the same idea into a commercial for dodo's big prize giveaway. the brand makes a wish for viewers to see the ad and discover their chance to win an apartment, a car, a year's supply of pizza, and millions of other prizes. and the wish comes true the moment they're watching."
+    ],
+    media:[{type:'video',vimeoId:'1243201685',label:'Dodo Pizza — 15 Years of Dreaming Out Loud'}]
   }
 };
 let caseMedia=projects[activeProject].media;
@@ -444,7 +453,7 @@ function showCaseMedia(index){
   }
 }
 function hideCasePreviews(){
-  for(const preview of [document.getElementById('setkaHoverPreview'),document.getElementById('litresHoverPreview')]){
+  for(const preview of [document.getElementById('setkaHoverPreview'),document.getElementById('litresHoverPreview'),document.getElementById('dodoHoverPreview')]){
     preview.classList.remove('is-visible');
     preview.setAttribute('aria-hidden','true');
   }
@@ -455,7 +464,7 @@ function showWorksList(){
   worksWindow.hidden=false;
   setkaCase.hidden=true;
   scene='empty';
-  comingNext.textContent='Selected works. Setka and Litres are available.';
+  comingNext.textContent='Selected works. Setka, Litres and Dodo Pizza are available.';
   if(window.innerWidth<=900)window.scrollTo({top:0,behavior:'instant'});
 }
 function showProjectCase(key){
@@ -496,8 +505,11 @@ function bindCaseRow(rowId,previewId,projectKey){
 }
 bindCaseRow('openSetka','setkaHoverPreview','setka');
 bindCaseRow('openLitres','litresHoverPreview','litres');
+bindCaseRow('openDodo','dodoHoverPreview','dodo');
 // Locally prepared screenshot-based thumbnail is preferred; a Vimeo thumbnail
 // provides a temporary fallback until the WebP is committed to assets/.
+const dodoPreviewImage=document.querySelector('#dodoHoverPreview img');
+dodoPreviewImage.addEventListener('error',function(){if(!this.dataset.fallback){this.dataset.fallback='true';this.src='https://vumbnail.com/1243201685.jpg';}});
 const litresPreviewImage=document.querySelector('#litresHoverPreview img');
 litresPreviewImage.addEventListener('error',function(){
   if(!this.dataset.fallback){
@@ -509,11 +521,13 @@ document.getElementById('caseBack').addEventListener('click',showWorksList);
 document.getElementById('caseClose').addEventListener('click',showWorksList);
 document.getElementById('mobileStageLogo').addEventListener('click',resetScene);
 document.getElementById('worksClose').addEventListener('click',resetScene);
+const projectOrder=['setka','litres','dodo'];
 function stepCaseMedia(direction){
   if(caseMedia.length===1){
-    // With one film, arrows navigate between finished portfolio cases.
+    const index=projectOrder.indexOf(activeProject);
+    const next=projectOrder[(index+direction+projectOrder.length)%projectOrder.length];
     showWorksList();
-    showProjectCase(activeProject==='setka'?'litres':'setka');
+    showProjectCase(next);
     return;
   }
   showCaseMedia(casePage+direction);
