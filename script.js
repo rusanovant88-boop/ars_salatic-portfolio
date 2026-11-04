@@ -401,6 +401,21 @@ const projects={
         "vimeoId": "1243258410",
         "label": "Avionero — Seeing Is Believing"
       }
+    ]  },
+  akademichesky:{
+    "title": "akademichesky — our handiwork",
+    "role": "role: senior art director",
+    "paragraphs": [
+      "for the past 20 years, kortros has been building akademichesky in yekaterinburg. not just residential buildings, but an entire neighborhood with schools, kindergartens, parks, and even its own tram line.",
+      "we decided to bring this idea to life with a giant hand that shapes the neighborhood right before its residents’ eyes. it unveils a new school, lays tram tracks, installs a basketball hoop, and even helps two strangers meet.",
+      "we filmed on the real streets of akademichesky and brought the giant hand to life with cgi. a way to show just how much goes into turning a collection of buildings into a neighborhood people want to call home."
+    ],
+    "media": [
+      {
+        "type": "video",
+        "vimeoId": "1243393457",
+        "label": "Akademichesky — Our Handiwork"
+      }
     ]
   }
 };
@@ -459,7 +474,7 @@ function showWorksList(){
   worksWindow.hidden=false;
   setkaCase.hidden=true;
   scene='empty';
-  comingNext.textContent='Selected works. Nine projects are available.';
+  comingNext.textContent='Selected works. Ten projects are available.';
   if(window.innerWidth<=900)window.scrollTo({top:0,behavior:'instant'});
 }
 function showProjectCase(key){
@@ -509,6 +524,7 @@ bindCaseRow('openDixy','dixyHoverPreview','dixy');
 bindCaseRow('openTriazavirin','triazavirinHoverPreview','triazavirin');
 bindCaseRow('openKazakhstan','kazakhstanHoverPreview','kazakhstan');
 bindCaseRow('openAvionero','avioneroHoverPreview','avionero');
+bindCaseRow('openAkademichesky','akademicheskyHoverPreview','akademichesky');
 // Locally prepared screenshot-based thumbnail is preferred; a Vimeo thumbnail
 // provides a temporary fallback until the WebP is committed to assets/.
 const dodoPreviewImage=document.querySelector('#dodoHoverPreview img');
@@ -531,7 +547,7 @@ document.getElementById('caseBack').addEventListener('click',showWorksList);
 document.getElementById('caseClose').addEventListener('click',showWorksList);
 document.getElementById('mobileStageLogo').addEventListener('click',resetScene);
 document.getElementById('worksClose').addEventListener('click',resetScene);
-const projectOrder=['setka','litres','dodo','dodoMath','kion','dixy','triazavirin','kazakhstan','avionero'];
+const projectOrder=['setka','litres','dodo','dodoMath','kion','dixy','triazavirin','kazakhstan','avionero','akademichesky'];
 function stepCaseMedia(direction){
   if(caseMedia.length===1){
     const index=projectOrder.indexOf(activeProject);
