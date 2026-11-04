@@ -27,7 +27,7 @@ button:focus-visible { outline:2px dashed var(--blue);outline-offset:4px; }
 .username-photo {
   position:absolute;
   left:50%;
-  top:430px;
+  top:415px;
   width:360px;
   height:360px;
   max-width:none;
@@ -804,7 +804,7 @@ button.works-file:hover,button.works-file:focus-visible {background:var(--blue);
   .username-photo {
     position:fixed;
     left:50vw;
-    top:calc(50svh - 20px);
+    top:calc(50svh - 35px);
     width:min(78vw,360px);
     height:auto;
     aspect-ratio:1 / 1;
