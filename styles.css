@@ -667,3 +667,11 @@ button.works-file:hover,button.works-file:focus-visible {background:var(--blue);
   .work-case[data-project="kazakhstan"] .case-description,
   .work-case[data-project="avionero"] .case-description {top:auto}
 }
+
+/* Unified SALATIC cursor: small blue dot, no glow or trailing effect.
+   Applies to site content only; embedded Vimeo controls keep their own cursor. */
+@media (hover:hover) and (pointer:fine) {
+  html, body, body * {
+    cursor: url("assets/cursor-dot.svg") 8 8, auto !important;
+  }
+}
