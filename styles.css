@@ -44,7 +44,7 @@ button:focus-visible { outline:2px dashed var(--blue);outline-offset:4px; }
   right:-24px;
   top:50%;
   color:var(--blue);
-  font:400 17.85px/1 'Courier New',Courier,monospace;
+  font:400 18.7425px/1 'Courier New',Courier,monospace;
   pointer-events:none;
   transform:translate(4px,-50%);
   animation:bonyaArrowTap 2.1s ease-in-out infinite;
@@ -444,7 +444,7 @@ button.works-file:hover,button.works-file:focus-visible {background:var(--blue);
   .bio span {display:inline;white-space:normal}
   .bio span:not(:last-child)::after {content:" "}
   .bonya-trigger {font:inherit;font-weight:400;padding-left:0;padding-right:24px}
-  .bonya-trigger::before {left:auto;right:1px;font-size:15.75px}
+  .bonya-trigger::before {left:auto;right:1px;font-size:16.5375px}
   .bonya-overlay {
     position:fixed;
     left:50%;top:47%;
