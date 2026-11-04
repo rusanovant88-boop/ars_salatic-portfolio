@@ -38,20 +38,21 @@ button:focus-visible { outline:2px dashed var(--blue);outline-offset:4px; }
 }
 /* Small cyan pointer gently nudges Bonya's name. The entire name stays clickable. */
 .bonya-trigger::before {
-  content:'→';
+  content:'←';
   position:absolute;
-  left:-24px;
+  left:auto;
+  right:-24px;
   top:50%;
   color:var(--blue);
-  font:400 17px/1 'Courier New',Courier,monospace;
+  font:400 17.85px/1 'Courier New',Courier,monospace;
   pointer-events:none;
-  transform:translate(-4px,-50%);
+  transform:translate(4px,-50%);
   animation:bonyaArrowTap 2.1s ease-in-out infinite;
 }
 @keyframes bonyaArrowTap {
-  0%,12%,49%,100% {transform:translate(-4px,-50%);}
-  22%,34% {transform:translate(2px,-50%);}
-  28%,40% {transform:translate(-1px,-50%);}
+  0%,12%,49%,100% {transform:translate(4px,-50%);}
+  22%,34% {transform:translate(-2px,-50%);}
+  28%,40% {transform:translate(1px,-50%);}
 }
 @media (prefers-reduced-motion:reduce){
   .bonya-trigger::before {animation:none;transform:translate(0,-50%);}
@@ -442,8 +443,8 @@ button.works-file:hover,button.works-file:focus-visible {background:var(--blue);
   }
   .bio span {display:inline;white-space:normal}
   .bio span:not(:last-child)::after {content:" "}
-  .bonya-trigger {font:inherit;font-weight:400;padding-left:24px}
-  .bonya-trigger::before {left:1px;font-size:15px}
+  .bonya-trigger {font:inherit;font-weight:400;padding-left:0;padding-right:24px}
+  .bonya-trigger::before {left:auto;right:1px;font-size:15.75px}
   .bonya-overlay {
     position:fixed;
     left:50%;top:47%;
