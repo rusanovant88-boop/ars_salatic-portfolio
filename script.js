@@ -612,3 +612,59 @@ stageObserver.observe(artboard,{attributes:true,attributeFilter:['class']});
     if(event.target instanceof Element && event.target.closest('iframe'))hide();
   },{passive:true});
 })();
+
+
+/* awards / press: independent archive, never mixed with Works navigation */
+(function initAwardsPress(){
+  const entry=document.getElementById('awardsEntry');
+  const panel=document.getElementById('awardsStage');
+  const back=document.getElementById('awardsClose');
+  const logo=document.getElementById('awardsHome');
+  const track=document.getElementById('awardsTrack');
+  const original=document.getElementById('awardsSet');
+  if(!entry||!panel||!track||!original)return;
+
+  // One complete duplicate produces a truly seamless linear loop.
+  const duplicate=original.cloneNode(true);
+  duplicate.removeAttribute('id');
+  duplicate.setAttribute('aria-hidden','true');
+  duplicate.querySelectorAll('a').forEach(a=>a.setAttribute('tabindex','-1'));
+  track.appendChild(duplicate);
+  function measure(){
+    const height=original.getBoundingClientRect().height;
+    // The artboard may be uniformly scaled on desktop; CSS pixels still
+    // describe the scroll distance. Keep reading speed near 32 px/s.
+    track.style.setProperty('--awards-duration',Math.max(45,Math.round(height/32))+'s');
+  }
+  function open(){
+    if(scene!=='home')return;
+    stopWriting();
+    dogPinned=false;
+    showBonya(false);
+    artboard.classList.add('awards-open');
+    panel.setAttribute('aria-hidden','false');
+    entry.setAttribute('aria-expanded','true');
+    requestAnimationFrame(measure);
+    back.focus({preventScroll:true});
+  }
+  function close(){
+    if(!artboard.classList.contains('awards-open'))return;
+    artboard.classList.remove('awards-open');
+    panel.setAttribute('aria-hidden','true');
+    entry.setAttribute('aria-expanded','false');
+    entry.focus({preventScroll:true});
+  }
+  entry.setAttribute('aria-expanded','false');
+  entry.addEventListener('click',open);
+  back.addEventListener('click',close);
+  logo.addEventListener('click',close);
+  document.addEventListener('keydown',event=>{
+    if(event.key==='Escape'&&artboard.classList.contains('awards-open')){
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      close();
+    }
+  },true);
+  window.addEventListener('resize',measure,{passive:true});
+  measure();
+})();
