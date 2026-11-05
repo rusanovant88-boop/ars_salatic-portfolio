@@ -875,20 +875,3 @@ button.works-file:hover,button.works-file:focus-visible {background:var(--blue);
 @media (prefers-reduced-motion:reduce) {
   .work-case.case-raining .case-player-window {transition:none}
 }
-
-/* SALATIC / MANAGER: three controlled desktop layout templates.
-   All retain the existing visual language, captions, navigation and mobile flow. */
-@media (min-width:901px) {
-  .work-case[data-layout="split"] {
-    grid-template-columns:321px minmax(0,1fr);
-    gap:55px;
-  }
-  .work-case[data-layout="wide"] {
-    grid-template-columns:245px minmax(0,1fr);
-    gap:30px;
-  }
-  .work-case[data-layout="editorial"] {
-    grid-template-columns:415px minmax(0,1fr);
-    gap:36px;
-  }
-}
