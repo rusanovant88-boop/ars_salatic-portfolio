@@ -664,13 +664,16 @@ function bindCaseRow(rowId,previewId,projectKey){
     if(window.innerWidth>900){showProjectCase(projectKey);return;}
     if(scene!=='empty'||worksWindow.hidden)return;
     const wasOpen=mobilePreview.classList.contains('is-open');
-    hideCasePreviews();
-    if(!wasOpen){
-      mobilePreview.classList.add('is-open');
-      mobilePreview.setAttribute('aria-hidden','false');
-      mobilePreview.tabIndex=0;
-      row.setAttribute('aria-expanded','true');
+    if(wasOpen){
+      // A second tap on the same filename opens its case, just like the preview.
+      showProjectCase(projectKey);
+      return;
     }
+    hideCasePreviews();
+    mobilePreview.classList.add('is-open');
+    mobilePreview.setAttribute('aria-hidden','false');
+    mobilePreview.tabIndex=0;
+    row.setAttribute('aria-expanded','true');
   });
   mobilePreview.addEventListener('click',()=>showProjectCase(projectKey));
 }
