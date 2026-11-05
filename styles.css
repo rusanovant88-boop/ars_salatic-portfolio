@@ -902,41 +902,49 @@ button.works-file:hover,button.works-file:focus-visible {background:var(--blue);
 /* Mobile Finder: logo + Back share one airy header. The Back action
    belongs to the archive only, not to individual case pages. */
 .mobile-archive-header {display:none}
-.mobile-works-back {display:none}
+.mobile-works-back,.mobile-case-back {display:none}
 @media (max-width:900px) {
   .mobile-archive-header {
     display:flex;
     flex:0 0 auto;
     justify-content:space-between;
-    align-items:center;
+    align-items:flex-end;
     width:100%;
     margin:0 0 44px;
-    gap:14px;
+    gap:10px;
   }
   .mobile-archive-header .mobile-stage-logo {
     margin:0;
     flex:0 0 140px;
   }
-  .portfolio-stage:has(.works-window:not([hidden])) .mobile-works-back {
+  .portfolio-stage:has(.works-window:not([hidden])) .mobile-works-back,
+  .portfolio-stage:has(.work-case:not([hidden])) .mobile-case-back {
     display:inline-flex;
   }
-  .mobile-works-back {
+  .mobile-works-back,.mobile-case-back {
     align-items:center;
-    justify-content:center;
-    min-width:80px;
+    justify-content:flex-end;
+    align-self:flex-end;
+    flex:0 1 auto;
+    min-width:0;
     min-height:44px;
-    padding:10px 3px;
+    margin:0;
+    padding:10px 0 3px;
     border:0;
     background:transparent;
     color:var(--blue);
-    font:400 14px/20px 'Courier New',Courier,monospace;
+    font:700 14px/20px 'Courier New',Courier,monospace;
     white-space:nowrap;
     cursor:pointer;
+    text-align:right;
   }
-  .mobile-works-back:focus-visible {
+  .mobile-works-back:focus-visible,.mobile-case-back:focus-visible {
     outline:1px dashed var(--blue);
     outline-offset:3px;
   }
+  /* The desktop case owns its own back control; on mobile it lives
+     next to the logo at exactly the same level as Finder's back button. */
+  .portfolio-stage .case-description .case-back {display:none!important}
   /* The Finder frame intentionally runs past both sides of the viewport.
      Only the archive list goes full-bleed; case media frames stay inset. */
   .portfolio-stage .works-window {
