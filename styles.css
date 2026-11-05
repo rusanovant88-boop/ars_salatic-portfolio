@@ -875,3 +875,18 @@ button.works-file:hover,button.works-file:focus-visible {background:var(--blue);
 @media (prefers-reduced-motion:reduce) {
   .work-case.case-raining .case-player-window {transition:none}
 }
+
+/* Finder hover preview: move other filenames clear of the overlapping image.
+   Keep the selected row, role column, row geometry, and previews unchanged. */
+@media (min-width:901px) {
+  .works-file .works-filename {
+    transition:transform .28s cubic-bezier(.22,.72,.25,1);
+  }
+  .portfolio-stage:has(.works-hover-preview.is-visible)
+    .works-file:not(:hover):not(:focus) .works-filename {
+    transform:translateX(104px);
+  }
+}
+@media (prefers-reduced-motion:reduce) {
+  .works-file .works-filename {transition:none!important}
+}
