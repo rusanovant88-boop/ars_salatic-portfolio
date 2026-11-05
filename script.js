@@ -650,6 +650,11 @@ async function loadPortfolioData(){
     })[el.id]||el.dataset.projectKey,el]));
     const fileIcon='<svg viewBox="0 0 24 29" aria-hidden="true"><path d="M3 1H15L22 8V28H3Z M15 1V8H22" fill="none" stroke="currentColor" stroke-width="1.2"/><path d="m9 15 8 4-8 4z" fill="currentColor"/></svg>';
     const list=worksWindow.querySelector('.works-list');
+    const cmsAssetPath=value=>{
+      const path=String(value||'');
+      // GitHub Pages project sites live in /repo-name/, not at domain root.
+      return path.startsWith('/assets/')?path.slice(1):path;
+    };
     const nextProjects={};
     for(const p of entries){
       const key=p.id;
@@ -659,7 +664,7 @@ async function loadPortfolioData(){
         media:p.media.map(item=>({
           type:item.type==='kv'?'kv':'video',
           vimeoId:String(item.vimeoId||''),
-          image:String(item.image||''),
+          image:cmsAssetPath(item.image),
           label:String(item.label||p.title)
         }))
       };
@@ -690,7 +695,7 @@ async function loadPortfolioData(){
         preview.appendChild(img);portfolioStage.appendChild(preview);
       }
       preview.dataset.projectKey=key;
-      const src=String(p.preview||'');
+      const src=cmsAssetPath(p.preview);
       // Existing images keep their error fallback, new ones are controlled by CMS.
       if(src && preview.querySelector('img').getAttribute('src')!==src){
         const img=preview.querySelector('img'); img.removeAttribute('onerror');img.src=src;
