@@ -852,3 +852,11 @@ button.works-file:hover,button.works-file:focus-visible {background:var(--blue);
     aspect-ratio:1 / 1;
   }
 }
+
+/* Finder-to-case transition: the very same falling glyph animation as Home → Works.
+   Keep the archive outline/dots while its labels fall; reveal the case on completion. */
+.works-window.case-raining .works-bar-name,
+.works-window.case-raining .works-bar-version,
+.works-window.case-raining .works-columns,
+.works-window.case-raining .works-list,
+.works-window.case-raining .works-footer {visibility:hidden}
