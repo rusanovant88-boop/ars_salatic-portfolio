@@ -201,6 +201,17 @@ function createFinderLetters(){
   );
   return createLettersFromRoots(roots,list);
 }
+function createCaseLetters(){
+  // The iframe/imagery does not fall: only text that belongs to the case UI.
+  // Do not duplicate invisible content from projects further down the page.
+  const roots=setkaCase.querySelectorAll(
+    '.case-back, #caseTitle, #caseTag, #caseRole, #caseIntro, #caseConcept, #caseContribution, #casePagination'
+  );
+  return createLettersFromRoots([...roots].filter(root=>{
+    const box=root.getBoundingClientRect();
+    return box.bottom>0&&box.top<window.innerHeight&&box.right>0&&box.left<window.innerWidth;
+  }));
+}
 // Shared physical behavior: the Finder and the home screen use the same gravity,
 // sideways drift, rotations, stagger and duration.
 function animateFallingLetters(chars){
@@ -229,6 +240,7 @@ function resetScene(){
   if(stage)stage.classList.remove('kv-fallback-fullscreen');
   clearLetters();
   document.getElementById('worksWindow')?.classList.remove('case-raining');
+  document.getElementById('projectCase')?.classList.remove('case-raining');
   scene='home';
   stopWriting();
   artboard.classList.remove('stage-exiting','stage-exited');
@@ -262,10 +274,7 @@ function openWorks(){
   },lastEnd+35);
 }
 folder.addEventListener('click',openWorks);
-signatureHit.addEventListener('click',function(){
-  // Same action from Works list, every case, and during the transition.
-  if(scene!=='home')resetScene();
-});
+signatureHit.addEventListener('click',returnHomeWithLetters);
 document.addEventListener('keydown',function(event){
   if(event.key==='Escape'&&scene!=='home'&&!document.getElementById('caseStage')?.classList.contains('kv-fallback-fullscreen'))resetScene();
 });
@@ -487,12 +496,52 @@ function hideCasePreviews(){
 function showWorksList(){
   hideCasePreviews();
   worksWindow.classList.remove('case-raining');
+  setkaCase.classList.remove('case-raining');
   clearPlayer();
   worksWindow.hidden=false;
   setkaCase.hidden=true;
   scene='empty';
   comingNext.textContent='Selected works. Ten projects are available.';
   if(window.innerWidth<=900)window.scrollTo({top:0,behavior:'instant'});
+}
+// The same glyph collector and gravity used by Home → Works and Works → Case
+// also handle Case → Works, Case → Home, and Works → Home.
+function transitionOutOfPortfolio(destination){
+  if(scene!=='case'&&scene!=='empty')return;
+  const fromCase=scene==='case';
+  const finish=()=>destination==='home'?resetScene():showWorksList();
+  if(reducedMotion.matches){finish();return;}
+  hideCasePreviews();
+  const {overlay,chars}=fromCase?createCaseLetters():createFinderLetters();
+  if(!chars.length){overlay.remove();finish();return;}
+  rain=overlay;
+  scene='return-falling'; // Lock buttons during transition.
+  comingNext.textContent=destination==='home'?'Returning to home.':'Returning to selected works.';
+  if(fromCase){
+    setkaCase.classList.add('case-raining');
+    clearPlayer(); // Stop Vimeo immediately on navigation; keep case shell visible.
+  }else{
+    worksWindow.classList.add('case-raining');
+  }
+  const lastEnd=animateFallingLetters(chars);
+  endRainTimer=setTimeout(function(){
+    if(scene!=='return-falling')return;
+    clearLetters();
+    finish();
+  },lastEnd+35);
+}
+function backToWorksWithLetters(){
+  if(scene==='case')transitionOutOfPortfolio('works');
+}
+function returnHomeWithLetters(){
+  if(scene==='home'||scene==='return-falling')return;
+  if(scene==='case'||scene==='empty'){
+    transitionOutOfPortfolio('home');
+    return;
+  }
+  // An already-running transition can be cancelled without animating
+  // two competing sets of glyphs.
+  resetScene();
 }
 function displayProjectCase(key){
   hideCasePreviews();
@@ -586,10 +635,10 @@ litresPreviewImage.addEventListener('error',function(){
     this.src='https://vumbnail.com/1240748705.jpg';
   }
 });
-document.getElementById('caseBack').addEventListener('click',showWorksList);
-document.getElementById('caseClose').addEventListener('click',showWorksList);
-document.getElementById('mobileStageLogo').addEventListener('click',resetScene);
-document.getElementById('worksClose').addEventListener('click',resetScene);
+document.getElementById('caseBack').addEventListener('click',backToWorksWithLetters);
+document.getElementById('caseClose').addEventListener('click',backToWorksWithLetters);
+document.getElementById('mobileStageLogo').addEventListener('click',returnHomeWithLetters);
+document.getElementById('worksClose').addEventListener('click',returnHomeWithLetters);
 const projectOrder=['setka','litres','dodo','dodoMath','kion','dixy','triazavirin','kazakhstan','avionero','akademichesky'];
 function stepCaseMedia(direction){
   if(caseMedia.length===1){
