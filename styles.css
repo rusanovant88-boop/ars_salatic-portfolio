@@ -860,3 +860,18 @@ button.works-file:hover,button.works-file:focus-visible {background:var(--blue);
 .works-window.case-raining .works-columns,
 .works-window.case-raining .works-list,
 .works-window.case-raining .works-footer {visibility:hidden}
+
+/* Case → Works / Home: collect visible case letters before hiding their source.
+   Media fades away immediately, while glyphs fall under the shared physics. */
+.work-case.case-raining {pointer-events:none}
+.work-case.case-raining .case-description,
+.work-case.case-raining .case-navigation,
+.work-case.case-raining .case-player-bar {visibility:hidden}
+.work-case.case-raining .case-player-window {
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .25s ease-out;
+}
+@media (prefers-reduced-motion:reduce) {
+  .work-case.case-raining .case-player-window {transition:none}
+}
