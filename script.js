@@ -442,6 +442,15 @@ const projects={
         "label": "Akademichesky — Our Handiwork"
       }
     ]
+  },
+  mikenco:{
+    title:'mikenco. forever love',
+    role:'role: senior art director',
+    paragraphs:[
+      "we shot a fashion film for vietnamese brand mikenco in kazakhstan, drawing inspiration from the fashion campaigns of the '80s and '90s, with their distinctive atmosphere, colors, and styling.",
+      "the funny thing is, a lot of people thought the falling leaves were cgi. but there were no visual effects involved. just a guy standing above the set, shaking a branch to make the leaves fall perfectly into frame."
+    ],
+    media:[{type:'video',vimeoId:'1243586795',label:'MIKENCO — Forever Love'}]
   }
 };
 let caseMedia=projects[activeProject].media;
@@ -501,7 +510,7 @@ function showWorksList(){
   worksWindow.hidden=false;
   setkaCase.hidden=true;
   scene='empty';
-  comingNext.textContent='Selected works. Ten projects are available.';
+  comingNext.textContent='Selected works. Eleven projects are available.';
   if(window.innerWidth<=900)window.scrollTo({top:0,behavior:'instant'});
 }
 // The same glyph collector and gravity used by Home → Works and Works → Case
@@ -617,6 +626,7 @@ bindCaseRow('openTriazavirin','triazavirinHoverPreview','triazavirin');
 bindCaseRow('openKazakhstan','kazakhstanHoverPreview','kazakhstan');
 bindCaseRow('openAvionero','avioneroHoverPreview','avionero');
 bindCaseRow('openAkademichesky','akademicheskyHoverPreview','akademichesky');
+bindCaseRow('openMikenco','mikencoHoverPreview','mikenco');
 // Locally prepared screenshot-based thumbnail is preferred; a Vimeo thumbnail
 // provides a temporary fallback until the WebP is committed to assets/.
 const dodoPreviewImage=document.querySelector('#dodoHoverPreview img');
@@ -639,7 +649,7 @@ document.getElementById('caseBack').addEventListener('click',backToWorksWithLett
 document.getElementById('caseClose').addEventListener('click',backToWorksWithLetters);
 document.getElementById('mobileStageLogo').addEventListener('click',returnHomeWithLetters);
 document.getElementById('worksClose').addEventListener('click',returnHomeWithLetters);
-const projectOrder=['setka','litres','dodo','dodoMath','kion','dixy','triazavirin','kazakhstan','avionero','akademichesky'];
+const projectOrder=['setka','litres','dodo','dodoMath','kion','dixy','triazavirin','kazakhstan','avionero','akademichesky','mikenco'];
 function stepCaseMedia(direction){
   if(caseMedia.length===1){
     const index=projectOrder.indexOf(activeProject);
