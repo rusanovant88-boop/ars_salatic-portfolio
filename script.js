@@ -678,7 +678,10 @@ async function loadPortfolioData(){
       }
       row.dataset.projectKey=key;
       row.setAttribute('aria-label','Open '+String(p.title).replace(/\s+/g,' '));
-      row.querySelector('.works-filename').lastChild.textContent=String(p.filename||key+'.mov');
+      const filenameNode=row.querySelector('.works-filename');
+      const oldText=[...filenameNode.childNodes].find(node=>node.nodeType===Node.TEXT_NODE);
+      if(oldText)oldText.nodeValue=String(p.filename||key+'.mov');
+      else filenameNode.appendChild(document.createTextNode(String(p.filename||key+'.mov')));
       row.children[1].textContent=String(p.roleShort||'sr. art director');
       if(!preview){
         preview=document.createElement('div');preview.className='works-hover-preview';
