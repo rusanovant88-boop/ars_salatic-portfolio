@@ -325,7 +325,7 @@ caseStage.addEventListener('click',function(event){
 
 let casePage=0;
 let activeProject='setka';
-let projects={
+const projects={
   setka:{
     title:'setka. career jungle',
     role:'role: senior art director',
@@ -557,7 +557,6 @@ function displayProjectCase(key){
   caseContribution.textContent=project.paragraphs[2]||'';
   caseContribution.hidden=!project.paragraphs[2];
   setkaCase.dataset.project=key;
-  setkaCase.dataset.layout=['split','wide','editorial'].includes(project.layout)?project.layout:'split';
   setkaCase.setAttribute('aria-label',project.title.replace('\n',' ')+' case');
   worksWindow.hidden=true;
   setkaCase.hidden=false;
@@ -618,122 +617,6 @@ bindCaseRow('openTriazavirin','triazavirinHoverPreview','triazavirin');
 bindCaseRow('openKazakhstan','kazakhstanHoverPreview','kazakhstan');
 bindCaseRow('openAvionero','avioneroHoverPreview','avionero');
 bindCaseRow('openAkademichesky','akademicheskyHoverPreview','akademichesky');
-// SALATIC / MANAGER: hydrate the existing Finder from Pages CMS data.
-// The built-in legacy data remains a safe fallback if GitHub Pages cannot fetch JSON.
-async function loadPortfolioData(){
-  try{
-    const response=await fetch('data/portfolio.json',{cache:'no-cache'});
-    if(!response.ok)throw Error('portfolio.json HTTP '+response.status);
-    const data=await response.json();
-    if(!Array.isArray(data.projects)||!data.projects.length)throw Error('No projects');
-    const seen=new Set();
-    const entries=data.projects.filter(p=>{
-      if(!p||typeof p.id!=='string'||!/^[a-zA-Z][a-zA-Z0-9-]*$/.test(p.id)||
-        seen.has(p.id)||p.published===false||!p.title||!Array.isArray(p.media)||!p.media.length)return false;
-      seen.add(p.id);
-      return true;
-    });
-    if(!entries.length)throw Error('No valid published projects');
-    // The order of items in the CMS list is the order on the site.
-    // No stale numeric priority overrides drag-and-drop sorting.
-    const oldRows=new Map([...document.querySelectorAll('.works-file')].map(el=>[el.dataset.projectKey||({
-      openSetka:'setka',openLitres:'litres',openDodo:'dodo',openDodoMath:'dodoMath',
-      openKion:'kion',openDixy:'dixy',openTriazavirin:'triazavirin',
-      openKazakhstan:'kazakhstan',openAvionero:'avionero',
-      openAkademichesky:'akademichesky'
-    })[el.id],el]));
-    const oldPreviews=new Map([...document.querySelectorAll('.works-hover-preview')].map(el=>[({
-      setkaHoverPreview:'setka',litresHoverPreview:'litres',dodoHoverPreview:'dodo',
-      dodoMathHoverPreview:'dodoMath',kionHoverPreview:'kion',dixyHoverPreview:'dixy',
-      triazavirinHoverPreview:'triazavirin',kazakhstanHoverPreview:'kazakhstan',
-      avioneroHoverPreview:'avionero',akademicheskyHoverPreview:'akademichesky'
-    })[el.id]||el.dataset.projectKey,el]));
-    const fileIcon='<svg viewBox="0 0 24 29" aria-hidden="true"><path d="M3 1H15L22 8V28H3Z M15 1V8H22" fill="none" stroke="currentColor" stroke-width="1.2"/><path d="m9 15 8 4-8 4z" fill="currentColor"/></svg>';
-    const list=worksWindow.querySelector('.works-list');
-    const cmsAssetPath=value=>{
-      const path=String(value||'');
-      // GitHub Pages project sites live in /repo-name/, not at domain root.
-      return path.startsWith('/assets/')?path.slice(1):path;
-    };
-    const nextProjects={};
-    for(const p of entries){
-      const key=p.id;
-      nextProjects[key]={
-        title:String(p.title),role:String(p.role||''),layout:p.layout||'split',
-        paragraphs:Array.isArray(p.paragraphs)?p.paragraphs.map(String):[],
-        media:p.media.map(item=>({
-          type:item.type==='kv'?'kv':'video',
-          vimeoId:String(item.vimeoId||''),
-          image:cmsAssetPath(item.image),
-          label:String(item.label||p.title)
-        }))
-      };
-      let row=oldRows.get(key);
-      let preview=oldPreviews.get(key);
-      if(!row){
-        row=document.createElement('button');
-        row.type='button';row.className='works-file';
-        row.dataset.projectKey=key;
-        const name=document.createElement('span');name.className='works-filename';
-        name.innerHTML=fileIcon;
-        const role=document.createElement('span');
-        const arrow=document.createElement('span');arrow.className='works-arrow';
-        arrow.textContent='↗';arrow.setAttribute('aria-hidden','true');
-        row.append(name,role,arrow);
-      }
-      row.dataset.projectKey=key;
-      row.setAttribute('aria-label','Open '+String(p.title).replace(/\s+/g,' '));
-      const filenameNode=row.querySelector('.works-filename');
-      const oldText=[...filenameNode.childNodes].find(node=>node.nodeType===Node.TEXT_NODE);
-      if(oldText)oldText.nodeValue=String(p.filename||key+'.mov');
-      else filenameNode.appendChild(document.createTextNode(String(p.filename||key+'.mov')));
-      row.children[1].textContent=String(p.roleShort||'sr. art director');
-      if(!preview){
-        preview=document.createElement('div');preview.className='works-hover-preview';
-        preview.setAttribute('aria-hidden','true');
-        const img=document.createElement('img');img.alt='';img.loading='lazy';img.draggable=false;
-        preview.appendChild(img);portfolioStage.appendChild(preview);
-      }
-      preview.dataset.projectKey=key;
-      const src=cmsAssetPath(p.preview);
-      // Existing images keep their error fallback, new ones are controlled by CMS.
-      if(src && preview.querySelector('img').getAttribute('src')!==src){
-        const img=preview.querySelector('img'); img.removeAttribute('onerror');img.src=src;
-      }
-      row.addEventListener('pointerenter',event=>{
-        if(event.pointerType==='touch'||scene!=='empty'||worksWindow.hidden)return;
-        hideCasePreviews();preview.classList.add('is-visible');preview.setAttribute('aria-hidden','false');
-      });
-      row.addEventListener('pointerleave',()=>{
-        preview.classList.remove('is-visible');preview.setAttribute('aria-hidden','true');
-      });
-      row.addEventListener('focus',()=>{
-        if(scene!=='empty'||worksWindow.hidden)return;
-        hideCasePreviews();preview.classList.add('is-visible');preview.setAttribute('aria-hidden','false');
-      });
-      row.addEventListener('blur',()=>{
-        preview.classList.remove('is-visible');preview.setAttribute('aria-hidden','true');
-      });
-      if(!oldRows.has(key))row.addEventListener('click',()=>showProjectCase(key));
-      list.appendChild(row); // Existing row moved; new row appended.
-    }
-    for(const [key,row] of oldRows){
-      if(!nextProjects[key])row.remove();
-    }
-    for(const [key,preview] of oldPreviews){
-      if(!nextProjects[key])preview.remove();
-    }
-    projects=nextProjects;
-    projectOrder=entries.map(p=>p.id);
-    document.querySelector('.works-footer span:first-child').textContent=projectOrder.length+' files';
-    caseMedia=projects[activeProject]?.media||projects[projectOrder[0]].media;
-    comingNext.textContent=scene==='empty'?'Selected works. '+projectOrder.length+' projects are available.':comingNext.textContent;
-  }catch(error){
-    console.warn('SALATIC CMS data unavailable; preserved the original portfolio:',error);
-  }
-}
-loadPortfolioData();
-
 // Locally prepared screenshot-based thumbnail is preferred; a Vimeo thumbnail
 // provides a temporary fallback until the WebP is committed to assets/.
 const dodoPreviewImage=document.querySelector('#dodoHoverPreview img');
@@ -756,7 +639,7 @@ document.getElementById('caseBack').addEventListener('click',backToWorksWithLett
 document.getElementById('caseClose').addEventListener('click',backToWorksWithLetters);
 document.getElementById('mobileStageLogo').addEventListener('click',returnHomeWithLetters);
 document.getElementById('worksClose').addEventListener('click',returnHomeWithLetters);
-let projectOrder=['setka','litres','dodo','dodoMath','kion','dixy','triazavirin','kazakhstan','avionero','akademichesky'];
+const projectOrder=['setka','litres','dodo','dodoMath','kion','dixy','triazavirin','kazakhstan','avionero','akademichesky'];
 function stepCaseMedia(direction){
   if(caseMedia.length===1){
     const index=projectOrder.indexOf(activeProject);
