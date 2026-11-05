@@ -517,6 +517,14 @@ function hideCasePreviews(){
     preview.classList.remove('is-visible');
     preview.setAttribute('aria-hidden','true');
   }
+  // Mobile previews live directly below their file rows and reflow the list.
+  for(const preview of document.querySelectorAll('.mobile-case-preview.is-open')){
+    preview.classList.remove('is-open');
+    preview.setAttribute('aria-hidden','true');
+    preview.tabIndex=-1;
+    const row=preview.previousElementSibling;
+    if(row&&row.classList.contains('works-file'))row.setAttribute('aria-expanded','false');
+  }
 }
 function showWorksList(){
   hideCasePreviews();
@@ -620,7 +628,29 @@ function showProjectCase(key,animate=true){
 function bindCaseRow(rowId,previewId,projectKey){
   const row=document.getElementById(rowId);
   const preview=document.getElementById(previewId);
+  // Reuse the exact same preview image as desktop, including its fallback.
+  // A sibling button (not a button nested in another button) opens the case.
+  const mobilePreview=document.createElement('button');
+  mobilePreview.type='button';
+  mobilePreview.className='mobile-case-preview';
+  mobilePreview.id='mobile-preview-'+projectKey;
+  mobilePreview.tabIndex=-1;
+  mobilePreview.setAttribute('aria-hidden','true');
+  mobilePreview.setAttribute('aria-label','Open '+projects[projectKey].title.replace(/\s+/g,' ')+' case');
+  const image=preview.querySelector('img').cloneNode(true);
+  image.alt='';
+  image.loading='lazy';
+  image.draggable=false;
+  const openLabel=document.createElement('span');
+  openLabel.className='mobile-case-open';
+  openLabel.textContent='open case ↗';
+  mobilePreview.append(image,openLabel);
+  row.insertAdjacentElement('afterend',mobilePreview);
+  row.setAttribute('aria-controls',mobilePreview.id);
+  row.setAttribute('aria-expanded','false');
+
   function toggle(show){
+    if(window.innerWidth<=900)return; // Mobile taps own the preview.
     const visible=show&&scene==='empty'&&!worksWindow.hidden;
     if(visible)hideCasePreviews();
     preview.classList.toggle('is-visible',visible);
@@ -630,7 +660,19 @@ function bindCaseRow(rowId,previewId,projectKey){
   row.addEventListener('pointerleave',()=>toggle(false));
   row.addEventListener('focus',()=>toggle(true));
   row.addEventListener('blur',()=>toggle(false));
-  row.addEventListener('click',()=>showProjectCase(projectKey));
+  row.addEventListener('click',()=>{
+    if(window.innerWidth>900){showProjectCase(projectKey);return;}
+    if(scene!=='empty'||worksWindow.hidden)return;
+    const wasOpen=mobilePreview.classList.contains('is-open');
+    hideCasePreviews();
+    if(!wasOpen){
+      mobilePreview.classList.add('is-open');
+      mobilePreview.setAttribute('aria-hidden','false');
+      mobilePreview.tabIndex=0;
+      row.setAttribute('aria-expanded','true');
+    }
+  });
+  mobilePreview.addEventListener('click',()=>showProjectCase(projectKey));
 }
 bindCaseRow('openSetka','setkaHoverPreview','setka');
 bindCaseRow('openLitres','litresHoverPreview','litres');
