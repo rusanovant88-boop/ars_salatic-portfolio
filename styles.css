@@ -948,3 +948,74 @@ button.works-file:hover,button.works-file:focus-visible {background:var(--blue);
     border-radius:0;
   }
 }
+
+/* Mobile archive: remove only the macOS window outlines. Keep the familiar
+   labels, colored dots, controls and project content. Case media goes full-bleed. */
+.mobile-case-preview {display:none}
+@media (max-width:900px) {
+  .portfolio-stage .works-window {
+    border:0;
+    border-radius:0;
+    box-shadow:none;
+    overflow:visible;
+    min-height:0;
+  }
+  .portfolio-stage .works-list {
+    flex:0 0 auto;
+    min-height:0;
+    overflow:visible;
+  }
+  .portfolio-stage .case-player-window {
+    border:0;
+    border-radius:0;
+    box-shadow:none;
+    width:calc(100% + 36px);
+    max-width:none;
+    margin-left:-18px;
+    margin-right:-18px;
+  }
+  .portfolio-stage .case-player-bar {padding-left:18px;padding-right:18px}
+  .mobile-case-preview {
+    display:block;
+    position:relative;
+    width:100%;
+    box-sizing:border-box;
+    max-height:0;
+    opacity:0;
+    visibility:hidden;
+    overflow:hidden;
+    padding:0 16px;
+    margin:0;
+    border:0;
+    background:#000;
+    color:var(--blue);
+    text-align:left;
+    cursor:pointer;
+    transition:max-height .38s cubic-bezier(.22,.7,.25,1), opacity .24s ease,
+      padding .38s cubic-bezier(.22,.7,.25,1),visibility .38s;
+  }
+  .mobile-case-preview.is-open {
+    max-height:520px;
+    opacity:1;
+    visibility:visible;
+    padding:8px 16px 22px;
+  }
+  .mobile-case-preview img {
+    display:block;
+    width:100%;
+    height:auto;
+    aspect-ratio:16/9;
+    object-fit:cover;
+    border-radius:5px;
+  }
+  .mobile-case-open {
+    display:block;
+    padding:14px 0 0;
+    font:700 13px/18px 'Courier New',Courier,monospace;
+  }
+  .mobile-case-preview:focus-visible {outline:1px dashed var(--blue);outline-offset:-4px}
+  .works-file[aria-expanded="true"] {color:var(--blue);background:transparent}
+}
+@media (max-width:900px) and (prefers-reduced-motion:reduce) {
+  .mobile-case-preview {transition:none!important}
+}
