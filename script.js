@@ -710,6 +710,7 @@ document.getElementById('caseBack').addEventListener('click',backToWorksWithLett
 document.getElementById('caseClose').addEventListener('click',backToWorksWithLetters);
 document.getElementById('mobileStageLogo').addEventListener('click',function(){activateSalaticLogo(this);});
 document.getElementById('mobileWorksBack').addEventListener('click',returnHomeWithLetters);
+document.getElementById('mobileCaseBack').addEventListener('click',backToWorksWithLetters);
 document.getElementById('worksClose').addEventListener('click',returnHomeWithLetters);
 const projectOrder=['setka','litres','dodo','dodoMath','kion','dixy','triazavirin','kazakhstan','avionero','akademichesky','mikenco'];
 function stepCaseMedia(direction){
