@@ -41,6 +41,37 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'){dogPinned=false;sho
 
 let lastPointer=null;
 let animationQueued=false;
+const username=document.querySelector('.username');
+const usernamePhoto=document.querySelector('.username-photo');
+let lookingAtPortrait=false;
+function pointEyesAtPortrait(){
+  if(!lookingAtPortrait)return;
+  const photo=usernamePhoto.getBoundingClientRect();
+  aimEyes(photo.left+photo.width/2,photo.top+photo.height/2);
+}
+function setPortraitGaze(show){
+  if(lookingAtPortrait===show)return;
+  lookingAtPortrait=show;
+  eyes.classList.toggle('eyes-portrait-gaze',show);
+  if(show){
+    pointEyesAtPortrait();
+  }else if(lastPointer){
+    aimEyes(...lastPointer);
+  }else{
+    pupils.forEach(p=>p.removeAttribute('transform'));
+  }
+}
+username.addEventListener('pointerenter',event=>{
+  if(event.pointerType!=='touch')setPortraitGaze(true);
+});
+username.addEventListener('pointerleave',event=>{
+  if(event.pointerType!=='touch'&&!username.matches(':focus-visible'))setPortraitGaze(false);
+});
+username.addEventListener('focus',()=>{
+  if(username.matches(':focus-visible'))setPortraitGaze(true);
+});
+username.addEventListener('blur',()=>setPortraitGaze(username.matches(':hover')));
+window.addEventListener('resize',pointEyesAtPortrait,{passive:true});
 function aimEyes(clientX,clientY){
   const rect=eyes.getBoundingClientRect();
   const cx=rect.left+rect.width/2;
@@ -54,17 +85,20 @@ function aimEyes(clientX,clientY){
 document.addEventListener('pointermove',e=>{
   if(e.pointerType==='touch')return;
   lastPointer=[e.clientX,e.clientY];
-  if(animationQueued)return;
+  if(lookingAtPortrait||animationQueued)return;
   animationQueued=true;
-  requestAnimationFrame(()=>{animationQueued=false;if(lastPointer)aimEyes(...lastPointer);});
+  requestAnimationFrame(()=>{
+    animationQueued=false;
+    if(lastPointer&&!lookingAtPortrait)aimEyes(...lastPointer);
+  });
 },{passive:true});
 
-// Trigger the shy glance on entry, then resume regular cursor-follow on exit.
+// Trigger the shy glance unless the portrait currently owns the eyes.
 eyes.addEventListener('pointerenter',event=>{
-  if(event.pointerType!=='touch')aimEyes(event.clientX,event.clientY);
+  if(event.pointerType!=='touch'&&!lookingAtPortrait)aimEyes(event.clientX,event.clientY);
 });
 eyes.addEventListener('pointerleave',event=>{
-  if(event.pointerType!=='touch')aimEyes(event.clientX,event.clientY);
+  if(event.pointerType!=='touch'&&!lookingAtPortrait)aimEyes(event.clientX,event.clientY);
 });
 
 
