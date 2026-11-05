@@ -10,7 +10,7 @@
       "title": "setka. career jungle",
       "role": "role: senior art director",
       "layout": "split",
-      "preview": "assets/setka-hover.webp",
+      "preview": "/assets/setka-hover.webp",
       "paragraphs": [
         "it's easy to get lost or go unnoticed in the career jungle. for setka, a professional networking platform by hh.ru, we created a campaign about making connections and finding your way forward. the challenge was to make the brand more relevant to IT, digital and creative professionals on a limited budget.",
         "the visual concept transforms everyday workplaces into a jungle. coffee waterfalls, walls of keyboards, an HR leopard and offices overgrown with vegetation. through this world, we explored three things setka helps people do: connect, share their experience and discover something new."
@@ -33,17 +33,17 @@
         },
         {
           "type": "kv",
-          "image": "assets/setka-kv-01.webp",
+          "image": "/assets/setka-kv-01.webp",
           "label": "Setka — KV 01"
         },
         {
           "type": "kv",
-          "image": "assets/setka-kv-02.webp",
+          "image": "/assets/setka-kv-02.webp",
           "label": "Setka — KV 02"
         },
         {
           "type": "kv",
-          "image": "assets/setka-kv-03.webp",
+          "image": "/assets/setka-kv-03.webp",
           "label": "Setka — KV 03"
         }
       ]
@@ -57,7 +57,7 @@
       "title": "litres.\ndiscover new releases first",
       "role": "role: senior art director",
       "layout": "split",
-      "preview": "assets/litres-hover.webp",
+      "preview": "/assets/litres-hover.webp",
       "paragraphs": [
         "litres has over a million books in its catalog, but instead of focusing on its size, we wanted to highlight a different advantage: new releases often arrive on litres before anywhere else.",
         "this led to the idea of turning readers into literary explorers, with every new book becoming uncharted territory. in the campaign, victoria isakova played three different explorers, each setting off to discover new stories.",
@@ -80,7 +80,7 @@
       "title": "dodo pizza. 15 years of\ndreaming out loud",
       "role": "role: senior art director",
       "layout": "split",
-      "preview": "assets/dodo-hover.webp",
+      "preview": "/assets/dodo-hover.webp",
       "paragraphs": [
         "they say you should keep your wishes to yourself, or they won't come true. but dodo pizza has always done things differently. for the brand's 15th anniversary, we created the campaign \"15 years of dreaming out loud,\" encouraging people to stop keeping their dreams quiet and start saying them out loud.",
         "we brought the same idea into a commercial for dodo's big prize giveaway. the brand makes a wish for viewers to see the ad and discover their chance to win an apartment, a car, a year's supply of pizza, and millions of other prizes. and the wish comes true the moment they're watching."
@@ -102,7 +102,7 @@
       "title": "dodo pizza. simple math",
       "role": "role: senior art director",
       "layout": "split",
-      "preview": "assets/dodo-simple-math-hover.webp",
+      "preview": "/assets/dodo-simple-math-hover.webp",
       "paragraphs": [
         "when the school year begins, it's not just kids who go back to school. parents find themselves struggling with tricky homework problems all over again. we built dodo pizza's commercial around this contrast: school math can be complicated, but saving money should be simple.",
         "in the commercial, a son brings his parents a geometry textbook, leaving them completely puzzled. but when three pizzas arrive, everything starts to make sense. mathematical formulas come to life on screen, turning an ordinary family dinner into a lesson in simple math: three pizzas for 900 rubles."
@@ -124,7 +124,7 @@
       "title": "kion top",
       "role": "role: senior art director",
       "layout": "split",
-      "preview": "assets/kion-hover.webp",
+      "preview": "/assets/kion-hover.webp",
       "paragraphs": [
         "with more information and content around us than ever before, there's simply not enough time to take it all in. we decided to take this idea to the extreme: what if a person had three heads?",
         "in the commercial for kion, we brought this idea to life, turning three heads into a visual metaphor. because sometimes, to watch more, you need to push the boundaries of perception."
@@ -146,7 +146,7 @@
       "title": "dixy. cracked",
       "role": "role: senior art director",
       "layout": "split",
-      "preview": "assets/dixy-hover.webp",
+      "preview": "/assets/dixy-hover.webp",
       "paragraphs": [
         "we created an anime-style animated commercial for dixy's \"cracked\" collectible toy promotion. with just three weeks to complete the project, we quickly assembled a team of artists and animators from around the world, including kazakhstan, dubai, bali, khanty-mansiysk, and argentina.",
         "working across different time zones, we ran production in parallel to meet the campaign's launch deadline."
@@ -168,7 +168,7 @@
       "title": "triazavirin. what is care?",
       "role": "role: senior art director",
       "layout": "split",
-      "preview": "assets/triazavirin-hover.webp",
+      "preview": "/assets/triazavirin-hover.webp",
       "paragraphs": [
         "when triazavirin became available over the counter, the brand needed to reach a wider audience for the first time. instead of relying on typical pharmaceutical advertising clichés, we decided to tell a simple, human story about caring for one another.",
         "the result was \"care is the best medicine,\" a commercial that follows a day in the life of an ordinary family through the eyes of the one who needs love and support the most. at its heart is a simple idea: caring for our loved ones starts with the little things we do."
@@ -190,7 +190,7 @@
       "title": "kazakhstan chocolate",
       "role": "role: senior art director",
       "layout": "split",
-      "preview": "assets/kazakhstan-hover.webp",
+      "preview": "/assets/kazakhstan-hover.webp",
       "paragraphs": [
         "kazakhstan chocolate has long been one of the country's most recognizable symbols. its iconic blue-and-gold wrapper and distinctive taste are known far beyond kazakhstan. people bring it back from their travels and give it to friends and loved ones as a little piece of their homeland.",
         "the name \"kazakhstan\" can be interpreted as \"the land of free people.\" this inspired the idea behind our unofficial commercial: kazakhstan chocolate is the taste of a free land. the taste of freedom."
@@ -212,7 +212,7 @@
       "title": "avionero. seeing is believing",
       "role": "role: senior art director",
       "layout": "split",
-      "preview": "assets/avionero-hover.webp",
+      "preview": "/assets/avionero-hover.webp",
       "paragraphs": [
         "for avionero, we created a minimalist commercial where sound takes center stage. instead of showing typical travel footage, we let the audience hear people witnessing a whale emerging from the water. the sounds of nature, the whale itself, and the excited reactions of onlookers create a sense of being there.",
         "we built the commercial around asmr and the viewer's imagination, leaving the most spectacular moment unseen. because some experiences are better witnessed with your own eyes. the idea comes together in the final tagline: \"it's better to see once. travel with avionero.\""
@@ -234,7 +234,7 @@
       "title": "akademichesky — our handiwork",
       "role": "role: senior art director",
       "layout": "split",
-      "preview": "assets/akademichesky-hover.webp",
+      "preview": "/assets/akademichesky-hover.webp",
       "paragraphs": [
         "for the past 20 years, kortros has been building akademichesky in yekaterinburg. not just residential buildings, but an entire neighborhood with schools, kindergartens, parks, and even its own tram line.",
         "we decided to bring this idea to life with a giant hand that shapes the neighborhood right before its residents’ eyes. it unveils a new school, lays tram tracks, installs a basketball hoop, and even helps two strangers meet.",
