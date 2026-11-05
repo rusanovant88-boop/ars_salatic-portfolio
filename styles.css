@@ -514,7 +514,7 @@ button.works-file:hover,button.works-file:focus-visible {background:var(--blue);
   .bio {
     position:relative;left:auto;top:auto;
     width:100%;max-width:720px;
-    margin:8px 0 0;
+    margin:36px 0 0;
     font:13.5px/20px 'Courier New',Courier,monospace;
     font-weight:400;
     letter-spacing:0;
@@ -558,7 +558,7 @@ button.works-file:hover,button.works-file:focus-visible {background:var(--blue);
     display:block;
     width:140px;height:103px;
     min-height:103px;
-    margin:0 0 16px;
+    margin:0 0 44px;
     padding:0;
     border:0;
     background:transparent;
@@ -889,4 +889,12 @@ button.works-file:hover,button.works-file:focus-visible {background:var(--blue);
 }
 @media (prefers-reduced-motion:reduce) {
   .works-file .works-filename {transition:none!important}
+}
+
+/* Touch screens: replay the original logo bounce on each tap, not just :hover. */
+@media (max-width:900px) and (prefers-reduced-motion:no-preference) {
+  .signature-hit.mobile-logo-tapped .signature,
+  .mobile-stage-logo.mobile-logo-tapped img {
+    animation:salaticLogoBounce .64s both;
+  }
 }
