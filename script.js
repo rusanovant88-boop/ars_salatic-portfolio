@@ -274,7 +274,23 @@ function openWorks(){
   },lastEnd+35);
 }
 folder.addEventListener('click',openWorks);
-signatureHit.addEventListener('click',returnHomeWithLetters);
+// Mobile has no hover. Play the existing bounce fully before navigating home.
+// Desktop keeps its original immediate action and hover animation.
+function activateSalaticLogo(button){
+  if(window.innerWidth>900||reducedMotion.matches){
+    returnHomeWithLetters();
+    return;
+  }
+  if(button.classList.contains('mobile-logo-tapped'))return;
+  const previousScene=scene;
+  button.classList.add('mobile-logo-tapped');
+  window.setTimeout(function(){
+    button.classList.remove('mobile-logo-tapped');
+    // On the intro the logo only bounces. In Works/Case the usual letters fall next.
+    if(previousScene!=='home'&&scene===previousScene)returnHomeWithLetters();
+  },640);
+}
+signatureHit.addEventListener('click',function(){activateSalaticLogo(signatureHit);});
 document.addEventListener('keydown',function(event){
   if(event.key==='Escape'&&scene!=='home'&&!document.getElementById('caseStage')?.classList.contains('kv-fallback-fullscreen'))resetScene();
 });
@@ -647,7 +663,7 @@ litresPreviewImage.addEventListener('error',function(){
 });
 document.getElementById('caseBack').addEventListener('click',backToWorksWithLetters);
 document.getElementById('caseClose').addEventListener('click',backToWorksWithLetters);
-document.getElementById('mobileStageLogo').addEventListener('click',returnHomeWithLetters);
+document.getElementById('mobileStageLogo').addEventListener('click',function(){activateSalaticLogo(this);});
 document.getElementById('worksClose').addEventListener('click',returnHomeWithLetters);
 const projectOrder=['setka','litres','dodo','dodoMath','kion','dixy','triazavirin','kazakhstan','avionero','akademichesky','mikenco'];
 function stepCaseMedia(direction){
