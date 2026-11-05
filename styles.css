@@ -1027,3 +1027,13 @@ button.works-file:hover,button.works-file:focus-visible {background:var(--blue);
 @media (max-width:900px) and (prefers-reduced-motion:reduce) {
   .mobile-case-preview {transition:none!important}
 }
+
+/* Main page easter egg: eyes react to Anton's portrait, without changing
+   their usual hover squint or cursor-following behavior. */
+.eyes .eye-squint > ellipse {transition:fill .22s ease}
+.eyes.eyes-portrait-gaze svg {transform:scale(1.27)}
+.eyes.eyes-portrait-gaze .eye-squint {transform:scaleY(.5)}
+.eyes.eyes-portrait-gaze .eye-squint > ellipse {fill:#f32932}
+@media (prefers-reduced-motion:reduce) {
+  .eyes .eye-squint > ellipse {transition:none}
+}
