@@ -144,14 +144,14 @@ function randomUnit(seed){
   n^=n>>>16; n=Math.imul(n,2246822507); n^=n>>>13;
   return (n>>>0)/4294967295;
 }
-function createLetters(){
+function createLettersFromRoots(roots,clipEl=null){
   const overlay=document.createElement('div');
   overlay.className='letter-rain';overlay.setAttribute('aria-hidden','true');
   const fragment=document.createDocumentFragment();
   const chars=[],scale=previousScale||1;
-  for(const selector of ['.username','.role','.folder-name','.bio']){
-    const root=artboard.querySelector(selector);
+  for(const root of roots){
     if(!root||Number(getComputedStyle(root).opacity)<0.05)continue;
+    const clipRect=clipEl&&clipEl.contains(root)?clipEl.getBoundingClientRect():null;
     const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);
     let node;
     while((node=walker.nextNode())){
@@ -165,7 +165,8 @@ function createLetters(){
         if(character.trim()){
           charRange.setStart(node,start);charRange.setEnd(node,end);
           const rect=charRange.getBoundingClientRect();
-          if(rect.width>0&&rect.height>0){
+          if(rect.width>0&&rect.height>0&&(!clipRect||
+             (rect.left<clipRect.right&&rect.right>clipRect.left&&rect.top<clipRect.bottom&&rect.bottom>clipRect.top))){
             const span=document.createElement('span');
             span.className='falling-letter';
             span.textContent=character;
@@ -189,6 +190,36 @@ function createLetters(){
   document.body.appendChild(overlay);
   return {overlay,chars};
 }
+function createLetters(){
+  return createLettersFromRoots(['.username','.role','.folder-name','.bio']
+    .map(selector=>artboard.querySelector(selector)).filter(Boolean));
+}
+function createFinderLetters(){
+  const list=worksWindow.querySelector('.works-list');
+  const roots=portfolioStage.querySelectorAll(
+    '.works-bar-name, .works-bar-version, .works-columns, .works-file, .works-footer'
+  );
+  return createLettersFromRoots(roots,list);
+}
+// Shared physical behavior: the Finder and the home screen use the same gravity,
+// sideways drift, rotations, stagger and duration.
+function animateFallingLetters(chars){
+  let lastEnd=0;
+  chars.forEach(function(item,i){
+    const a=randomUnit(i*11+7), b=randomUnit(i*17+173), c=randomUnit(i*31+29);
+    const drift=(a-.5)*110;
+    const fall=Math.max(190,window.innerHeight-item.rect.top+105);
+    const spin=(b>.5?1:-1)*(23+c*70);
+    const delay=Math.round(c*58+(item.rect.top/window.innerHeight)*20);
+    const duration=Math.round(430+Math.sqrt(fall/Math.max(window.innerHeight,1))*280+b*65);
+    lastEnd=Math.max(lastEnd,delay+duration);
+    item.el.animate([
+      {transform:'translate3d(0,0,0) rotate(0deg)',opacity:1},
+      {transform:'translate3d('+drift.toFixed(1)+'px,'+fall.toFixed(1)+'px,0) rotate('+spin.toFixed(1)+'deg)',opacity:1}
+    ],{duration,delay,easing:'cubic-bezier(.42,0,1,1)',fill:'both'});
+  });
+  return lastEnd;
+}
 function clearLetters(){
   if(endRainTimer!==null){clearTimeout(endRainTimer);endRainTimer=null;}
   if(rain){rain.remove();rain=null;}
@@ -197,6 +228,7 @@ function resetScene(){
   const stage=document.getElementById('caseStage');
   if(stage)stage.classList.remove('kv-fallback-fullscreen');
   clearLetters();
+  document.getElementById('worksWindow')?.classList.remove('case-raining');
   scene='home';
   stopWriting();
   artboard.classList.remove('stage-exiting','stage-exited');
@@ -221,23 +253,7 @@ function openWorks(){
     comingNext.textContent='Works stage. Activate the logo to return.';
     return;
   }
-  // Quick, gravity-led collapse: minimal stagger, tight sideways movement,
-  // short spins, and travel time scaled to the distance each glyph falls.
-  // The ease-in curve starts near rest and accelerates downwards.
-  let lastEnd=0;
-  chars.forEach(function(item,i){
-    const a=randomUnit(i*11+7), b=randomUnit(i*17+173), c=randomUnit(i*31+29);
-    const drift=(a-.5)*110;
-    const fall=Math.max(190,window.innerHeight-item.rect.top+105);
-    const spin=(b>.5?1:-1)*(23+c*70);
-    const delay=Math.round(c*58+(item.rect.top/window.innerHeight)*20);
-    const duration=Math.round(430+Math.sqrt(fall/Math.max(window.innerHeight,1))*280+b*65);
-    lastEnd=Math.max(lastEnd,delay+duration);
-    item.el.animate([
-      {transform:'translate3d(0,0,0) rotate(0deg)',opacity:1},
-      {transform:'translate3d('+drift.toFixed(1)+'px,'+fall.toFixed(1)+'px,0) rotate('+spin.toFixed(1)+'deg)',opacity:1}
-    ],{duration,delay,easing:'cubic-bezier(.42,0,1,1)',fill:'both'});
-  });
+  const lastEnd=animateFallingLetters(chars);
   endRainTimer=setTimeout(function(){
     clearLetters();
     if(scene!=='falling')return;
@@ -470,6 +486,7 @@ function hideCasePreviews(){
 }
 function showWorksList(){
   hideCasePreviews();
+  worksWindow.classList.remove('case-raining');
   clearPlayer();
   worksWindow.hidden=false;
   setkaCase.hidden=true;
@@ -477,8 +494,7 @@ function showWorksList(){
   comingNext.textContent='Selected works. Ten projects are available.';
   if(window.innerWidth<=900)window.scrollTo({top:0,behavior:'instant'});
 }
-function showProjectCase(key){
-  if(scene!=='empty'||!projects[key])return;
+function displayProjectCase(key){
   hideCasePreviews();
   activeProject=key;
   const project=projects[key];
@@ -499,6 +515,33 @@ function showProjectCase(key){
   showCaseMedia(0);
   comingNext.textContent=key+' case, use back to works to return.';
   if(window.innerWidth<=900)window.scrollTo({top:0,behavior:'instant'});
+}
+function showProjectCase(key,animate=true){
+  if(scene!=='empty'||!projects[key])return;
+  hideCasePreviews();
+  // Accessibility and automatic next-case navigation skip the visual transition.
+  if(!animate||reducedMotion.matches){
+    displayProjectCase(key);
+    return;
+  }
+  const {overlay,chars}=createFinderLetters();
+  if(!chars.length){
+    overlay.remove();
+    displayProjectCase(key);
+    return;
+  }
+  rain=overlay;
+  scene='case-falling'; // Also prevents a double-click from opening another case.
+  comingNext.textContent='Opening '+key+' case.';
+  // Keep the Finder frame visible, but remove its source text after measuring.
+  worksWindow.classList.add('case-raining');
+  const lastEnd=animateFallingLetters(chars);
+  endRainTimer=setTimeout(function(){
+    if(scene!=='case-falling')return;
+    clearLetters();
+    worksWindow.classList.remove('case-raining');
+    displayProjectCase(key);
+  },lastEnd+35);
 }
 function bindCaseRow(rowId,previewId,projectKey){
   const row=document.getElementById(rowId);
@@ -553,7 +596,7 @@ function stepCaseMedia(direction){
     const index=projectOrder.indexOf(activeProject);
     const next=projectOrder[(index+direction+projectOrder.length)%projectOrder.length];
     showWorksList();
-    showProjectCase(next);
+    showProjectCase(next,false);
     return;
   }
   showCaseMedia(casePage+direction);
