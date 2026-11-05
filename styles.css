@@ -46,6 +46,35 @@ button:focus-visible { outline:2px dashed var(--blue);outline-offset:4px; }
 .username:focus-visible + .username-photo {opacity:1;visibility:visible}
 @media(prefers-reduced-motion:reduce){.username-photo{transition:none}}
 
+/* Contact replaces the former awards / press link at the exact same position. */
+.contact-entry {
+  position:absolute;
+  left:990.918px;
+  top:34px;
+  z-index:4;
+  display:inline-flex;
+  align-items:center;
+  gap:4px;
+  color:var(--blue);
+  background:transparent;
+  font:700 16px/19px 'Courier New',Courier,monospace;
+  letter-spacing:.015em;
+  text-decoration:none;
+  white-space:nowrap;
+  cursor:pointer;
+}
+.contact-entry:hover,
+.contact-entry:focus-visible {text-decoration:underline;text-underline-offset:3px}
+.contact-entry:focus-visible {outline:2px dashed var(--blue);outline-offset:5px}
+.contact-arrow {display:inline-block;animation:contactArrowNudge 2.1s ease-in-out infinite}
+@keyframes contactArrowNudge {
+  0%,12%,49%,100% {transform:translate(0,0)}
+  22%,34% {transform:translate(3px,-3px)}
+  28%,40% {transform:translate(1px,-1px)}
+}
+@media (prefers-reduced-motion:reduce) {.contact-arrow{animation:none}}
+.artboard.stage-exiting .contact-entry,
+.artboard.stage-exited .contact-entry {opacity:0;visibility:hidden;pointer-events:none}
 .role { position:absolute; top:34px; left:378px; white-space:nowrap; }
 .eyes { position:absolute; right:25px; top:34px; width:88px;height:28px; }
 .eyes svg { display:block; overflow:visible; }
@@ -451,6 +480,19 @@ button.works-file:hover,button.works-file:focus-visible {background:var(--blue);
   .role {left:20px;top:51px;font:12px/17px 'Courier New',Courier,monospace}
   .eyes {right:20px;top:24px;transform:scale(.82);transform-origin:top right}
   .works-position {position:relative;left:auto;top:auto;width:190px;height:235px;margin:26px auto 7px}
+  .contact-entry {
+    position:relative;
+    left:auto;
+    top:auto;
+    display:flex;
+    width:max-content;
+    min-height:44px;
+    margin:0 20px 10px;
+    padding:10px 0;
+    font:700 13px/20px 'Courier New',Courier,monospace;
+    letter-spacing:0;
+  }
+  .artboard.stage-exiting.stage-exited .contact-entry {display:none!important}
   .bottom {
     position:relative;inset:auto;
     width:100%;height:auto;
