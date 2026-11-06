@@ -1037,3 +1037,21 @@ button.works-file:hover,button.works-file:focus-visible {background:var(--blue);
 @media (prefers-reduced-motion:reduce) {
   .eyes .eye-squint > ellipse {transition:none}
 }
+
+/* Touch portrait and gaze: mobile taps replace desktop hover, so the image
+   and the red squint stay synchronized and can be dismissed predictably. */
+@media (max-width:900px) {
+  .masthead:has(.username.portrait-touch-open) {z-index:12}
+  .username.portrait-touch-open + .username-photo {
+    opacity:1;
+    visibility:visible;
+  }
+}
+@media (max-width:900px) and (hover:none) {
+  /* Prevent Safari's sticky pseudo-hover from keeping the image visible
+     after tapping again or closing it by tapping outside. */
+  .username:hover:not(.portrait-touch-open):not(:focus-visible) + .username-photo {
+    opacity:0;
+    visibility:hidden;
+  }
+}
