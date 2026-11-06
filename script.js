@@ -70,8 +70,37 @@ username.addEventListener('pointerleave',event=>{
 username.addEventListener('focus',()=>{
   if(username.matches(':focus-visible'))setPortraitGaze(true);
 });
-username.addEventListener('blur',()=>setPortraitGaze(username.matches(':hover')));
-window.addEventListener('resize',pointEyesAtPortrait,{passive:true});
+username.addEventListener('blur',()=>{
+  // Mobile :hover can stay active after a tap, so it is not the source of truth.
+  if(window.innerWidth<=900){
+    setPortraitGaze(username.classList.contains('portrait-touch-open'));
+    return;
+  }
+  setPortraitGaze(username.matches(':hover'));
+});
+// Touchscreens have no real hover. First tap opens portrait and gaze;
+// second tap closes both. A tap elsewhere also dismisses them.
+function setMobilePortraitOpen(open){
+  username.classList.toggle('portrait-touch-open',open);
+  setPortraitGaze(open);
+}
+username.addEventListener('click',event=>{
+  if(window.innerWidth>900)return;
+  event.stopPropagation();
+  setMobilePortraitOpen(!username.classList.contains('portrait-touch-open'));
+});
+document.addEventListener('pointerdown',event=>{
+  if(window.innerWidth>900||!username.classList.contains('portrait-touch-open'))return;
+  if(username.contains(event.target))return;
+  setMobilePortraitOpen(false);
+});
+window.addEventListener('resize',()=>{
+  if(window.innerWidth>900&&username.classList.contains('portrait-touch-open')){
+    setMobilePortraitOpen(false);
+  }else{
+    pointEyesAtPortrait();
+  }
+},{passive:true});
 function aimEyes(clientX,clientY){
   const rect=eyes.getBoundingClientRect();
   const cx=rect.left+rect.width/2;
