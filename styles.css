@@ -1179,8 +1179,8 @@ button.works-file:hover,button.works-file:focus-visible {background:var(--blue);
   box-shadow:0 1px 5px rgba(0,0,0,.3);
   pointer-events:none;
   transform:translate(-50%,-50%) rotate(var(--trail-rotation));
-  animation:homeWorkTrailFall 1.35s cubic-bezier(.27,.16,.67,1) both,
-            homeWorkTrailDissolve 1.35s linear both;
+  animation:homeWorkTrailFall 1.95s cubic-bezier(.27,.16,.67,1) both,
+            homeWorkTrailDissolve 1.95s linear both;
   will-change:transform,opacity;
 }
 .home-work-stamp img {
