@@ -930,13 +930,13 @@ stageObserver.observe(artboard,{attributes:true,attributeFilter:['class']});
   document.body.appendChild(trail);
 
   let lastX=null,lastY=null,lastStampTime=-Infinity,nextImage=0;
+  let motionX=null,motionY=null,motionTime=null,smoothedSpeed=0;
   const stamps=[];
   const rotations=[-7,4,-4,7,2,-6,5,-3];
 
-  // The previews may live only on EMPTY black space. Protect all actual
-  // home-screen content, including text, clickable elements, icons and
-  // hover portraits. Include half of the rotated 54x31 thumbnail as padding,
-  // so not even its edge overlaps a logo, link, or the works folder.
+  // Previews live only on empty black space. Protect names, text, photos,
+  // logos and buttons, with padding based on each thumbnail's ACTUAL size
+  // (which can grow with cursor velocity).
   const protectedElements=Array.from(new Set([
     ...document.querySelectorAll(
       '.masthead .username, .masthead .role, .masthead .eyes, '+
@@ -947,8 +947,7 @@ stageObserver.observe(artboard,{attributes:true,attributeFilter:['class']});
       .filter(element=>!element.closest('.portfolio-stage'))
   ]));
 
-  function overlapsContent(x,y){
-    const padX=35, padY=26;
+  function overlapsContent(x,y,padX=35,padY=26){
     for(const element of protectedElements){
       const style=getComputedStyle(element);
       if(style.display==='none'||style.visibility==='hidden'||Number(style.opacity)<0.02)continue;
@@ -963,7 +962,10 @@ stageObserver.observe(artboard,{attributes:true,attributeFilter:['class']});
   function removeBlockedStamps(){
     for(let i=stamps.length-1;i>=0;i--){
       const stamp=stamps[i];
-      if(overlapsContent(Number(stamp.dataset.x),Number(stamp.dataset.y))){
+      if(overlapsContent(
+        Number(stamp.dataset.x),Number(stamp.dataset.y),
+        Number(stamp.dataset.padX),Number(stamp.dataset.padY)
+      )){
         stamp.remove();
         stamps.splice(i,1);
       }
@@ -973,7 +975,8 @@ stageObserver.observe(artboard,{attributes:true,attributeFilter:['class']});
   function clearTrail(){
     trail.replaceChildren();
     stamps.length=0;
-    lastX=lastY=null;
+    lastX=lastY=motionX=motionY=motionTime=null;
+    smoothedSpeed=0;
     lastStampTime=-Infinity;
   }
 
@@ -982,18 +985,31 @@ stageObserver.observe(artboard,{attributes:true,attributeFilter:['class']});
       &&!artboard.classList.contains('stage-exited');
   }
 
-  function stampAt(x,y){
-    // Keep a visible pocket of black around the blue pointer. The 54x31
-    // preview sits off to one side, and flips inward near viewport edges.
-    const dx=x+56+35<window.innerWidth?56:-56;
-    const dy=y+27+26<window.innerHeight?27:-27;
-    const sx=x+dx,sy=y+dy;
-    if(overlapsContent(x,y)||overlapsContent(sx,sy))return;
-    if(sx<35||sx>window.innerWidth-35||sy<26||sy>window.innerHeight-26)return;
+  function stampAt(x,y,speed=0){
+    // Slow movement: 54x31 px. Fast flicks: up to 104x60 px.
+    const strength=Math.max(0,Math.min(1,(speed-.35)/2.5));
+    const width=Math.round(54+50*strength);
+    const height=Math.round(width*31/54);
+    const padX=width/2+8,padY=height/2+8;
+
+    // Offset the larger thumbnails farther from the actual blue cursor too.
+    const offsetX=Math.max(56,width/2+26);
+    const offsetY=Math.max(27,height/2+18);
+    const sx=x+(x+offsetX+padX<window.innerWidth?offsetX:-offsetX);
+    const sy=y+(y+offsetY+padY<window.innerHeight?offsetY:-offsetY);
+
+    if(overlapsContent(x,y)||overlapsContent(sx,sy,padX,padY))return;
+    if(sx-padX<0||sx+padX>window.innerWidth
+      ||sy-padY<0||sy+padY>window.innerHeight)return;
+
     const stamp=document.createElement('span');
     stamp.className='home-work-stamp';
     stamp.dataset.x=String(sx);
     stamp.dataset.y=String(sy);
+    stamp.dataset.padX=String(padX);
+    stamp.dataset.padY=String(padY);
+    stamp.style.width=width+'px';
+    stamp.style.height=height+'px';
     stamp.style.left=sx+'px';
     stamp.style.top=sy+'px';
     stamp.style.setProperty('--trail-rotation',rotations[nextImage%rotations.length]+'deg');
@@ -1008,7 +1024,7 @@ stageObserver.observe(artboard,{attributes:true,attributeFilter:['class']});
     stamp.appendChild(img);
     trail.appendChild(stamp);
     stamps.push(stamp);
-    while(stamps.length>10)stamps.shift().remove();
+    while(stamps.length>14)stamps.shift().remove();
     window.setTimeout(()=>{
       stamp.remove();
       const index=stamps.indexOf(stamp);
@@ -1024,24 +1040,37 @@ stageObserver.observe(artboard,{attributes:true,attributeFilter:['class']});
     // Remove existing thumbnails that now overlap revealed UI (for example
     // Anton's photo or Bonya), and never stamp over any protected content.
     removeBlockedStamps();
-    if(overlapsContent(event.clientX,event.clientY)){
-      lastX=event.clientX;
-      lastY=event.clientY;
+    const x=event.clientX,y=event.clientY,t=event.timeStamp;
+    if(overlapsContent(x,y)){
+      lastX=motionX=x;
+      lastY=motionY=y;
+      motionTime=t;
+      smoothedSpeed=0;
       return;
     }
+
+    // Measure actual instantaneous pointer speed (px/ms), not distance
+    // since the last emitted stamp. Smooth bursts to avoid size flicker.
+    if(motionX!==null&&motionTime!==null){
+      const distance=Math.hypot(x-motionX,y-motionY);
+      const elapsed=Math.max(8,t-motionTime);
+      const speed=Math.min(6,distance/elapsed);
+      smoothedSpeed=smoothedSpeed*.5+speed*.5;
+    }
+    motionX=x;motionY=y;motionTime=t;
+
     if(lastX===null){
-      lastX=event.clientX;
-      lastY=event.clientY;
-      // Show a first tiny card immediately, so the affordance is discoverable.
-      lastStampTime=event.timeStamp;
-      stampAt(event.clientX,event.clientY);
+      lastX=x;lastY=y;
+      lastStampTime=t;
+      stampAt(x,y,smoothedSpeed);
       return;
     }
-    if(Math.hypot(event.clientX-lastX,event.clientY-lastY)<36)return;
-    if(event.timeStamp-lastStampTime<65)return;
-    lastX=event.clientX;lastY=event.clientY;
-    lastStampTime=event.timeStamp;
-    stampAt(event.clientX,event.clientY);
+    // Slightly denser trail than before: 26px / 40ms versus 36px / 65ms.
+    if(Math.hypot(x-lastX,y-lastY)<26)return;
+    if(t-lastStampTime<40)return;
+    lastX=x;lastY=y;
+    lastStampTime=t;
+    stampAt(x,y,smoothedSpeed);
   },{passive:true});
 
   // Recheck when hover/focus reveals the portrait without cursor travel.
