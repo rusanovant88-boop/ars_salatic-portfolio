@@ -1458,3 +1458,37 @@ button.works-file:hover,button.works-file:focus-visible {background:var(--blue);
 @media (prefers-reduced-motion:reduce) {
   .username .username-label {animation:none!important}
 }
+
+/* Finder window controls: subtle spring on all three dots.
+   Only red displays the cross and retains the existing close action. */
+@keyframes salaticWindowDotBounce {
+  0%   { transform:scale(1); }
+  25%  { transform:scale(.94); }
+  53%  { transform:scale(1.18); }
+  75%  { transform:scale(1.06); }
+  100% { transform:scale(1.11); }
+}
+.works-bar .works-close,
+.works-bar .works-dot,
+.case-player-bar .works-close,
+.case-player-bar .works-dot {
+  transform-origin:center center;
+  transition:transform .16s ease-out;
+}
+@media (hover:hover) and (pointer:fine) {
+  .works-bar :is(.works-close,.works-dot):hover,
+  .case-player-bar :is(.works-close,.works-dot):hover {
+    animation:salaticWindowDotBounce .46s both;
+  }
+}
+.works-bar .works-close:focus-visible,
+.case-player-bar .works-close:focus-visible {
+  animation:salaticWindowDotBounce .46s both;
+}
+@media (prefers-reduced-motion:reduce) {
+  .works-bar :is(.works-close,.works-dot),
+  .case-player-bar :is(.works-close,.works-dot) {
+    animation:none!important;
+    transition:none!important;
+  }
+}
