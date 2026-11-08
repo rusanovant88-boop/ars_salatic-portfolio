@@ -565,7 +565,6 @@ const projects={
       "together with donorsearch, we turned this simple idea into a nationwide challenge, bringing major brands together and reaching over 40 million people."
     ],
     media:[
-      {type:'kv',image:'assets/donorsearch-10percent-print.webp',fallbackImage:'https://vumbnail.com/1244829007.jpg',label:'Donorsearch — 10% for Life — Print'},
       {type:'video',vimeoId:'1244829007',label:'Donorsearch — 10% for Life — Case Study'}
     ]
   }
