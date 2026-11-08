@@ -530,6 +530,18 @@ const projects={
       "the funny thing is, a lot of people thought the falling leaves were cgi. but there were no visual effects involved. just a guy standing above the set, shaking a branch to make the leaves fall perfectly into frame."
     ],
     media:[{type:'video',vimeoId:'1243586795',label:'MIKENCO — Forever Love'}]
+  },
+  mitchme:{
+    title:'mitch&me.\nchristmas is easy to ruin',
+    role:'role: senior art director',
+    paragraphs:[
+      "dog shampoo brand mitch&me wanted to wish dog owners a merry christmas and a happy new year. but a typical holiday greeting just wasn't the brand's style.",
+      "so we created a playful holiday message with a simple reminder: always clean up after your dog. because ruining christmas is easier than you think."
+    ],
+    media:[
+      {type:'kv',image:'assets/mitchme-christmas-print.webp',fallbackImage:'https://vumbnail.com/1244824452.jpg',label:'mitch&me — Christmas Is Easy to Ruin — Print'},
+      {type:'video',vimeoId:'1244824452',label:'mitch&me — Christmas Is Easy to Ruin'}
+    ]
   }
 };
 let caseMedia=projects[activeProject].media;
@@ -567,8 +579,13 @@ function showCaseMedia(index){
       if(image.isConnected)casePlaceholder.hidden=true;
     };
     image.onerror=function(){
+      if(item.fallbackImage&&!image.dataset.fallbackUsed){
+        image.dataset.fallbackUsed='true';
+        image.src=item.fallbackImage;
+        return;
+      }
       image.remove();
-      casePlaceholder.textContent='KV not uploaded yet / '+item.label;
+      casePlaceholder.textContent='Print preview temporarily unavailable / '+item.label;
       casePlaceholder.hidden=false;
     };
     image.src=item.image;
@@ -597,7 +614,7 @@ function showWorksList(){
   worksWindow.hidden=false;
   setkaCase.hidden=true;
   scene='empty';
-  comingNext.textContent='Selected works. Eleven projects are available.';
+  comingNext.textContent='Selected works. Twelve projects are available.';
   if(window.innerWidth<=900)window.scrollTo({top:0,behavior:'instant'});
 }
 // The same glyph collector and gravity used by Home → Works and Works → Case
@@ -751,6 +768,7 @@ bindCaseRow('openKazakhstan','kazakhstanHoverPreview','kazakhstan');
 bindCaseRow('openAvionero','avioneroHoverPreview','avionero');
 bindCaseRow('openAkademichesky','akademicheskyHoverPreview','akademichesky');
 bindCaseRow('openMikenco','mikencoHoverPreview','mikenco');
+bindCaseRow('openMitchme','mitchmeHoverPreview','mitchme');
 // Locally prepared screenshot-based thumbnail is preferred; a Vimeo thumbnail
 // provides a temporary fallback until the WebP is committed to assets/.
 const dodoPreviewImage=document.querySelector('#dodoHoverPreview img');
@@ -775,7 +793,7 @@ document.getElementById('mobileStageLogo').addEventListener('click',function(){a
 document.getElementById('mobileWorksBack').addEventListener('click',returnHomeWithLetters);
 document.getElementById('mobileCaseBack').addEventListener('click',backToWorksWithLetters);
 document.getElementById('worksClose').addEventListener('click',returnHomeWithLetters);
-const projectOrder=['litres','setka','kion','triazavirin','dodoMath','dixy','kazakhstan','akademichesky','dodo','avionero','mikenco'];
+const projectOrder=['litres','setka','kion','triazavirin','dodoMath','dixy','kazakhstan','akademichesky','dodo','avionero','mikenco','mitchme'];
 function stepCaseMedia(direction){
   if(caseMedia.length===1){
     const index=projectOrder.indexOf(activeProject);
