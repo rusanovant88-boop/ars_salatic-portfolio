@@ -885,3 +885,82 @@ stageObserver.observe(artboard,{attributes:true,attributeFilter:['class']});
     if(event.target instanceof Element && event.target.closest('iframe'))hide();
   },{passive:true});
 })();
+
+
+// Home-only micro-thumbnail trail. It uses existing portfolio preview assets,
+// stays behind the regular Salatic cursor, and never catches pointer events.
+(function initHomeWorkTrail(){
+  const desktopPointer=window.matchMedia('(hover:hover) and (pointer:fine) and (min-width:901px)');
+  if(!desktopPointer.matches||reducedMotion.matches)return;
+
+  const sources=Array.from(document.querySelectorAll('.works-hover-preview > img'))
+    .map(img=>img.getAttribute('src'))
+    .filter(Boolean);
+  if(!sources.length)return;
+
+  const trail=document.createElement('div');
+  trail.className='home-work-trail';
+  trail.setAttribute('aria-hidden','true');
+  document.body.appendChild(trail);
+
+  let lastX=null,lastY=null,lastStampTime=-Infinity,nextImage=0;
+  const stamps=[];
+  const rotations=[-7,4,-4,7,2,-6,5,-3];
+
+  function clearTrail(){
+    trail.replaceChildren();
+    stamps.length=0;
+    lastX=lastY=null;
+    lastStampTime=-Infinity;
+  }
+
+  function onHome(){
+    return scene==='home'&&!artboard.classList.contains('stage-exiting')
+      &&!artboard.classList.contains('stage-exited');
+  }
+
+  function stampAt(x,y){
+    const stamp=document.createElement('span');
+    stamp.className='home-work-stamp';
+    stamp.style.left=x+'px';
+    stamp.style.top=y+'px';
+    stamp.style.setProperty('--trail-rotation',rotations[nextImage%rotations.length]+'deg');
+
+    const img=document.createElement('img');
+    img.alt='';
+    img.decoding='async';
+    img.draggable=false;
+    img.onerror=()=>{stamp.remove();const index=stamps.indexOf(stamp);if(index!==-1)stamps.splice(index,1);};
+    img.src=sources[nextImage%sources.length];
+    nextImage++;
+    stamp.appendChild(img);
+    trail.appendChild(stamp);
+    stamps.push(stamp);
+    while(stamps.length>8)stamps.shift().remove();
+    window.setTimeout(()=>{
+      stamp.remove();
+      const index=stamps.indexOf(stamp);
+      if(index!==-1)stamps.splice(index,1);
+    },850);
+  }
+
+  document.addEventListener('pointermove',event=>{
+    if(event.pointerType==='touch'||!desktopPointer.matches||!onHome()){
+      if(stamps.length)clearTrail();
+      return;
+    }
+    if(lastX===null){lastX=event.clientX;lastY=event.clientY;return;}
+    if(Math.hypot(event.clientX-lastX,event.clientY-lastY)<64)return;
+    if(event.timeStamp-lastStampTime<80)return;
+    lastX=event.clientX;lastY=event.clientY;
+    lastStampTime=event.timeStamp;
+    stampAt(event.clientX,event.clientY);
+  },{passive:true});
+
+  const stageWatcher=new MutationObserver(()=>{
+    if(!onHome())clearTrail();
+  });
+  stageWatcher.observe(artboard,{attributes:true,attributeFilter:['class']});
+  window.addEventListener('blur',clearTrail);
+  window.addEventListener('resize',clearTrail,{passive:true});
+})();
