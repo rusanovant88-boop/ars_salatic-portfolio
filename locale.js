@@ -175,7 +175,8 @@
     }
     artboard.dataset.lang=language;
     setText('.role',ru?'старший арт-директор / креатив / режиссёр':en.role);
-    setText('.folder-name',ru?'работы':en.folder);
+    setText('.folder-name',ru?'кейсы':en.folder);
+    folder.setAttribute('aria-label',ru?'Открыть кейсы':'Open works transition');
     const contact=get('.contact-entry');
     if(contact?.firstChild)contact.firstChild.nodeValue=ru?'написать мне ':en.contact;
     const bioLines=ru?russianBio:englishBio;
