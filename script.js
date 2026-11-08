@@ -105,10 +105,13 @@ function aimEyes(clientX,clientY){
   const rect=eyes.getBoundingClientRect();
   const cx=rect.left+rect.width/2;
   const cy=rect.top+rect.height/2;
-  const dx=(clientX-cx)/Math.max(1,window.innerWidth/2);
-  const dy=(clientY-cy)/Math.max(1,window.innerHeight/2);
-  const tx=Math.max(-5,Math.min(5,dx*5));
-  const ty=Math.max(-2.8,Math.min(2.8,dy*2.8));
+  // Track distance from the eyes, not the full viewport, so even small
+  // nearby cursor moves produce a clearly visible change in gaze.
+  // The smooth tanh limit keeps both pupils within their clipped shapes.
+  const dx=clientX-cx;
+  const dy=clientY-cy;
+  const tx=7.5*Math.tanh(dx/170);
+  const ty=3.5*Math.tanh(dy/120);
   pupils.forEach(p=>p.setAttribute('transform',`translate(${tx.toFixed(2)} ${ty.toFixed(2)})`));
 }
 document.addEventListener('pointermove',e=>{
