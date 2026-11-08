@@ -1091,14 +1091,15 @@ stageObserver.observe(artboard,{attributes:true,attributeFilter:['class']});
   const protectedElements=Array.from(new Set([
     ...document.querySelectorAll(
       '.masthead .username, .masthead .role, .masthead .eyes, '+
-      '.username-photo, .contact-entry, .works-position, '+
+      '.username-photo, .contact-entry, '+
+      '.works-folder .folder-base, .works-folder .folder-name, .works-folder .folder-person, '+
       '.bottom .signature-hit, .bottom .bio, .bonya-overlay'
     ),
     ...Array.from(artboard.querySelectorAll('button, a, [role="button"]'))
-      .filter(element=>!element.closest('.portfolio-stage'))
+      .filter(element=>!element.closest('.portfolio-stage')&&!element.matches('.works-folder'))
   ]));
 
-  function overlapsContent(x,y,padX=7,padY=6){
+  function overlapsContent(x,y,padX=2,padY=2){
     for(const element of protectedElements){
       const style=getComputedStyle(element);
       if(style.display==='none'||style.visibility==='hidden'||Number(style.opacity)<0.02)continue;
@@ -1142,14 +1143,13 @@ stageObserver.observe(artboard,{attributes:true,attributeFilter:['class']});
     const strength=Math.max(0,Math.min(1,(speed-.3)/1.9));
     const width=Math.round(54+126*strength);
     const height=Math.round(width*31/54);
-    // Tight clearance: still check the entire actual preview rectangle.
-    const padX=width/2+2,padY=height/2+2;
+    // Only 1px of clearance around the actual preview footprint.
+    const padX=width/2+1,padY=height/2+1;
 
-    // Offset the larger thumbnails farther from the actual blue cursor too.
-    const offsetX=Math.max(56,width/2+26);
-    const offsetY=Math.max(27,height/2+18);
-    const sx=x+(x+offsetX+padX<window.innerWidth?offsetX:-offsetX);
-    const sy=y+(y+offsetY+padY<window.innerHeight?offsetY:-offsetY);
+    // Spawn directly to the right of the cursor, aligned to its Y position.
+    // Never drop previews below the cursor or flip them to the left.
+    const sx=x+width/2+26;
+    const sy=y;
 
     if(overlapsContent(x,y)||overlapsContent(sx,sy,padX,padY))return;
     if(sx-padX<0||sx+padX>window.innerWidth
