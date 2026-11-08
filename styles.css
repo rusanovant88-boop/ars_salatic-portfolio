@@ -1179,7 +1179,7 @@ button.works-file:hover,button.works-file:focus-visible {background:var(--blue);
   box-shadow:0 1px 5px rgba(0,0,0,.3);
   pointer-events:none;
   transform:translate(-50%,-50%) rotate(var(--trail-rotation));
-  animation:homeWorkTrailFade .85s ease-out both;
+  animation:homeWorkTrailFade 1.35s ease-out both;
   will-change:transform,opacity;
 }
 .home-work-stamp img {
@@ -1191,8 +1191,8 @@ button.works-file:hover,button.works-file:focus-visible {background:var(--blue);
 }
 @keyframes homeWorkTrailFade {
   0%   {opacity:0;transform:translate(-50%,-50%) rotate(var(--trail-rotation)) scale(.8)}
-  14%  {opacity:.85;transform:translate(-50%,-50%) rotate(var(--trail-rotation)) scale(1)}
-  58%  {opacity:.72}
+  9%   {opacity:.96;transform:translate(-50%,-50%) rotate(var(--trail-rotation)) scale(1)}
+  70%  {opacity:.9}
   100% {opacity:0;transform:translate(-50%,calc(-50% + 11px)) rotate(var(--trail-rotation)) scale(.93)}
 }
 @media (hover:none),(pointer:coarse),(max-width:900px),(prefers-reduced-motion:reduce) {
