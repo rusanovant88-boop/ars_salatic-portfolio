@@ -127,9 +127,9 @@
   }
 };
   let language='en';
-  const toggle=document.getElementById('localeToggle');
-  if(!toggle)return;
-  const englishBio=Array.from(document.querySelectorAll('.bio > span')).map(s=>s.firstChild?.textContent||'');
+  const toggles=[document.getElementById('localeToggle'),document.getElementById('portfolioLocaleToggle')].filter(Boolean);
+  if(!toggles.length)return;
+  const englishBio=Array.from(document.querySelectorAll('.bio > span')).map(s=>s.firstChild?.nodeType===Node.TEXT_NODE?s.firstChild.nodeValue:'');
   const russianBio=[
     'привет! я старший арт-директор. больше десяти лет работаю с рекламой, брендингом и визуальными',
     'историями. придумываю идеи и собираю их визуальный мир от первых эскизов до финального результата.',
@@ -165,16 +165,24 @@
   function updateLanguage(){
     const ru=language==='ru';
     document.documentElement.lang=language;
-    toggle.textContent=ru?'en':'ru';
-    toggle.setAttribute('aria-label',ru?'Переключить сайт на английский':'Switch website to Russian');
-    toggle.title=ru?'English':'Русский';
+    for(const toggle of toggles){
+      toggle.textContent=ru?'en':'ru';
+      toggle.setAttribute('aria-label',ru?'Переключить сайт на английский':'Switch website to Russian');
+      toggle.title=ru?'English':'Русский';
+    }
+    artboard.dataset.lang=language;
     setText('.role',ru?'старший арт-директор / креатив / режиссёр':en.role);
     setText('.folder-name',ru?'работы':en.folder);
     const contact=get('.contact-entry');
     if(contact?.firstChild)contact.firstChild.nodeValue=ru?'написать мне ':en.contact;
     const bioLines=ru?russianBio:englishBio;
     document.querySelectorAll('.bio > span').forEach((span,index)=>{
-      if(span.firstChild)span.firstChild.nodeValue=bioLines[index]||'';
+      let textNode=span.firstChild?.nodeType===Node.TEXT_NODE?span.firstChild:null;
+      if(!textNode){
+        textNode=document.createTextNode('');
+        span.insertBefore(textNode,span.firstChild);
+      }
+      textNode.nodeValue=bioLines[index]||'';
     });
     setText('#bonyaTrigger',ru?'боня.':'bonya.');
     setText('.works-bar-name',ru?'избранные_работы':en.archive);
@@ -223,11 +231,13 @@
     }
     translateCurrentCase();
   }
-  toggle.addEventListener('click',()=>{
-    // Avoid changing text under a currently running falling-letter animation.
-    if(typeof scene!=='undefined'&&!['home','empty','case'].includes(scene))return;
-    language=language==='en'?'ru':'en';
-    updateLanguage();
-  });
+  for(const toggle of toggles){
+    toggle.addEventListener('click',()=>{
+      // Avoid changing text under a currently running falling-letter animation.
+      if(typeof scene!=='undefined'&&!['home','empty','case'].includes(scene))return;
+      language=language==='en'?'ru':'en';
+      updateLanguage();
+    });
+  }
   updateLanguage();
 })();
