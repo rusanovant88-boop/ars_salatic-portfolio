@@ -1308,3 +1308,48 @@ button.works-file:hover,button.works-file:focus-visible {background:var(--blue);
   .poster-reader-view.is-zoomed {cursor:grab!important}
   .poster-reader-view.is-dragging {cursor:grabbing!important}
 }
+
+/* Language switch from reference: quiet blue Courier text between Contact and Eyes. */
+.language-toggle {
+  position:absolute;
+  top:27px;
+  right:144px;
+  z-index:17;
+  min-width:35px;
+  height:33px;
+  border:0;
+  padding:7px 0;
+  color:var(--blue);
+  background:transparent;
+  font:700 16px/19px 'Courier New',Courier,monospace;
+  text-align:center;
+  text-transform:lowercase;
+  cursor:pointer;
+}
+.language-toggle:hover,
+.language-toggle:focus-visible {text-decoration:underline;text-underline-offset:4px}
+.language-toggle-portfolio {top:27px;right:144px}
+.artboard.stage-exiting .language-toggle-home,
+.artboard.stage-exited .language-toggle-home {opacity:0;visibility:hidden;pointer-events:none}
+/* Russian prose is allowed to wrap normally instead of forcing English
+   hard line breaks outside the 1440x900 reference artboard. */
+.artboard[data-lang="ru"] .bio span {
+  display:inline;
+  white-space:normal;
+}
+.artboard[data-lang="ru"] .bio > span:not(:last-child)::after {content:" "}
+@media(max-width:900px) {
+  .language-toggle-home {
+    top:16px;
+    right:111px;
+    min-width:37px;
+    font:700 13px/19px 'Courier New',Courier,monospace;
+  }
+  .language-toggle-portfolio {
+    top:16px;
+    right:18px;
+    font:700 13px/19px 'Courier New',Courier,monospace;
+  }
+  .artboard[data-lang="ru"] .role {font-size:12px;white-space:normal;max-width:calc(100vw - 45px)}
+  .artboard[data-lang="ru"] .bio {overflow-wrap:anywhere}
+}
