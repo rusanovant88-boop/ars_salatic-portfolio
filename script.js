@@ -843,7 +843,7 @@ function returnHomeWithLetters(){
 function displayProjectCase(key){
   hideCasePreviews();
   activeProject=key;
-  const project=projects[key];
+  const project=window.salaticLocale?.project(key)||projects[key];
   caseMedia=project.media;
   caseTitle.textContent=project.title;
   caseTag.textContent=project.tag||'';
