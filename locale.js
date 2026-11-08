@@ -127,7 +127,8 @@
   }
 };
   let language='en';
-  const toggles=[document.getElementById('localeToggle'),document.getElementById('portfolioLocaleToggle')].filter(Boolean);
+  // One switch on Home only; the selected language remains active in Works and Cases.
+  const toggles=[document.getElementById('localeToggle')].filter(Boolean);
   if(!toggles.length)return;
   const englishBio=Array.from(document.querySelectorAll('.bio > span')).map(s=>s.firstChild?.nodeType===Node.TEXT_NODE?s.firstChild.nodeValue:'');
   const russianBio=[
@@ -145,7 +146,8 @@
   function getProject(key){
     if(language==='en')return projects[key];
     const original=projects[key],translation=russianProjects[key];
-    return translation?{...original,...translation,role:'роль: старший арт-директор'}:original;
+    // Case names are titles of works, not interface copy: never translate them.
+    return translation?{...original,...translation,title:original.title,role:'роль: старший арт-директор'}:original;
   }
   window.salaticLocale={project:getProject,language:()=>language};
   function translateCurrentCase(){
