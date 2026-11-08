@@ -1098,7 +1098,7 @@ stageObserver.observe(artboard,{attributes:true,attributeFilter:['class']});
       .filter(element=>!element.closest('.portfolio-stage'))
   ]));
 
-  function overlapsContent(x,y,padX=15,padY=12){
+  function overlapsContent(x,y,padX=7,padY=6){
     for(const element of protectedElements){
       const style=getComputedStyle(element);
       if(style.display==='none'||style.visibility==='hidden'||Number(style.opacity)<0.02)continue;
@@ -1142,8 +1142,8 @@ stageObserver.observe(artboard,{attributes:true,attributeFilter:['class']});
     const strength=Math.max(0,Math.min(1,(speed-.3)/1.9));
     const width=Math.round(54+126*strength);
     const height=Math.round(width*31/54);
-    // Smaller spacing buffer, but still test actual card footprint.
-    const padX=width/2+5,padY=height/2+5;
+    // Tight clearance: still check the entire actual preview rectangle.
+    const padX=width/2+2,padY=height/2+2;
 
     // Offset the larger thumbnails farther from the actual blue cursor too.
     const offsetX=Math.max(56,width/2+26);
