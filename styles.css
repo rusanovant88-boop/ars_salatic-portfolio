@@ -1347,3 +1347,19 @@ button.works-file:hover,button.works-file:focus-visible {background:var(--blue);
   .artboard[data-lang="ru"] .role {font-size:12px;white-space:normal;max-width:calc(100vw - 45px)}
   .artboard[data-lang="ru"] .bio {overflow-wrap:anywhere}
 }
+
+/* Case-only RU/EN control, aligned inside the Finder header like the reference.
+   Works archive deliberately has no language toggle. */
+.case-player-bar {position:relative}
+.case-player-bar .language-toggle-case {
+  top:27px;
+  right:49px;
+}
+@media (max-width:900px) {
+  .case-player-bar .language-toggle-case {
+    top:11px;
+    right:18px;
+    min-width:37px;
+    font:700 13px/19px 'Courier New',Courier,monospace;
+  }
+}
