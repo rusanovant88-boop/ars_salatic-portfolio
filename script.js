@@ -580,6 +580,20 @@ const projects={
       {type:'video',vimeoId:'1244831184',label:'Taezhny Dar — Exists in Nature — Film 02'},
       {type:'video',vimeoId:'1244831183',label:'Taezhny Dar — Exists in Nature — Film 03'}
     ]
+  },
+  shortShotFest:{
+    title:"short shot fest. life's too short",
+    role:'role: senior art director',
+    paragraphs:[
+      "for moscow's short shot fest, we created a campaign where the entire film unfolds in the viewer's imagination. instead of showing actual movie scenes, we used short stories with unexpected twists and endings, leaving everyone to imagine the visuals in their own way.",
+      "the idea caught on so well that people started coming up with their own endings. in china, it even sparked a social media challenge where users shared alternative endings to the stories. the campaign also won two bronze awards at the epica awards for copywriting and storytelling."
+    ],
+    media:[
+      {type:'kv',image:'assets/short-shot-fest-lifes-too-short-01-prints-en.webp',label:'Short Shot Fest — Two English Print Stories'},
+      {type:'kv',image:'assets/short-shot-fest-lifes-too-short-02-prints-ru.webp',label:'Short Shot Fest — Two Russian Print Stories'},
+      {type:'video',vimeoId:'679473458',label:'Short Shot Fest — Life’s Too Short — Case Study'},
+      {type:'kv',image:'assets/short-shot-fest-lifes-too-short-04-mockups.webp',label:'Short Shot Fest — Campaign Mockups'}
+    ]
   }
 };
 let caseMedia=projects[activeProject].media;
@@ -652,7 +666,7 @@ function showWorksList(){
   worksWindow.hidden=false;
   setkaCase.hidden=true;
   scene='empty';
-  comingNext.textContent='Selected works. Fifteen projects are available.';
+  comingNext.textContent='Selected works. Sixteen projects are available.';
   if(window.innerWidth<=900)window.scrollTo({top:0,behavior:'instant'});
 }
 // The same glyph collector and gravity used by Home → Works and Works → Case
@@ -814,6 +828,7 @@ bindCaseRow('openMitchme','mitchmeHoverPreview','mitchme');
 bindCaseRow('openMitchmeHalloween','mitchmeHalloweenHoverPreview','mitchmeHalloween');
 bindCaseRow('openDonorsearch','donorsearchHoverPreview','donorsearch');
 bindCaseRow('openTaezhnyDar','taezhnyDarHoverPreview','taezhnyDar');
+bindCaseRow('openShortShotFest','shortShotFestHoverPreview','shortShotFest');
 // Locally prepared screenshot-based thumbnail is preferred; a Vimeo thumbnail
 // provides a temporary fallback until the WebP is committed to assets/.
 const dodoPreviewImage=document.querySelector('#dodoHoverPreview img');
@@ -838,7 +853,7 @@ document.getElementById('mobileStageLogo').addEventListener('click',function(){a
 document.getElementById('mobileWorksBack').addEventListener('click',returnHomeWithLetters);
 document.getElementById('mobileCaseBack').addEventListener('click',backToWorksWithLetters);
 document.getElementById('worksClose').addEventListener('click',returnHomeWithLetters);
-const projectOrder=['litres','setka','kion','triazavirin','dodoMath','dixy','kazakhstan','akademichesky','dodo','avionero','mikenco','mitchme','mitchmeHalloween','donorsearch','taezhnyDar'];
+const projectOrder=['litres','setka','kion','triazavirin','dodoMath','dixy','kazakhstan','akademichesky','dodo','avionero','mikenco','mitchme','mitchmeHalloween','donorsearch','taezhnyDar','shortShotFest'];
 function stepCaseMedia(direction){
   if(caseMedia.length===1){
     const index=projectOrder.indexOf(activeProject);
