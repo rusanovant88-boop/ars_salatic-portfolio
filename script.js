@@ -907,6 +907,24 @@ stageObserver.observe(artboard,{attributes:true,attributeFilter:['class']});
   const stamps=[];
   const rotations=[-7,4,-4,7,2,-6,5,-3];
 
+  // Treat the works folder as a clean drop zone. Include half a thumbnail
+  // around its bounds so even the rotated edges can't cover the folder.
+  function overlapsWorksFolder(x,y){
+    const box=folder.getBoundingClientRect();
+    return x>=box.left-32 && x<=box.right+32
+      && y>=box.top-22 && y<=box.bottom+22;
+  }
+
+  function removeStampsOverWorksFolder(){
+    for(let i=stamps.length-1;i>=0;i--){
+      const stamp=stamps[i];
+      if(overlapsWorksFolder(Number(stamp.dataset.x),Number(stamp.dataset.y))){
+        stamp.remove();
+        stamps.splice(i,1);
+      }
+    }
+  }
+
   function clearTrail(){
     trail.replaceChildren();
     stamps.length=0;
@@ -920,8 +938,11 @@ stageObserver.observe(artboard,{attributes:true,attributeFilter:['class']});
   }
 
   function stampAt(x,y){
+    if(overlapsWorksFolder(x,y))return;
     const stamp=document.createElement('span');
     stamp.className='home-work-stamp';
+    stamp.dataset.x=String(x);
+    stamp.dataset.y=String(y);
     stamp.style.left=x+'px';
     stamp.style.top=y+'px';
     stamp.style.setProperty('--trail-rotation',rotations[nextImage%rotations.length]+'deg');
@@ -947,6 +968,13 @@ stageObserver.observe(artboard,{attributes:true,attributeFilter:['class']});
   document.addEventListener('pointermove',event=>{
     if(event.pointerType==='touch'||!desktopPointer.matches||!onHome()){
       if(stamps.length)clearTrail();
+      return;
+    }
+    // No thumbnails may appear on top of the folder itself.
+    removeStampsOverWorksFolder();
+    if(overlapsWorksFolder(event.clientX,event.clientY)){
+      lastX=event.clientX;
+      lastY=event.clientY;
       return;
     }
     if(lastX===null){
