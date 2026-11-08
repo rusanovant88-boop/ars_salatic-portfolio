@@ -556,6 +556,18 @@ const projects={
       {type:'kv',image:'assets/mitchme-halloween-pennywise.webp',label:'mitch&me — Non-Scary Halloween — Pennywise'},
       {type:'video',vimeoId:'519386527',label:'mitch&me — Non-Scary Halloween — Case Study'}
     ]
+  },
+  donorsearch:{
+    title:'donorsearch. 10% for life',
+    role:'role: senior art director',
+    paragraphs:[
+      "a blood donor gives around 10% of their blood to help save lives. we asked brands to do the same by donating 10% of their advertising space and content to raise awareness of blood donation.",
+      "together with donorsearch, we turned this simple idea into a nationwide challenge, bringing major brands together and reaching over 40 million people."
+    ],
+    media:[
+      {type:'kv',image:'assets/donorsearch-10percent-print.webp',fallbackImage:'https://vumbnail.com/1244829007.jpg',label:'Donorsearch — 10% for Life — Print'},
+      {type:'video',vimeoId:'1244829007',label:'Donorsearch — 10% for Life — Case Study'}
+    ]
   }
 };
 let caseMedia=projects[activeProject].media;
@@ -628,7 +640,7 @@ function showWorksList(){
   worksWindow.hidden=false;
   setkaCase.hidden=true;
   scene='empty';
-  comingNext.textContent='Selected works. Thirteen projects are available.';
+  comingNext.textContent='Selected works. Fourteen projects are available.';
   if(window.innerWidth<=900)window.scrollTo({top:0,behavior:'instant'});
 }
 // The same glyph collector and gravity used by Home → Works and Works → Case
@@ -788,6 +800,7 @@ bindCaseRow('openAkademichesky','akademicheskyHoverPreview','akademichesky');
 bindCaseRow('openMikenco','mikencoHoverPreview','mikenco');
 bindCaseRow('openMitchme','mitchmeHoverPreview','mitchme');
 bindCaseRow('openMitchmeHalloween','mitchmeHalloweenHoverPreview','mitchmeHalloween');
+bindCaseRow('openDonorsearch','donorsearchHoverPreview','donorsearch');
 // Locally prepared screenshot-based thumbnail is preferred; a Vimeo thumbnail
 // provides a temporary fallback until the WebP is committed to assets/.
 const dodoPreviewImage=document.querySelector('#dodoHoverPreview img');
@@ -812,7 +825,7 @@ document.getElementById('mobileStageLogo').addEventListener('click',function(){a
 document.getElementById('mobileWorksBack').addEventListener('click',returnHomeWithLetters);
 document.getElementById('mobileCaseBack').addEventListener('click',backToWorksWithLetters);
 document.getElementById('worksClose').addEventListener('click',returnHomeWithLetters);
-const projectOrder=['litres','setka','kion','triazavirin','dodoMath','dixy','kazakhstan','akademichesky','dodo','avionero','mikenco','mitchme','mitchmeHalloween'];
+const projectOrder=['litres','setka','kion','triazavirin','dodoMath','dixy','kazakhstan','akademichesky','dodo','avionero','mikenco','mitchme','mitchmeHalloween','donorsearch'];
 function stepCaseMedia(direction){
   if(caseMedia.length===1){
     const index=projectOrder.indexOf(activeProject);
