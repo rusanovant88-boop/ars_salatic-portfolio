@@ -957,13 +957,19 @@ stageObserver.observe(artboard,{attributes:true,attributeFilter:['class']});
   }
 
   function stampAt(x,y){
-    if(overlapsContent(x,y))return;
+    // Keep a visible pocket of black around the blue pointer. The 54x31
+    // preview sits off to one side, and flips inward near viewport edges.
+    const dx=x+56+35<window.innerWidth?56:-56;
+    const dy=y+27+26<window.innerHeight?27:-27;
+    const sx=x+dx,sy=y+dy;
+    if(overlapsContent(x,y)||overlapsContent(sx,sy))return;
+    if(sx<35||sx>window.innerWidth-35||sy<26||sy>window.innerHeight-26)return;
     const stamp=document.createElement('span');
     stamp.className='home-work-stamp';
-    stamp.dataset.x=String(x);
-    stamp.dataset.y=String(y);
-    stamp.style.left=x+'px';
-    stamp.style.top=y+'px';
+    stamp.dataset.x=String(sx);
+    stamp.dataset.y=String(sy);
+    stamp.style.left=sx+'px';
+    stamp.style.top=sy+'px';
     stamp.style.setProperty('--trail-rotation',rotations[nextImage%rotations.length]+'deg');
 
     const img=document.createElement('img');
