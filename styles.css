@@ -763,6 +763,33 @@ button.works-file:hover,button.works-file:focus-visible {background:var(--blue);
   pointer-events:none;
   z-index:2147483647;
   visibility:hidden;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  transition:width .16s ease,height .16s ease;
+}
+.salatic-cursor.is-zoomable {
+  width:42px;
+  height:42px;
+}
+.salatic-cursor-magnifier {
+  display:block;
+  width:22px;
+  height:22px;
+  flex:none;
+  opacity:0;
+  transform:scale(.65);
+  transition:opacity .12s ease,transform .16s ease;
+}
+.salatic-cursor.is-zoomable .salatic-cursor-magnifier {
+  opacity:1;
+  transform:scale(1);
+}
+.salatic-cursor.is-zoomed .salatic-cursor-magnifier path:last-child {
+  display:none;
+}
+@media(prefers-reduced-motion:reduce) {
+  .salatic-cursor,.salatic-cursor-magnifier {transition:none}
 }
 @media (hover:hover) and (pointer:fine) {
   html, body, body *, body *::before, body *::after {
@@ -1076,4 +1103,13 @@ button.works-file:hover,button.works-file:focus-visible {background:var(--blue);
 .works-folder:active {animation-play-state:paused}
 @media (prefers-reduced-motion:reduce) {
   .works-folder {animation:none}
+}
+
+/* While the image is actually fullscreen the native zoom-out pointer remains
+   visible above the browser fullscreen layer; our DOM cursor is hidden. */
+@media (hover:hover) and (pointer:fine) {
+  .case-stage:fullscreen img.case-kv,
+  .case-stage:-webkit-full-screen img.case-kv {
+    cursor:zoom-out!important;
+  }
 }
