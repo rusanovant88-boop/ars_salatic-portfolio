@@ -1212,7 +1212,7 @@ stageObserver.observe(artboard,{attributes:true,attributeFilter:['class']});
       stamp.remove();
       const index=stamps.indexOf(stamp);
       if(index!==-1)stamps.splice(index,1);
-    },1350);
+    },1950);
   }
 
   document.addEventListener('pointermove',event=>{
