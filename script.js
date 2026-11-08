@@ -907,18 +907,37 @@ stageObserver.observe(artboard,{attributes:true,attributeFilter:['class']});
   const stamps=[];
   const rotations=[-7,4,-4,7,2,-6,5,-3];
 
-  // Treat the works folder as a clean drop zone. Include half a thumbnail
-  // around its bounds so even the rotated edges can't cover the folder.
-  function overlapsWorksFolder(x,y){
-    const box=folder.getBoundingClientRect();
-    return x>=box.left-32 && x<=box.right+32
-      && y>=box.top-22 && y<=box.bottom+22;
+  // The previews may live only on EMPTY black space. Protect all actual
+  // home-screen content, including text, clickable elements, icons and
+  // hover portraits. Include half of the rotated 54x31 thumbnail as padding,
+  // so not even its edge overlaps a logo, link, or the works folder.
+  const protectedElements=Array.from(new Set([
+    ...document.querySelectorAll(
+      '.masthead .username, .masthead .role, .masthead .eyes, '+
+      '.username-photo, .contact-entry, .works-position, '+
+      '.bottom .signature-hit, .bottom .bio, .bonya-overlay'
+    ),
+    ...Array.from(artboard.querySelectorAll('button, a, [role="button"]'))
+      .filter(element=>!element.closest('.portfolio-stage'))
+  ]));
+
+  function overlapsContent(x,y){
+    const padX=35, padY=26;
+    for(const element of protectedElements){
+      const style=getComputedStyle(element);
+      if(style.display==='none'||style.visibility==='hidden'||Number(style.opacity)<0.02)continue;
+      const rect=element.getBoundingClientRect();
+      if(rect.width===0||rect.height===0)continue;
+      if(x+padX>rect.left&&x-padX<rect.right
+        &&y+padY>rect.top&&y-padY<rect.bottom)return true;
+    }
+    return false;
   }
 
-  function removeStampsOverWorksFolder(){
+  function removeBlockedStamps(){
     for(let i=stamps.length-1;i>=0;i--){
       const stamp=stamps[i];
-      if(overlapsWorksFolder(Number(stamp.dataset.x),Number(stamp.dataset.y))){
+      if(overlapsContent(Number(stamp.dataset.x),Number(stamp.dataset.y))){
         stamp.remove();
         stamps.splice(i,1);
       }
@@ -938,7 +957,7 @@ stageObserver.observe(artboard,{attributes:true,attributeFilter:['class']});
   }
 
   function stampAt(x,y){
-    if(overlapsWorksFolder(x,y))return;
+    if(overlapsContent(x,y))return;
     const stamp=document.createElement('span');
     stamp.className='home-work-stamp';
     stamp.dataset.x=String(x);
@@ -970,9 +989,10 @@ stageObserver.observe(artboard,{attributes:true,attributeFilter:['class']});
       if(stamps.length)clearTrail();
       return;
     }
-    // No thumbnails may appear on top of the folder itself.
-    removeStampsOverWorksFolder();
-    if(overlapsWorksFolder(event.clientX,event.clientY)){
+    // Remove existing thumbnails that now overlap revealed UI (for example
+    // Anton's photo or Bonya), and never stamp over any protected content.
+    removeBlockedStamps();
+    if(overlapsContent(event.clientX,event.clientY)){
       lastX=event.clientX;
       lastY=event.clientY;
       return;
@@ -992,6 +1012,11 @@ stageObserver.observe(artboard,{attributes:true,attributeFilter:['class']});
     stampAt(event.clientX,event.clientY);
   },{passive:true});
 
+  // Recheck when hover/focus reveals the portrait without cursor travel.
+  for(const target of protectedElements){
+    target.addEventListener('pointerenter',removeBlockedStamps,{passive:true});
+    target.addEventListener('focusin',removeBlockedStamps);
+  }
   const stageWatcher=new MutationObserver(()=>{
     if(!onHome())clearTrail();
   });
