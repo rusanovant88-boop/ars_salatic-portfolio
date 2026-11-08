@@ -81,7 +81,7 @@ button:focus-visible { outline:2px dashed var(--blue);outline-offset:4px; }
 .works-position { position:absolute; top:263px;left:625px;width:190px;height:235px; }
 .works-folder { position:absolute;inset:0;width:100%;height:100%;border:0; background:transparent; padding:0; cursor:pointer; appearance:none; }
 .folder-base { position:absolute;left:4.2px;top:48.8px;width:181.562px;height:181.562px;object-fit:contain;user-select:none;pointer-events:none; transition: opacity .12s linear; }
-.folder-name { position:absolute;left:68.9px;top:137px;color:#fff;font-size:16px;font-weight:700;line-height:19px;white-space:nowrap;pointer-events:none;transition:opacity .1s linear; }
+.folder-name { position:absolute;left:4.2px;top:137px;width:181.562px;text-align:center;color:#fff;font-size:16px;font-weight:700;line-height:19px;white-space:nowrap;pointer-events:none;transition:opacity .1s linear; }
 .folder-person { position:absolute;left:14.9px;top:3.97px;width:158.685px;height:195.148px;object-fit:contain; opacity:0;pointer-events:none;user-select:none; transition:opacity .12s linear; }
 /* Keep the exact original folder image visible at all times. */
 .works-folder:is(:hover,:focus-visible) .folder-name { opacity:0; }
@@ -1362,4 +1362,64 @@ button.works-file:hover,button.works-file:focus-visible {background:var(--blue);
     min-width:37px;
     font:700 13px/19px 'Courier New',Courier,monospace;
   }
+}
+
+
+/* Home desktop remains a 1440x900 artboard. The contact row acts as a
+   structural grouping only until mobile layout turns it into a real row. */
+.home-contact-row {display:contents}
+@media (max-width:900px) {
+  /* One consistent 13px mobile text scale; hierarchy comes from weight. */
+  .masthead {height:91px}
+  .masthead .username {font:700 13px/20px 'Courier New',Courier,monospace}
+  .masthead .role {
+    font:700 13px/20px 'Courier New',Courier,monospace;
+    max-width:calc(100vw - 40px);
+  }
+  .works-folder .folder-name {font:700 13px/20px 'Courier New',Courier,monospace}
+  .bottom .bio {font:400 13px/20px 'Courier New',Courier,monospace}
+  .bottom .bonya-trigger {font:700 13px/20px 'Courier New',Courier,monospace}
+
+  /* Language switch sits next to Contact, well away from the eyes. */
+  .home-contact-row {
+    position:relative;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:16px;
+    min-height:44px;
+    margin:0 20px 10px;
+  }
+  .home-contact-row .contact-entry {
+    flex:0 1 auto;
+    min-width:0;
+    margin:0;
+    padding:10px 0;
+    font:700 13px/20px 'Courier New',Courier,monospace;
+  }
+  .home-contact-row .language-toggle-home {
+    position:relative;
+    inset:auto;
+    display:inline-flex;
+    flex:none;
+    align-items:center;
+    justify-content:center;
+    width:44px;
+    min-width:44px;
+    height:44px;
+    margin:0;
+    padding:0;
+    font:700 13px/20px 'Courier New',Courier,monospace;
+    touch-action:manipulation;
+  }
+  /* Override the old <=360px reductions and the Russian-only 12px rule. */
+  .artboard[data-lang="ru"] .masthead .role {font-size:13px}
+  .artboard.stage-exiting .home-contact-row {pointer-events:none;opacity:0}
+  .artboard.stage-exiting.stage-exited .home-contact-row {display:none!important}
+}
+@media (max-width:360px) {
+  .masthead .username,.masthead .role {font-size:13px}
+  /* The eye illustration gets its own line on very narrow phones. */
+  .masthead {height:113px}
+  .masthead .eyes {top:78px;right:20px}
 }
