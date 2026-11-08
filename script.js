@@ -470,7 +470,7 @@ async function toggleKVFullscreen(){
 caseStage.addEventListener('click',function(event){
   if(!event.target.matches('img.case-kv'))return;
   // Unlike the two-up layout, the reader opens one ORIGINAL vertical print.
-  if(event.target.closest('.case-poster-pair')){
+  if(event.target.closest('.case-poster-pair')||caseMedia[casePage]?.reader){
     openPosterReader(event.target.currentSrc||event.target.src,event.target.alt);
   }else{
     toggleKVFullscreen();
@@ -675,6 +675,19 @@ const projects={
       {type:'video',vimeoId:'679473458',label:'Short Shot Fest — Life’s Too Short — Case Study'},
       {type:'kv',image:'assets/short-shot-fest-lifes-too-short-04-mockups.webp',label:'Short Shot Fest — Campaign Mockups'}
     ]
+  },
+  mitchmeDogsFirst:{
+    title:'mitch&me. dogs were the first',
+    role:'role: senior art director',
+    paragraphs:[
+      "on cosmonautics day, we usually celebrate the people who conquered space. but before humans ventured into space, dogs paved the way. many of them never made it back to earth.",
+      "for mitch&me, we wanted to pay tribute to these forgotten heroes. we created a print featuring a dog's paw print on the moon and a film made from archival footage of early space experiments. the result was \"dogs were the first,\" a campaign honoring the animals that gave their lives in the name of scientific progress."
+    ],
+    media:[
+      {type:'kv',image:'assets/mitchme-dogs-first-print-en.jpg',label:'mitch&me — Dogs Were the First — English Print',reader:true},
+      {type:'kv',image:'assets/mitchme-dogs-first-print-ru.jpg',label:'mitch&me — Dogs Were the First — Russian Print',reader:true},
+      {type:'video',vimeoId:'681410004',label:'mitch&me — Dogs Were the First — Case Study'}
+    ]
   }
 };
 let caseMedia=projects[activeProject].media;
@@ -785,7 +798,7 @@ function showWorksList(){
   worksWindow.hidden=false;
   setkaCase.hidden=true;
   scene='empty';
-  comingNext.textContent='Selected works. Sixteen projects are available.';
+  comingNext.textContent='Selected works. Seventeen projects are available.';
   if(window.innerWidth<=900)window.scrollTo({top:0,behavior:'instant'});
 }
 // The same glyph collector and gravity used by Home → Works and Works → Case
@@ -948,6 +961,7 @@ bindCaseRow('openMitchmeHalloween','mitchmeHalloweenHoverPreview','mitchmeHallow
 bindCaseRow('openDonorsearch','donorsearchHoverPreview','donorsearch');
 bindCaseRow('openTaezhnyDar','taezhnyDarHoverPreview','taezhnyDar');
 bindCaseRow('openShortShotFest','shortShotFestHoverPreview','shortShotFest');
+bindCaseRow('openMitchmeDogsFirst','mitchmeDogsFirstHoverPreview','mitchmeDogsFirst');
 // Locally prepared screenshot-based thumbnail is preferred; a Vimeo thumbnail
 // provides a temporary fallback until the WebP is committed to assets/.
 const dodoPreviewImage=document.querySelector('#dodoHoverPreview img');
@@ -972,7 +986,7 @@ document.getElementById('mobileStageLogo').addEventListener('click',function(){a
 document.getElementById('mobileWorksBack').addEventListener('click',returnHomeWithLetters);
 document.getElementById('mobileCaseBack').addEventListener('click',backToWorksWithLetters);
 document.getElementById('worksClose').addEventListener('click',returnHomeWithLetters);
-const projectOrder=['litres','setka','kion','triazavirin','dodoMath','dixy','kazakhstan','akademichesky','dodo','avionero','mikenco','mitchme','mitchmeHalloween','donorsearch','taezhnyDar','shortShotFest'];
+const projectOrder=['litres','setka','kion','triazavirin','dodoMath','dixy','kazakhstan','akademichesky','dodo','avionero','mikenco','mitchme','mitchmeHalloween','donorsearch','taezhnyDar','shortShotFest','mitchmeDogsFirst'];
 function stepCaseMedia(direction){
   if(caseMedia.length===1){
     const index=projectOrder.indexOf(activeProject);
