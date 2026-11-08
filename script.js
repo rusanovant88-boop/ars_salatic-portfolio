@@ -542,6 +542,20 @@ const projects={
       {type:'kv',image:'assets/mitchme-christmas-print.webp',fallbackImage:'https://vumbnail.com/1244824452.jpg',label:'mitch&me — Christmas Is Easy to Ruin — Print'},
       {type:'video',vimeoId:'1244824452',label:'mitch&me — Christmas Is Easy to Ruin'}
     ]
+  },
+  mitchmeHalloween:{
+    title:'mitch&me. non-scary halloween',
+    role:'role: senior art director',
+    paragraphs:[
+      "large black dogs and so-called fighting breeds are often feared, making it especially difficult for them to find new homes. for dog shampoo brand mitch&me, we decided to challenge these stereotypes using the scariest holiday of the year: halloween.",
+      "instead of telling traditional horror stories, we showed how a big, intimidating dog could actually make you feel safe in frightening situations. the campaign gained widespread attention across the media and social networks. most importantly, it helped 12 shelter dogs find new homes."
+    ],
+    media:[
+      {type:'kv',image:'assets/mitchme-halloween-freddy.webp',label:'mitch&me — Non-Scary Halloween — Freddy'},
+      {type:'kv',image:'assets/mitchme-halloween-jason.webp',label:'mitch&me — Non-Scary Halloween — Jason'},
+      {type:'kv',image:'assets/mitchme-halloween-pennywise.webp',label:'mitch&me — Non-Scary Halloween — Pennywise'},
+      {type:'video',vimeoId:'519386527',label:'mitch&me — Non-Scary Halloween — Case Study'}
+    ]
   }
 };
 let caseMedia=projects[activeProject].media;
@@ -614,7 +628,7 @@ function showWorksList(){
   worksWindow.hidden=false;
   setkaCase.hidden=true;
   scene='empty';
-  comingNext.textContent='Selected works. Twelve projects are available.';
+  comingNext.textContent='Selected works. Thirteen projects are available.';
   if(window.innerWidth<=900)window.scrollTo({top:0,behavior:'instant'});
 }
 // The same glyph collector and gravity used by Home → Works and Works → Case
@@ -717,10 +731,14 @@ function bindCaseRow(rowId,previewId,projectKey){
   mobilePreview.tabIndex=-1;
   mobilePreview.setAttribute('aria-hidden','true');
   mobilePreview.setAttribute('aria-label','Open '+projects[projectKey].title.replace(/\s+/g,' ')+' case');
-  const image=preview.querySelector('img').cloneNode(true);
-  image.alt='';
-  image.loading='lazy';
-  image.draggable=false;
+  const slideshow=preview.querySelector('.preview-slides');
+  const image=slideshow?slideshow.cloneNode(true):preview.querySelector('img').cloneNode(true);
+  const previewImages=slideshow?image.querySelectorAll('img'):[image];
+  previewImages.forEach(img=>{
+    img.alt='';
+    img.loading='lazy';
+    img.draggable=false;
+  });
   const openLabel=document.createElement('span');
   openLabel.className='mobile-case-open';
   openLabel.textContent='open case ↗';
@@ -769,6 +787,7 @@ bindCaseRow('openAvionero','avioneroHoverPreview','avionero');
 bindCaseRow('openAkademichesky','akademicheskyHoverPreview','akademichesky');
 bindCaseRow('openMikenco','mikencoHoverPreview','mikenco');
 bindCaseRow('openMitchme','mitchmeHoverPreview','mitchme');
+bindCaseRow('openMitchmeHalloween','mitchmeHalloweenHoverPreview','mitchmeHalloween');
 // Locally prepared screenshot-based thumbnail is preferred; a Vimeo thumbnail
 // provides a temporary fallback until the WebP is committed to assets/.
 const dodoPreviewImage=document.querySelector('#dodoHoverPreview img');
@@ -793,7 +812,7 @@ document.getElementById('mobileStageLogo').addEventListener('click',function(){a
 document.getElementById('mobileWorksBack').addEventListener('click',returnHomeWithLetters);
 document.getElementById('mobileCaseBack').addEventListener('click',backToWorksWithLetters);
 document.getElementById('worksClose').addEventListener('click',returnHomeWithLetters);
-const projectOrder=['litres','setka','kion','triazavirin','dodoMath','dixy','kazakhstan','akademichesky','dodo','avionero','mikenco','mitchme'];
+const projectOrder=['litres','setka','kion','triazavirin','dodoMath','dixy','kazakhstan','akademichesky','dodo','avionero','mikenco','mitchme','mitchmeHalloween'];
 function stepCaseMedia(direction){
   if(caseMedia.length===1){
     const index=projectOrder.indexOf(activeProject);
