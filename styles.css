@@ -1156,3 +1156,45 @@ button.works-file:hover,button.works-file:focus-visible {background:var(--blue);
   .preview-slides > img {animation:none!important;opacity:0!important}
   .preview-slides > img:first-child {opacity:1!important}
 }
+
+/* Tiny images trail the pointer only on the desktop home screen.
+   Brief, sparse and non-interactive so text and navigation remain usable. */
+.home-work-trail {
+  position:fixed;
+  inset:0;
+  z-index:30;
+  overflow:hidden;
+  pointer-events:none;
+  contain:layout style;
+}
+.home-work-stamp {
+  position:absolute;
+  display:block;
+  width:54px;
+  height:31px;
+  overflow:hidden;
+  border:1px solid rgba(0,152,226,.72);
+  border-radius:3px;
+  background:#000;
+  box-shadow:0 1px 5px rgba(0,0,0,.3);
+  pointer-events:none;
+  transform:translate(-50%,-50%) rotate(var(--trail-rotation));
+  animation:homeWorkTrailFade .85s ease-out both;
+  will-change:transform,opacity;
+}
+.home-work-stamp img {
+  display:block;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  object-position:center;
+}
+@keyframes homeWorkTrailFade {
+  0%   {opacity:0;transform:translate(-50%,-50%) rotate(var(--trail-rotation)) scale(.8)}
+  14%  {opacity:.85;transform:translate(-50%,-50%) rotate(var(--trail-rotation)) scale(1)}
+  58%  {opacity:.72}
+  100% {opacity:0;transform:translate(-50%,calc(-50% + 11px)) rotate(var(--trail-rotation)) scale(.93)}
+}
+@media (hover:none),(pointer:coarse),(max-width:900px),(prefers-reduced-motion:reduce) {
+  .home-work-trail {display:none!important}
+}
