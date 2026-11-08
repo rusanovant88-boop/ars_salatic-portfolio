@@ -1198,3 +1198,113 @@ button.works-file:hover,button.works-file:focus-visible {background:var(--blue);
 @media (hover:none),(pointer:coarse),(max-width:900px),(prefers-reduced-motion:reduce) {
   .home-work-trail {display:none!important}
 }
+
+
+/* Short Shot Fest: the two vertical source prints stay separate and retain
+   their 1454x2047 original pixels, even though the slide shows them side by side. */
+.case-stage .case-poster-pair {
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:4%;
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  background:#000;
+}
+.case-stage .case-poster-pair img.case-kv {
+  display:block;
+  flex:0 1 auto;
+  width:auto;
+  height:100%;
+  max-width:48%;
+  max-height:100%;
+  object-fit:contain;
+  background:transparent;
+}
+
+/* Click an individual poster to inspect the ORIGINAL image, zoomable to 600%.
+   The native modal sits outside the scaled 1440px artboard. */
+.poster-reader {
+  position:fixed;
+  inset:0;
+  width:100vw;
+  height:100dvh;
+  max-width:none;
+  max-height:none;
+  margin:0;
+  padding:0;
+  border:0;
+  overflow:hidden;
+  color:#0098e2;
+  background:#000;
+  z-index:2147483647;
+}
+.poster-reader::backdrop {background:#000}
+.poster-reader-view {
+  position:absolute;
+  inset:0;
+  display:block;
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  outline:none;
+  touch-action:none;
+  cursor:zoom-in;
+}
+.poster-reader-view.is-zoomed {cursor:grab}
+.poster-reader-view.is-dragging {cursor:grabbing}
+.poster-reader-image {
+  display:block;
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  transform-origin:center center;
+  user-select:none;
+  pointer-events:none;
+}
+.poster-reader-controls {
+  position:absolute;
+  z-index:3;
+  top:max(18px,env(safe-area-inset-top));
+  right:max(18px,env(safe-area-inset-right));
+  display:flex;
+  align-items:center;
+  gap:8px;
+  padding:7px;
+  border:1px solid #0098e2;
+  border-radius:9px;
+  background:rgba(0,0,0,.92);
+  font:14px 'Courier New',Courier,monospace;
+}
+.poster-reader-controls button {
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:34px;
+  height:34px;
+  border:1px solid #0098e2;
+  background:#000;
+  color:#0098e2;
+  border-radius:5px;
+  font:24px 'Courier New',Courier,monospace;
+  cursor:pointer;
+}
+.poster-reader-controls button:hover,
+.poster-reader-controls button:focus-visible {
+  background:#0098e2;
+  color:#000;
+}
+.poster-reader-level {min-width:49px;text-align:center;font-size:13px}
+.poster-reader-hint {padding:0 10px;color:#0098e2;white-space:nowrap}
+@media(max-width:600px){
+  .poster-reader-hint{display:none}
+  .poster-reader-controls {top:12px;right:12px;gap:5px}
+  .poster-reader-controls button {width:33px;height:33px}
+}
+@media (hover:hover) and (pointer:fine) {
+  .poster-reader-controls button {cursor:pointer!important}
+  .poster-reader-view {cursor:zoom-in!important}
+  .poster-reader-view.is-zoomed {cursor:grab!important}
+  .poster-reader-view.is-dragging {cursor:grabbing!important}
+}
