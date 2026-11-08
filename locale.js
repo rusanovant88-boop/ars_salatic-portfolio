@@ -127,8 +127,9 @@
   }
 };
   let language='en';
-  // One switch on Home only; the selected language remains active in Works and Cases.
-  const toggles=[document.getElementById('localeToggle')].filter(Boolean);
+  // The switch is available on Home and within an open Case, never in Works.
+  // Both controls show the same locale; switching doesn't reload Vimeo media.
+  const toggles=[document.getElementById('localeToggle'),document.getElementById('caseLocaleToggle')].filter(Boolean);
   if(!toggles.length)return;
   const englishBio=Array.from(document.querySelectorAll('.bio > span')).map(s=>s.firstChild?.nodeType===Node.TEXT_NODE?s.firstChild.nodeValue:'');
   const russianBio=[
