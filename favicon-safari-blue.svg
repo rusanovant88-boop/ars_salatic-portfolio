@@ -1,7 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="a">
-  <rect width="128" height="128" fill="#0098e2"/>
-  <!-- Match the homepage's Courier New lettering; use system fallback if absent. -->
-  <text x="64" y="117" text-anchor="middle" fill="#fff"
-        font-family="Courier New, Courier, monospace" font-size="205"
+  <rect width="128" height="128" rx="16" ry="16" fill="#0098e2"/>
+  <text x="64" y="107" text-anchor="middle" fill="#fff"
+        font-family="Courier New, Courier, monospace" font-size="190"
         font-weight="400">a</text>
 </svg>
