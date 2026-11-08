@@ -830,6 +830,9 @@ stageObserver.observe(artboard,{attributes:true,attributeFilter:['class']});
   const cursor=document.createElement('div');
   cursor.className='salatic-cursor';
   cursor.setAttribute('aria-hidden','true');
+  // The magnifier is part of the original difference-blended cursor, not a
+  // second overlay. It appears only while a KV/print can be opened.
+  cursor.innerHTML='<svg class="salatic-cursor-magnifier" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6"/><path d="m15 15 5 5M10.5 7.5v6M7.5 10.5h6"/></svg>';
   document.body.appendChild(cursor);
   const hide=()=>{cursor.style.visibility='hidden';};
   const move=(event)=>{
@@ -842,6 +845,11 @@ stageObserver.observe(artboard,{attributes:true,attributeFilter:['class']});
       hide();
       return;
     }
+    // Render the zoom affordance in the same cyan circle on any portfolio KV.
+    // Fallback fullscreen uses a minus indicator for the return action.
+    const onPrint=hoveredElement?.matches?.('.case-stage img.case-kv')===true;
+    cursor.classList.toggle('is-zoomable',onPrint);
+    cursor.classList.toggle('is-zoomed',onPrint&&caseStage.classList.contains('kv-fallback-fullscreen'));
     cursor.style.left=event.clientX+'px';
     cursor.style.top=event.clientY+'px';
     cursor.style.visibility='visible';
