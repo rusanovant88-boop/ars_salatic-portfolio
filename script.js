@@ -567,6 +567,19 @@ const projects={
     media:[
       {type:'video',vimeoId:'1244829007',label:'Donorsearch — 10% for Life — Case Study'}
     ]
+  },
+  taezhnyDar:{
+    title:'taezhny dar. exists in nature',
+    role:'role: senior art director',
+    paragraphs:[
+      "taezhny dar is a soft drink made with real berries and herbs. but the word \"natural\" has been so overused in advertising that we decided to avoid it altogether. instead, we wanted to show the product as it really is, without any unnecessary polish.",
+      "we took inspiration from a familiar sight in russia: people selling freshly picked wild berries in cut-off plastic bottles along the roadside. we did the same with taezhny dar bottles, filled them with real berries, and cast actual roadside vendors in the commercials. that's how the \"exists in nature\" campaign came to life."
+    ],
+    media:[
+      {type:'video',vimeoId:'1244831185',label:'Taezhny Dar — Exists in Nature — Film 01'},
+      {type:'video',vimeoId:'1244831184',label:'Taezhny Dar — Exists in Nature — Film 02'},
+      {type:'video',vimeoId:'1244831183',label:'Taezhny Dar — Exists in Nature — Film 03'}
+    ]
   }
 };
 let caseMedia=projects[activeProject].media;
@@ -639,7 +652,7 @@ function showWorksList(){
   worksWindow.hidden=false;
   setkaCase.hidden=true;
   scene='empty';
-  comingNext.textContent='Selected works. Fourteen projects are available.';
+  comingNext.textContent='Selected works. Fifteen projects are available.';
   if(window.innerWidth<=900)window.scrollTo({top:0,behavior:'instant'});
 }
 // The same glyph collector and gravity used by Home → Works and Works → Case
@@ -800,6 +813,7 @@ bindCaseRow('openMikenco','mikencoHoverPreview','mikenco');
 bindCaseRow('openMitchme','mitchmeHoverPreview','mitchme');
 bindCaseRow('openMitchmeHalloween','mitchmeHalloweenHoverPreview','mitchmeHalloween');
 bindCaseRow('openDonorsearch','donorsearchHoverPreview','donorsearch');
+bindCaseRow('openTaezhnyDar','taezhnyDarHoverPreview','taezhnyDar');
 // Locally prepared screenshot-based thumbnail is preferred; a Vimeo thumbnail
 // provides a temporary fallback until the WebP is committed to assets/.
 const dodoPreviewImage=document.querySelector('#dodoHoverPreview img');
@@ -824,7 +838,7 @@ document.getElementById('mobileStageLogo').addEventListener('click',function(){a
 document.getElementById('mobileWorksBack').addEventListener('click',returnHomeWithLetters);
 document.getElementById('mobileCaseBack').addEventListener('click',backToWorksWithLetters);
 document.getElementById('worksClose').addEventListener('click',returnHomeWithLetters);
-const projectOrder=['litres','setka','kion','triazavirin','dodoMath','dixy','kazakhstan','akademichesky','dodo','avionero','mikenco','mitchme','mitchmeHalloween','donorsearch'];
+const projectOrder=['litres','setka','kion','triazavirin','dodoMath','dixy','kazakhstan','akademichesky','dodo','avionero','mikenco','mitchme','mitchmeHalloween','donorsearch','taezhnyDar'];
 function stepCaseMedia(direction){
   if(caseMedia.length===1){
     const index=projectOrder.indexOf(activeProject);
