@@ -1134,9 +1134,10 @@ stageObserver.observe(artboard,{attributes:true,attributeFilter:['class']});
   }
 
   function stampAt(x,y,speed=0){
-    // Slow movement: 54x31 px. Fast flicks: up to 104x60 px.
-    const strength=Math.max(0,Math.min(1,(speed-.35)/2.5));
-    const width=Math.round(54+50*strength);
+    // Slow movement: 54x31 px. Fast flicks: up to 160x92 px.
+    // Grow earlier on real mouse flicks while keeping slow movement subtle.
+    const strength=Math.max(0,Math.min(1,(speed-.3)/1.9));
+    const width=Math.round(54+106*strength);
     const height=Math.round(width*31/54);
     const padX=width/2+8,padY=height/2+8;
 
