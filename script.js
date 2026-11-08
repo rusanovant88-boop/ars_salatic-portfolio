@@ -372,12 +372,82 @@ const caseContribution=document.getElementById('caseContribution');
 const caseStage=document.getElementById('caseStage');
 const casePlaceholder=document.getElementById('casePlaceholder');
 const casePagination=document.getElementById('casePagination');
+const posterReader=document.createElement('dialog');
+posterReader.className='poster-reader';
+posterReader.setAttribute('aria-label','Read print at full size');
+posterReader.innerHTML=`
+  <div class="poster-reader-view" tabindex="0" aria-label="Drag to move the print; use plus and minus to zoom">
+    <img class="poster-reader-image" alt="" draggable="false">
+  </div>
+  <div class="poster-reader-controls" aria-label="Print zoom controls">
+    <span class="poster-reader-hint">drag to read</span>
+    <button type="button" data-action="out" aria-label="Zoom out">−</button>
+    <output class="poster-reader-level">100%</output>
+    <button type="button" data-action="in" aria-label="Zoom in">+</button>
+    <button type="button" data-action="close" aria-label="Close fullscreen print">×</button>
+  </div>`;
+document.body.appendChild(posterReader);
+const posterReaderImage=posterReader.querySelector('.poster-reader-image');
+const posterReaderView=posterReader.querySelector('.poster-reader-view');
+const posterReaderLevel=posterReader.querySelector('.poster-reader-level');
+let posterZoom=1,posterOffsetX=0,posterOffsetY=0;
+function renderPosterReader(){
+  posterReaderImage.style.transform='translate('+posterOffsetX+'px,'+posterOffsetY+'px) scale('+posterZoom+')';
+  posterReaderLevel.textContent=Math.round(posterZoom*100)+'%';
+  posterReaderView.classList.toggle('is-zoomed',posterZoom>1);
+}
+function setPosterZoom(value){
+  const next=Math.max(1,Math.min(6,value));
+  if(next===1){posterOffsetX=0;posterOffsetY=0;}
+  posterZoom=next;
+  renderPosterReader();
+}
+function openPosterReader(src,label){
+  posterZoom=1;posterOffsetX=0;posterOffsetY=0;
+  posterReaderImage.src=src;
+  posterReaderImage.alt=label;
+  renderPosterReader();
+  if(!posterReader.open)posterReader.showModal();
+  posterReaderView.focus({preventScroll:true});
+}
+posterReader.querySelector('[data-action="close"]').addEventListener('click',()=>posterReader.close());
+posterReader.querySelector('[data-action="in"]').addEventListener('click',()=>setPosterZoom(posterZoom*1.6));
+posterReader.querySelector('[data-action="out"]').addEventListener('click',()=>setPosterZoom(posterZoom/1.6));
+posterReader.addEventListener('close',()=>{posterReaderImage.removeAttribute('src');});
+posterReader.addEventListener('keydown',event=>{
+  // Do not let the site's global Escape or arrow navigation close the case.
+  event.stopPropagation();
+  if(event.key==='Escape')posterReader.close();
+  if(event.key==='+'||event.key==='=')setPosterZoom(posterZoom*1.6);
+  if(event.key==='-')setPosterZoom(posterZoom/1.6);
+});
+posterReaderView.addEventListener('wheel',event=>{
+  event.preventDefault();
+  setPosterZoom(posterZoom*(event.deltaY<0?1.12:1/1.12));
+},{passive:false});
+let posterDrag=null;
+posterReaderView.addEventListener('pointerdown',event=>{
+  if(posterZoom<=1)return;
+  posterDrag={id:event.pointerId,x:event.clientX,y:event.clientY,startX:posterOffsetX,startY:posterOffsetY};
+  posterReaderView.setPointerCapture(event.pointerId);
+  posterReaderView.classList.add('is-dragging');
+});
+posterReaderView.addEventListener('pointermove',event=>{
+  if(!posterDrag||event.pointerId!==posterDrag.id)return;
+  posterOffsetX=posterDrag.startX+event.clientX-posterDrag.x;
+  posterOffsetY=posterDrag.startY+event.clientY-posterDrag.y;
+  renderPosterReader();
+});
+function endPosterDrag(){posterDrag=null;posterReaderView.classList.remove('is-dragging');}
+posterReaderView.addEventListener('pointerup',endPosterDrag);
+posterReaderView.addEventListener('pointercancel',endPosterDrag);
+
 // Only KV images use the portfolio fullscreen viewer. Vimeo uses its native controls.
 function isMediaFullscreen(){
   return document.fullscreenElement===caseStage || document.webkitFullscreenElement===caseStage;
 }
 async function toggleKVFullscreen(){
-  if(caseMedia[casePage]?.type!=='kv')return;
+  if(!['kv','pair'].includes(caseMedia[casePage]?.type))return;
   const fallbackClass='kv-fallback-fullscreen';
   if(caseStage.classList.contains(fallbackClass)){
     caseStage.classList.remove(fallbackClass);
@@ -398,8 +468,13 @@ async function toggleKVFullscreen(){
   }
 }
 caseStage.addEventListener('click',function(event){
-  // Click directly on the KV to open it; click again to exit.
-  if(event.target.matches('img.case-kv'))toggleKVFullscreen();
+  if(!event.target.matches('img.case-kv'))return;
+  // Unlike the two-up layout, the reader opens one ORIGINAL vertical print.
+  if(event.target.closest('.case-poster-pair')){
+    openPosterReader(event.target.currentSrc||event.target.src,event.target.alt);
+  }else{
+    toggleKVFullscreen();
+  }
 });
 
 let casePage=0;
@@ -589,8 +664,14 @@ const projects={
       "the idea caught on so well that people started coming up with their own endings. in china, it even sparked a social media challenge where users shared alternative endings to the stories. the campaign also won two bronze awards at the epica awards for copywriting and storytelling."
     ],
     media:[
-      {type:'kv',image:'assets/short-shot-fest-lifes-too-short-01-prints-en.webp',label:'Short Shot Fest — Two English Print Stories'},
-      {type:'kv',image:'assets/short-shot-fest-lifes-too-short-02-prints-ru.webp',label:'Short Shot Fest — Two Russian Print Stories'},
+      {type:'pair',label:'Short Shot Fest — Two English Print Stories',fallbackImage:'assets/short-shot-fest-lifes-too-short-01-prints-en.webp',images:[
+        {image:'assets/short-shot-fest-print-en-01.jpg',label:'Short Shot Fest — English Print 01'},
+        {image:'assets/short-shot-fest-print-en-02.jpg',label:'Short Shot Fest — English Print 02'}
+      ]},
+      {type:'pair',label:'Short Shot Fest — Two Russian Print Stories',fallbackImage:'assets/short-shot-fest-lifes-too-short-02-prints-ru.webp',images:[
+        {image:'assets/short-shot-fest-print-ru-01.jpg',label:'Short Shot Fest — Russian Print 01'},
+        {image:'assets/short-shot-fest-print-ru-02.jpg',label:'Short Shot Fest — Russian Print 02'}
+      ]},
       {type:'video',vimeoId:'679473458',label:'Short Shot Fest — Life’s Too Short — Case Study'},
       {type:'kv',image:'assets/short-shot-fest-lifes-too-short-04-mockups.webp',label:'Short Shot Fest — Campaign Mockups'}
     ]
@@ -600,8 +681,9 @@ let caseMedia=projects[activeProject].media;
 
 function clearPlayer(){
   caseStage.classList.remove('kv-fallback-fullscreen');
-  // Always stop the previous Vimeo film and remove its iframe.
-  for(const media of caseStage.querySelectorAll('iframe, img.case-kv')){
+  if(posterReader.open)posterReader.close();
+  // Stop Vimeo and clean both single artboards and original-resolution pairs.
+  for(const media of caseStage.querySelectorAll('iframe, .case-poster-pair, img.case-kv')){
     media.remove();
   }
 }
@@ -610,7 +692,44 @@ function showCaseMedia(index){
   clearPlayer();
   const item=caseMedia[casePage];
   casePagination.textContent=String(casePage+1).padStart(2,'0')+' / '+String(caseMedia.length).padStart(2,'0');
-  if(item.type==='video'){
+  if(item.type==='pair'){
+    casePlaceholder.textContent='loading / '+item.label;
+    casePlaceholder.hidden=false;
+    const pair=document.createElement('div');
+    pair.className='case-poster-pair';
+    pair.setAttribute('aria-label',item.label);
+    let loaded=0,failed=false;
+    const showPreviousLayout=()=>{
+      if(failed)return;
+      failed=true;
+      pair.remove();
+      // Keep the existing two-up artwork visible until the full-size
+      // original files have been uploaded into assets/.
+      const fallback=document.createElement('img');
+      fallback.className='case-kv';
+      fallback.alt=item.label;
+      fallback.onload=()=>{if(fallback.isConnected)casePlaceholder.hidden=true;};
+      fallback.onerror=()=>{fallback.remove();casePlaceholder.textContent='High-resolution prints not uploaded yet';};
+      fallback.src=item.fallbackImage;
+      caseStage.appendChild(fallback);
+    };
+    for(const poster of item.images){
+      const image=document.createElement('img');
+      image.className='case-kv case-poster-original';
+      image.alt=poster.label;
+      image.title='Click to read this print at full resolution';
+      image.decoding='async';
+      image.draggable=false;
+      image.onload=()=>{
+        loaded++;
+        if(!failed&&loaded===item.images.length&&pair.isConnected)casePlaceholder.hidden=true;
+      };
+      image.onerror=showPreviousLayout;
+      image.src=poster.image;
+      pair.appendChild(image);
+    }
+    caseStage.appendChild(pair);
+  }else if(item.type==='video'){
     casePlaceholder.hidden=true;
     const iframe=document.createElement('iframe');
     iframe.src='https://player.vimeo.com/video/'+item.vimeoId+'?title=0&byline=0&portrait=0&dnt=1&transparent=0';
