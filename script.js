@@ -986,7 +986,7 @@ document.getElementById('mobileStageLogo').addEventListener('click',function(){a
 document.getElementById('mobileWorksBack').addEventListener('click',returnHomeWithLetters);
 document.getElementById('mobileCaseBack').addEventListener('click',backToWorksWithLetters);
 document.getElementById('worksClose').addEventListener('click',returnHomeWithLetters);
-const projectOrder=['litres','setka','kion','triazavirin','dodoMath','dixy','kazakhstan','akademichesky','dodo','avionero','mikenco','mitchme','mitchmeHalloween','donorsearch','taezhnyDar','shortShotFest','mitchmeDogsFirst'];
+const projectOrder=['litres','setka','kion','mitchmeHalloween','triazavirin','dodoMath','dixy','shortShotFest','kazakhstan','akademichesky','dodo','mitchme','avionero','mikenco','donorsearch','mitchmeDogsFirst','taezhnyDar'];
 function stepCaseMedia(direction){
   if(caseMedia.length===1){
     const index=projectOrder.indexOf(activeProject);
