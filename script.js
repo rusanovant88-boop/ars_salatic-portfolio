@@ -936,12 +936,12 @@ stageObserver.observe(artboard,{attributes:true,attributeFilter:['class']});
     stamp.appendChild(img);
     trail.appendChild(stamp);
     stamps.push(stamp);
-    while(stamps.length>8)stamps.shift().remove();
+    while(stamps.length>10)stamps.shift().remove();
     window.setTimeout(()=>{
       stamp.remove();
       const index=stamps.indexOf(stamp);
       if(index!==-1)stamps.splice(index,1);
-    },850);
+    },1350);
   }
 
   document.addEventListener('pointermove',event=>{
@@ -949,9 +949,16 @@ stageObserver.observe(artboard,{attributes:true,attributeFilter:['class']});
       if(stamps.length)clearTrail();
       return;
     }
-    if(lastX===null){lastX=event.clientX;lastY=event.clientY;return;}
-    if(Math.hypot(event.clientX-lastX,event.clientY-lastY)<64)return;
-    if(event.timeStamp-lastStampTime<80)return;
+    if(lastX===null){
+      lastX=event.clientX;
+      lastY=event.clientY;
+      // Show a first tiny card immediately, so the affordance is discoverable.
+      lastStampTime=event.timeStamp;
+      stampAt(event.clientX,event.clientY);
+      return;
+    }
+    if(Math.hypot(event.clientX-lastX,event.clientY-lastY)<36)return;
+    if(event.timeStamp-lastStampTime<65)return;
     lastX=event.clientX;lastY=event.clientY;
     lastStampTime=event.timeStamp;
     stampAt(event.clientX,event.clientY);
