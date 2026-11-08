@@ -1179,7 +1179,8 @@ button.works-file:hover,button.works-file:focus-visible {background:var(--blue);
   box-shadow:0 1px 5px rgba(0,0,0,.3);
   pointer-events:none;
   transform:translate(-50%,-50%) rotate(var(--trail-rotation));
-  animation:homeWorkTrailFall 1.35s linear both;
+  animation:homeWorkTrailFall 1.35s cubic-bezier(.27,.16,.67,1) both,
+            homeWorkTrailDissolve 1.35s linear both;
   will-change:transform,opacity;
 }
 .home-work-stamp img {
@@ -1189,28 +1190,22 @@ button.works-file:hover,button.works-file:focus-visible {background:var(--blue);
   object-fit:cover;
   object-position:center;
 }
-/* Same downward-accelerating gravity family as the falling letters:
-   a short visible hang, then a soft drop with drift, spin and shrinking. */
+/* No hang time: the card starts descending on the very first frame.
+   One continuous gravitational arc carries the drift, rotation and shrink.
+   Opacity is animated separately to keep it visible while moving. */
 @keyframes homeWorkTrailFall {
   0% {
-    opacity:0;
-    transform:translate(-50%,-50%) rotate(var(--trail-rotation)) scale(.8);
-    animation-timing-function:cubic-bezier(.2,.8,.2,1);
-  }
-  11% {
-    opacity:.96;
-    transform:translate(-50%,-50%) rotate(var(--trail-rotation)) scale(1);
-    animation-timing-function:cubic-bezier(.42,0,1,1);
-  }
-  44% {
-    opacity:.93;
-    transform:translate(-50%,-50%) translate3d(var(--trail-drift-mid),var(--trail-drop-mid),0) rotate(var(--trail-rotation-mid)) scale(.99);
-    animation-timing-function:cubic-bezier(.42,0,1,1);
+    transform:translate(-50%,-50%) translate3d(0,0,0) rotate(var(--trail-rotation)) scale(.97);
   }
   100% {
-    opacity:0;
     transform:translate(-50%,-50%) translate3d(var(--trail-drift),var(--trail-drop),0) rotate(var(--trail-rotation-end)) scale(.84);
   }
+}
+@keyframes homeWorkTrailDissolve {
+  0%   {opacity:.88}
+  12%  {opacity:.98}
+  67%  {opacity:.92}
+  100% {opacity:0}
 }
 @media (hover:none),(pointer:coarse),(max-width:900px),(prefers-reduced-motion:reduce) {
   .home-work-trail {display:none!important}
