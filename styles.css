@@ -1313,7 +1313,7 @@ button.works-file:hover,button.works-file:focus-visible {background:var(--blue);
 .language-toggle {
   position:absolute;
   top:27px;
-  right:144px;
+  right:190px;
   z-index:17;
   min-width:35px;
   height:33px;
@@ -1328,7 +1328,6 @@ button.works-file:hover,button.works-file:focus-visible {background:var(--blue);
 }
 .language-toggle:hover,
 .language-toggle:focus-visible {text-decoration:underline;text-underline-offset:4px}
-.language-toggle-portfolio {top:27px;right:144px}
 .artboard.stage-exiting .language-toggle-home,
 .artboard.stage-exited .language-toggle-home {opacity:0;visibility:hidden;pointer-events:none}
 /* Russian prose is allowed to wrap normally instead of forcing English
@@ -1343,11 +1342,6 @@ button.works-file:hover,button.works-file:focus-visible {background:var(--blue);
     top:16px;
     right:111px;
     min-width:37px;
-    font:700 13px/19px 'Courier New',Courier,monospace;
-  }
-  .language-toggle-portfolio {
-    top:16px;
-    right:18px;
     font:700 13px/19px 'Courier New',Courier,monospace;
   }
   .artboard[data-lang="ru"] .role {font-size:12px;white-space:normal;max-width:calc(100vw - 45px)}
