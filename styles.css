@@ -1201,11 +1201,10 @@ button.works-file:hover,button.works-file:focus-visible {background:var(--blue);
     transform:translate(-50%,-50%) translate3d(var(--trail-drift),var(--trail-drop),0) rotate(var(--trail-rotation-end)) scale(.84);
   }
 }
+/* Stay solid through the fall; only a very brief fade at the end (137ms). */
 @keyframes homeWorkTrailDissolve {
-  0%   {opacity:.88}
-  12%  {opacity:.98}
-  67%  {opacity:.92}
-  100% {opacity:0}
+  0%,93% {opacity:.98}
+  100%   {opacity:0}
 }
 @media (hover:none),(pointer:coarse),(max-width:900px),(prefers-reduced-motion:reduce) {
   .home-work-trail {display:none!important}
