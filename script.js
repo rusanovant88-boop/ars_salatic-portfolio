@@ -1151,6 +1151,30 @@ stageObserver.observe(artboard,{attributes:true,attributeFilter:['class']});
     if(sx-padX<0||sx+padX>window.innerWidth
       ||sy-padY<0||sy+padY>window.innerHeight)return;
 
+    // Give each thumbnail its own subtle fall, following the same seeded
+    // sideways drift and rotation language as the falling type transition.
+    const rotation=rotations[nextImage%rotations.length];
+    const drift=(randomUnit(nextImage*19+7)-.5)*58;
+    const spin=(randomUnit(nextImage*23+11)>.5?1:-1)
+      *(9+randomUnit(nextImage*43+2)*23);
+    const maxDrop=Math.min(175,window.innerHeight-sy-padY-12);
+    if(maxDrop<35)return;
+
+    // Keep falling thumbnails off the biography, folder, header and buttons,
+    // not just away from those elements at their initial positions.
+    let drop=maxDrop;
+    for(let step=1;step<=10;step++){
+      const fraction=step/10;
+      if(overlapsContent(sx+drift*fraction,sy+maxDrop*fraction,padX,padY)){
+        drop=maxDrop*((step-1)/10);
+        break;
+      }
+    }
+    if(drop<35)return;
+    const driftRatio=drop/maxDrop;
+    const fallDrift=drift*driftRatio;
+    const endRotation=rotation+spin*driftRatio;
+
     const stamp=document.createElement('span');
     stamp.className='home-work-stamp';
     stamp.dataset.x=String(sx);
@@ -1161,7 +1185,13 @@ stageObserver.observe(artboard,{attributes:true,attributeFilter:['class']});
     stamp.style.height=height+'px';
     stamp.style.left=sx+'px';
     stamp.style.top=sy+'px';
-    stamp.style.setProperty('--trail-rotation',rotations[nextImage%rotations.length]+'deg');
+    stamp.style.setProperty('--trail-rotation',rotation+'deg');
+    stamp.style.setProperty('--trail-rotation-mid',(rotation+spin*driftRatio*.12).toFixed(2)+'deg');
+    stamp.style.setProperty('--trail-rotation-end',endRotation.toFixed(2)+'deg');
+    stamp.style.setProperty('--trail-drop-mid',(drop*.12).toFixed(1)+'px');
+    stamp.style.setProperty('--trail-drift-mid',(fallDrift*.12).toFixed(1)+'px');
+    stamp.style.setProperty('--trail-drop',drop.toFixed(1)+'px');
+    stamp.style.setProperty('--trail-drift',fallDrift.toFixed(1)+'px');
 
     const img=document.createElement('img');
     img.alt='';
