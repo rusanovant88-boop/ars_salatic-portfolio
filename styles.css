@@ -1435,3 +1435,27 @@ button.works-file:hover,button.works-file:focus-visible {background:var(--blue);
   .masthead {height:113px}
   .masthead .eyes {top:78px;right:20px}
 }
+
+/* Give the home username the EXACT spring animation of the Salatic logo.
+   Animate only the text so its hit area, photo reveal and animated arrow
+   remain anchored in place. */
+.username .username-label {
+  display:inline-block;
+  transform-origin:center center;
+}
+@media (hover:hover) and (pointer:fine) {
+  .username:hover .username-label {
+    animation:salaticLogoBounce .64s both;
+  }
+}
+.username:focus-visible .username-label {
+  animation:salaticLogoBounce .64s both;
+}
+@media (max-width:900px) and (hover:none) and (prefers-reduced-motion:no-preference) {
+  .username.portrait-touch-open .username-label {
+    animation:salaticLogoBounce .64s both;
+  }
+}
+@media (prefers-reduced-motion:reduce) {
+  .username .username-label {animation:none!important}
+}
