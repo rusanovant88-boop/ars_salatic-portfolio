@@ -1468,6 +1468,15 @@ button.works-file:hover,button.works-file:focus-visible {background:var(--blue);
   75%  { transform:scale(1.06); }
   100% { transform:scale(1.11); }
 }
+/* Red close control has the same timing language but a stronger spring. */
+@keyframes salaticWindowCloseBounce {
+  0%   { transform:scale(1); }
+  23%  { transform:scale(.91); }
+  51%  { transform:scale(1.40); }
+  73%  { transform:scale(1.14); }
+  86%  { transform:scale(1.27); }
+  100% { transform:scale(1.22); }
+}
 .works-bar .works-close,
 .works-bar .works-dot,
 .case-player-bar .works-close,
@@ -1480,10 +1489,14 @@ button.works-file:hover,button.works-file:focus-visible {background:var(--blue);
   .case-player-bar :is(.works-close,.works-dot):hover {
     animation:salaticWindowDotBounce .46s both;
   }
+  .works-bar .works-close:hover,
+  .case-player-bar .works-close:hover {
+    animation:salaticWindowCloseBounce .52s both;
+  }
 }
 .works-bar .works-close:focus-visible,
 .case-player-bar .works-close:focus-visible {
-  animation:salaticWindowDotBounce .46s both;
+  animation:salaticWindowCloseBounce .52s both;
 }
 @media (prefers-reduced-motion:reduce) {
   .works-bar :is(.works-close,.works-dot),
