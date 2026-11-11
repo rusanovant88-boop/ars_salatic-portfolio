@@ -5,6 +5,7 @@ const folder = document.getElementById('worksFolder');
 const comingNext = document.getElementById('comingNext');
 const bonyaTrigger = document.getElementById('bonyaTrigger');
 const bonyaWalker = document.querySelector('.bonya-patrol-traveler');
+const bonyaPatrol = document.querySelector('.bonya-patrol');
 const bonyaOverlay = document.getElementById('bonyaOverlay');
 const eyes = document.getElementById('eyes');
 const pupils = [document.getElementById('pupil-left'),document.getElementById('pupil-right')];
@@ -33,7 +34,8 @@ bonyaWalker?.addEventListener('pointerenter',e=>{if(e.pointerType!=='touch')show
 bonyaWalker?.addEventListener('pointerleave',e=>{if(e.pointerType!=='touch'&&!dogPinned&&!bonyaTrigger.matches(':hover'))showBonya(false);});
 // Mobile has no hover: tapping the moving pet toggles the same portrait
 // as tapping the Bonya name. Keep the click on its moving hit target.
-bonyaWalker?.addEventListener('click',e=>{
+bonyaPatrol?.addEventListener('click',e=>{
+  // Stable touch target: the container doesn't move while Bonya walks.
   e.stopPropagation();
   dogPinned=!dogPinned;
   showBonya(dogPinned);
@@ -45,7 +47,7 @@ bonyaTrigger.addEventListener('click',e=>{
   if(e.detail!==0){dogPinned=!dogPinned;showBonya(dogPinned);}
 });
 document.addEventListener('pointerdown',e=>{
-  if(!bonyaTrigger.contains(e.target)&&!bonyaWalker?.contains(e.target)&&dogPinned){dogPinned=false;showBonya(false);}
+  if(!bonyaTrigger.contains(e.target)&&!bonyaPatrol?.contains(e.target)&&dogPinned){dogPinned=false;showBonya(false);}
 });
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){dogPinned=false;showBonya(false);comingNext.classList.remove('show');}});
 
