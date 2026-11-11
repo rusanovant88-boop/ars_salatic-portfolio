@@ -4,6 +4,7 @@ const artboard = document.getElementById('artboard');
 const folder = document.getElementById('worksFolder');
 const comingNext = document.getElementById('comingNext');
 const bonyaTrigger = document.getElementById('bonyaTrigger');
+const bonyaWalker = document.querySelector('.bonya-patrol-traveler');
 const bonyaOverlay = document.getElementById('bonyaOverlay');
 const eyes = document.getElementById('eyes');
 const pupils = [document.getElementById('pupil-left'),document.getElementById('pupil-right')];
@@ -25,7 +26,11 @@ function showBonya(show){
   bonyaTrigger.setAttribute('aria-expanded',String(show));
 }
 bonyaTrigger.addEventListener('pointerenter',e=>{if(e.pointerType!=='touch')showBonya(true);});
-bonyaTrigger.addEventListener('pointerleave',e=>{if(e.pointerType!=='touch'&&!dogPinned)showBonya(false);});
+bonyaTrigger.addEventListener('pointerleave',e=>{if(e.pointerType!=='touch'&&!dogPinned&&!bonyaWalker?.matches(':hover'))showBonya(false);});
+// The tiny walking Bonya reveals the SAME photo as her name.
+// The hit area travels with the sprite; empty parts of her path stay transparent.
+bonyaWalker?.addEventListener('pointerenter',e=>{if(e.pointerType!=='touch')showBonya(true);});
+bonyaWalker?.addEventListener('pointerleave',e=>{if(e.pointerType!=='touch'&&!dogPinned&&!bonyaTrigger.matches(':hover'))showBonya(false);});
 bonyaTrigger.addEventListener('focus',()=>showBonya(true));
 bonyaTrigger.addEventListener('blur',()=>{if(!dogPinned)showBonya(false)});
 bonyaTrigger.addEventListener('click',e=>{
