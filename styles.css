@@ -182,7 +182,27 @@ button:focus-visible { outline:2px dashed var(--blue);outline-offset:4px; }
 .works-window {position:absolute;left:379px;top:56px;width:1037px;height:763px;display:flex;flex-direction:column;font:15px/1.3 'Courier New',Courier,monospace}
 .works-bar,.case-player-bar {display:flex;align-items:flex-start;gap:8px;height:95px;flex:none;padding:25px 27px;border-bottom:1px solid rgba(0,152,226,.37)}
 .works-close,.works-dot {flex:none;width:20px;height:20px;border:0;border-radius:50%;display:flex;align-items:center;justify-content:center}
-.works-close {background:#ff5d52;color:transparent;cursor:pointer;font:15px Arial,sans-serif;padding:0}
+.works-close {background:#ff5d52;color:transparent;cursor:pointer;font:0 Arial,sans-serif;padding:0;position:relative;isolation:isolate}
+.works-close::before,.works-close::after {
+  content:'';
+  position:absolute;
+  left:50%;
+  top:50%;
+  width:56%;
+  height:1.5px;
+  border-radius:1px;
+  background:#4c0b0a;
+  opacity:0;
+  pointer-events:none;
+  transform-origin:center;
+}
+.works-close::before {transform:translate(-50%,-50%) rotate(45deg)}
+.works-close::after {transform:translate(-50%,-50%) rotate(-45deg)}
+.works-close:is(:hover,:focus-visible)::before,
+.works-close:is(:hover,:focus-visible)::after {opacity:1}
+@media (hover:none) {
+  .works-close::before,.works-close::after {opacity:1}
+}
 .works-close:hover,.works-close:focus-visible {color:#4c0b0a}
 .works-yellow {background:#ffbd2b}.works-green {background:#23ca40}
 .works-bar-name {margin-left:40px;margin-top:1px;font-size:16px;letter-spacing:.04em}
@@ -1609,6 +1629,12 @@ button.works-file:hover,button.works-file:focus-visible {background:var(--blue);
     width:76px;
     height:26px;
     --bonya-travel:47px;
+  }
+  .bonya-patrol-traveler::after {
+    content:'';
+    position:absolute;
+    inset:-8px;
+    pointer-events:auto;
   }
 }
 @media (max-width:420px) {
