@@ -1558,6 +1558,8 @@ button.works-file:hover,button.works-file:focus-visible {background:var(--blue);
   position:absolute;
   top:0;left:0;
   width:24px;height:26px;
+  pointer-events:auto;
+  cursor:pointer;
   animation:bonyaPatrolPath 13.5s linear infinite;
   will-change:transform;
 }
