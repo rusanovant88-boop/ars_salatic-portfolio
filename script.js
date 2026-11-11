@@ -31,6 +31,13 @@ bonyaTrigger.addEventListener('pointerleave',e=>{if(e.pointerType!=='touch'&&!do
 // The hit area travels with the sprite; empty parts of her path stay transparent.
 bonyaWalker?.addEventListener('pointerenter',e=>{if(e.pointerType!=='touch')showBonya(true);});
 bonyaWalker?.addEventListener('pointerleave',e=>{if(e.pointerType!=='touch'&&!dogPinned&&!bonyaTrigger.matches(':hover'))showBonya(false);});
+// Mobile has no hover: tapping the moving pet toggles the same portrait
+// as tapping the Bonya name. Keep the click on its moving hit target.
+bonyaWalker?.addEventListener('click',e=>{
+  e.stopPropagation();
+  dogPinned=!dogPinned;
+  showBonya(dogPinned);
+});
 bonyaTrigger.addEventListener('focus',()=>showBonya(true));
 bonyaTrigger.addEventListener('blur',()=>{if(!dogPinned)showBonya(false)});
 bonyaTrigger.addEventListener('click',e=>{
@@ -38,7 +45,7 @@ bonyaTrigger.addEventListener('click',e=>{
   if(e.detail!==0){dogPinned=!dogPinned;showBonya(dogPinned);}
 });
 document.addEventListener('pointerdown',e=>{
-  if(!bonyaTrigger.contains(e.target)&&dogPinned){dogPinned=false;showBonya(false);}
+  if(!bonyaTrigger.contains(e.target)&&!bonyaWalker?.contains(e.target)&&dogPinned){dogPinned=false;showBonya(false);}
 });
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){dogPinned=false;showBonya(false);comingNext.classList.remove('show');}});
 
