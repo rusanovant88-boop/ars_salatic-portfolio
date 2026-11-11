@@ -1629,6 +1629,9 @@ button.works-file:hover,button.works-file:focus-visible {background:var(--blue);
     width:76px;
     height:26px;
     --bonya-travel:47px;
+    pointer-events:auto;
+    cursor:pointer;
+    touch-action:manipulation;
   }
   .bonya-patrol-traveler::after {
     content:'';
