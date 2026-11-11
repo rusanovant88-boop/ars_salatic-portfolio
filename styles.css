@@ -1507,27 +1507,28 @@ button.works-file:hover,button.works-file:focus-visible {background:var(--blue);
 }
 
 
-/* Window entrance cue, desktop + mobile: delayed 1s, then a three-step bounce.
+/* Window entrance cue, desktop + mobile: delayed 1s, then three repeated cascades.
    Red jumps higher; yellow and green follow at 180ms intervals. */
 @keyframes salaticDotWaveRed {
   0%   {transform:scale(1)}
-  17%  {transform:scale(.86)}
-  48%  {transform:scale(1.47)}
-  68%  {transform:scale(.97)}
-  85%  {transform:scale(1.16)}
-  100% {transform:scale(1)}
+  10%  {transform:scale(.86)}
+  28%  {transform:scale(1.47)}
+  43%  {transform:scale(.97)}
+  55%  {transform:scale(1.16)}
+  67%,100% {transform:scale(1)}
 }
 @keyframes salaticDotWaveOther {
   0%   {transform:scale(1)}
-  20%  {transform:scale(.9)}
-  50%  {transform:scale(1.3)}
-  73%  {transform:scale(.98)}
-  88%  {transform:scale(1.1)}
-  100% {transform:scale(1)}
+  12%  {transform:scale(.9)}
+  30%  {transform:scale(1.3)}
+  46%  {transform:scale(.98)}
+  58%  {transform:scale(1.1)}
+  70%,100% {transform:scale(1)}
 }
-.window-dot-wave .works-close {animation:salaticDotWaveRed .62s 1s both}
-.window-dot-wave .works-yellow {animation:salaticDotWaveOther .55s 1.18s both}
-.window-dot-wave .works-green {animation:salaticDotWaveOther .55s 1.36s both}
+/* Exactly three staggered passes, triggered on each window entry. */
+.window-dot-wave .works-close {animation:salaticDotWaveRed 1.05s 1s 3 both}
+.window-dot-wave .works-yellow {animation:salaticDotWaveOther 1.05s 1.18s 3 both}
+.window-dot-wave .works-green {animation:salaticDotWaveOther 1.05s 1.36s 3 both}
 @media (prefers-reduced-motion:reduce) {
   .window-dot-wave :is(.works-close,.works-yellow,.works-green) {animation:none!important}
 }
