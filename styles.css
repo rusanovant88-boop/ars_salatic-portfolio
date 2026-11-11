@@ -1545,7 +1545,7 @@ button.works-file:hover,button.works-file:focus-visible {background:var(--blue);
 .bonya-patrol {
   position:absolute;
   z-index:2;
-  top:-7px;
+  top:-1px;
   left:calc(100% + 29px);
   width:100px;
   height:26px;
@@ -1604,7 +1604,7 @@ button.works-file:hover,button.works-file:focus-visible {background:var(--blue);
 .artboard.stage-exiting .bonya-patrol {opacity:0}
 @media (max-width:900px) {
   .bottom .bonya-patrol {
-    top:-6px;
+    top:0px;
     left:calc(100% + 27px);
     width:76px;
     height:26px;
