@@ -386,7 +386,7 @@ function startWindowDotWave(target){
     target.classList.remove('window-dot-wave');
     if(dotWaveTarget===target)dotWaveTarget=null;
     dotWaveTimer=null;
-  },2200);
+  },4900);
 }
 
 const caseTitle=document.getElementById('caseTitle');
