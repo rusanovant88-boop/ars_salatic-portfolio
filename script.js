@@ -302,6 +302,7 @@ function clearLetters(){
   if(rain){rain.remove();rain=null;}
 }
 function resetScene(){
+  cancelWindowDotWave();
   const stage=document.getElementById('caseStage');
   if(stage)stage.classList.remove('kv-fallback-fullscreen');
   clearLetters();
@@ -329,6 +330,7 @@ function openWorks(){
   if(reducedMotion.matches){
     scene='empty';artboard.classList.add('stage-exited');
     comingNext.textContent='Works stage. Activate the logo to return.';
+    startWindowDotWave(document.getElementById('worksWindow'));
     return;
   }
   const lastEnd=animateFallingLetters(chars);
@@ -337,6 +339,7 @@ function openWorks(){
     if(scene!=='falling')return;
     scene='empty';artboard.classList.add('stage-exited');
     comingNext.textContent='Works stage. Activate the logo to return.';
+    startWindowDotWave(document.getElementById('worksWindow'));
   },lastEnd+35);
 }
 folder.addEventListener('click',openWorks);
@@ -366,6 +369,26 @@ document.addEventListener('keydown',function(event){
 const portfolioStage=document.getElementById('portfolioStage');
 const worksWindow=document.getElementById('worksWindow');
 const setkaCase=document.getElementById('projectCase');
+/* Bounce window lights in sequence, one second after each scene opens.
+   A new scene cancels the old wave, so navigation never leaks animations. */
+let dotWaveTimer=null;
+let dotWaveTarget=null;
+function cancelWindowDotWave(){
+  if(dotWaveTimer!==null){clearTimeout(dotWaveTimer);dotWaveTimer=null;}
+  if(dotWaveTarget){dotWaveTarget.classList.remove('window-dot-wave');dotWaveTarget=null;}
+}
+function startWindowDotWave(target){
+  cancelWindowDotWave();
+  if(reducedMotion.matches||!target)return;
+  target.classList.add('window-dot-wave');
+  dotWaveTarget=target;
+  dotWaveTimer=setTimeout(()=>{
+    target.classList.remove('window-dot-wave');
+    if(dotWaveTarget===target)dotWaveTarget=null;
+    dotWaveTimer=null;
+  },2200);
+}
+
 const caseTitle=document.getElementById('caseTitle');
 const caseTag=document.getElementById('caseTag');
 const caseRole=document.getElementById('caseRole');
@@ -794,6 +817,7 @@ function hideCasePreviews(){
   }
 }
 function showWorksList(){
+  cancelWindowDotWave();
   hideCasePreviews();
   worksWindow.classList.remove('case-raining');
   setkaCase.classList.remove('case-raining');
@@ -803,11 +827,13 @@ function showWorksList(){
   scene='empty';
   comingNext.textContent='Selected works. Seventeen projects are available.';
   if(window.innerWidth<=900)window.scrollTo({top:0,behavior:'instant'});
+  startWindowDotWave(worksWindow);
 }
 // The same glyph collector and gravity used by Home → Works and Works → Case
 // also handle Case → Works, Case → Home, and Works → Home.
 function transitionOutOfPortfolio(destination){
   if(scene!=='case'&&scene!=='empty')return;
+  cancelWindowDotWave();
   const fromCase=scene==='case';
   const finish=()=>destination==='home'?resetScene():showWorksList();
   if(reducedMotion.matches){finish();return;}
@@ -844,6 +870,7 @@ function returnHomeWithLetters(){
   resetScene();
 }
 function displayProjectCase(key){
+  cancelWindowDotWave();
   hideCasePreviews();
   activeProject=key;
   const project=window.salaticLocale?.project(key)||projects[key];
@@ -864,6 +891,7 @@ function displayProjectCase(key){
   showCaseMedia(0);
   comingNext.textContent=key+' case, use back to works to return.';
   if(window.innerWidth<=900)window.scrollTo({top:0,behavior:'instant'});
+  startWindowDotWave(setkaCase);
 }
 function showProjectCase(key,animate=true){
   if(scene!=='empty'||!projects[key])return;
