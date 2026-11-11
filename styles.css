@@ -1531,3 +1531,86 @@ button.works-file:hover,button.works-file:focus-visible {background:var(--blue);
 @media (prefers-reduced-motion:reduce) {
   .window-dot-wave :is(.works-close,.works-yellow,.works-green) {animation:none!important}
 }
+
+
+/* BONYA / original eight-frame plush-pet sprites. A small, non-interactive
+   patrol next to her name. Desktop stays inside the 1440x900 stage. */
+.bonya-patrol {
+  position:absolute;
+  z-index:2;
+  left:463px;
+  top:199px;
+  width:260px;
+  height:69px;
+  pointer-events:none;
+  opacity:1;
+  transition:opacity .2s ease;
+  --bonya-travel:184px;
+}
+.bonya-patrol-traveler {
+  position:absolute;
+  top:0;left:0;
+  width:64px;height:69px;
+  animation:bonyaPatrolPath 13.5s linear infinite;
+  will-change:transform;
+}
+.bonya-patrol-sprite {
+  display:block;
+  position:absolute;
+  inset:0;
+  width:64px;height:69px;
+  background-repeat:no-repeat;
+  background-size:512px 69px;
+  image-rendering:auto;
+  animation-duration:.78s,13.5s;
+  animation-iteration-count:infinite,infinite;
+  animation-timing-function:steps(8),linear;
+  animation-fill-mode:both,both;
+}
+.bonya-patrol-right {
+  background-image:url('assets/bonya-walk-right.webp');
+  animation-name:bonyaPatrolFrames,bonyaFacingRight;
+}
+.bonya-patrol-left {
+  background-image:url('assets/bonya-walk-left.webp');
+  animation-name:bonyaPatrolFrames,bonyaFacingLeft;
+}
+@keyframes bonyaPatrolFrames {
+  from {background-position:0 0}
+  to {background-position:-512px 0}
+}
+@keyframes bonyaPatrolPath {
+  0%,8% {transform:translateX(0)}
+  43%,55% {transform:translateX(var(--bonya-travel))}
+  90%,100% {transform:translateX(0)}
+}
+@keyframes bonyaFacingRight {
+  0%,49.9% {opacity:1}
+  50%,100% {opacity:0}
+}
+@keyframes bonyaFacingLeft {
+  0%,49.9% {opacity:0}
+  50%,100% {opacity:1}
+}
+.artboard.stage-exiting .bonya-patrol {opacity:0}
+@media (max-width:900px) {
+  .bottom .bonya-patrol {
+    position:relative;
+    left:auto;
+    top:auto;
+    width:min(250px,100%);
+    height:69px;
+    margin:6px 0 0 auto;
+    --bonya-travel:175px;
+  }
+}
+@media (max-width:420px) {
+  .bottom .bonya-patrol {width:min(230px,100%);--bonya-travel:156px}
+}
+@media (prefers-reduced-motion:reduce) {
+  .bonya-patrol-traveler,
+  .bonya-patrol-sprite {animation:none!important}
+  .bonya-patrol-left {display:none}
+  .bonya-patrol-right {background-position:0 0}
+  .bonya-patrol {transition:none!important}
+}
