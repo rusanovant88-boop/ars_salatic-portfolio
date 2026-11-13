@@ -68,12 +68,12 @@ function sizeBonyaPatrol(){
   const scale=footer.width/bonyaFooter.offsetWidth||1;
   const petWidth=24;
   // Keep exactly the old height. Start just beyond the arrow with the
-  // original 29px name-to-pet separation, never on the name or arrow.
+  // increased 53px name-to-pet separation, leaving room after the arrow.
   const originalFullTravel=Math.max(0,text.width/scale-petWidth);
   const desiredHalfTravel=originalFullTravel/2;
   const rightEdge=(text.right-footer.left)/scale;
   const nameEnd=(name.right-footer.left)/scale;
-  const gapAfterName=29;
+  const gapAfterName=53;
   let startX=nameEnd+gapAfterName;
   let available=rightEdge-startX-petWidth;
   // If the arrow is at the right edge on a narrow phone, use the space
