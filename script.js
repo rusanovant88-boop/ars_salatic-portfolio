@@ -51,6 +51,104 @@ document.addEventListener('pointerdown',e=>{
 });
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){dogPinned=false;showBonya(false);comingNext.classList.remove('show');}});
 
+
+/* Tiny Bonya runs along the line BELOW the entire biography.
+   During occasional hops, gently toss the nearest word on the last line.
+   Text wrapping and language switching remain owned by the locale module. */
+const bonyaBio=document.querySelector('.bottom .bio');
+let bonyaWords=[];
+let bonyaJumpTimer=null;
+let bonyaReleaseTimer=null;
+function sizeBonyaPatrol(){
+  if(!bonyaPatrol||!bonyaBio)return;
+  if(window.innerWidth>900){
+    bonyaPatrol.style.left=bonyaBio.offsetLeft+'px';
+    bonyaPatrol.style.top=(bonyaBio.offsetTop+bonyaBio.offsetHeight+5)+'px';
+    bonyaPatrol.style.width=bonyaBio.offsetWidth+'px';
+  }else{
+    bonyaPatrol.style.removeProperty('left');
+    bonyaPatrol.style.removeProperty('top');
+    bonyaPatrol.style.removeProperty('width');
+  }
+  bonyaPatrol.style.setProperty('--bonya-travel',Math.max(0,bonyaPatrol.clientWidth-24)+'px');
+}
+function refreshBonyaWords(){
+  if(!bonyaBio)return;
+  for(const line of bonyaBio.querySelectorAll(':scope > span')){
+    const first=line.firstChild;
+    if(!first||first.nodeType!==Node.TEXT_NODE||!first.nodeValue)continue;
+    const fragment=document.createDocumentFragment();
+    for(const piece of (first.nodeValue.match(/\S+|\s+/gu)||[])){
+      if(/^\s+$/u.test(piece))fragment.appendChild(document.createTextNode(piece));
+      else{
+        const word=document.createElement('span');
+        word.className='bonya-kick-word';
+        word.textContent=piece;
+        fragment.appendChild(word);
+      }
+    }
+    first.replaceWith(fragment);
+  }
+  bonyaWords=Array.from(bonyaBio.querySelectorAll('.bonya-kick-word'));
+  requestAnimationFrame(sizeBonyaPatrol);
+}
+window.salaticBonya={refreshText:refreshBonyaWords};
+function kickWordAboveBonya(){
+  if(!bonyaWalker||!bonyaWords.length)return;
+  const dog=bonyaWalker.getBoundingClientRect();
+  const dogX=(dog.left+dog.right)/2, dogY=dog.top;
+  let nearest=null,score=Infinity;
+  for(const word of bonyaWords){
+    const r=word.getBoundingClientRect();
+    if(r.width<2||r.bottom>dogY+5)continue;
+    const dx=Math.abs((r.left+r.right)/2-dogX);
+    const dy=Math.max(0,dogY-r.bottom);
+    const rating=dx+dy*.65;
+    if(rating<score){score=rating;nearest=word;}
+  }
+  if(nearest&&score<100){
+    nearest.getAnimations().forEach(a=>a.cancel());
+    nearest.animate([
+      {transform:'translateY(0) rotate(0deg)',offset:0},
+      {transform:'translateY(-10px) rotate(-2deg)',offset:.31},
+      {transform:'translateY(2px) rotate(1deg)',offset:.72},
+      {transform:'translateY(0) rotate(0deg)',offset:1}
+    ],{duration:660,easing:'cubic-bezier(.2,.7,.2,1)'});
+  }
+}
+function stopBonyaJump(){
+  if(bonyaJumpTimer!==null){clearTimeout(bonyaJumpTimer);bonyaJumpTimer=null;}
+  if(bonyaReleaseTimer!==null){clearTimeout(bonyaReleaseTimer);bonyaReleaseTimer=null;}
+  bonyaWalker?.classList.remove('bonya-hopping');
+}
+function scheduleBonyaJump(){
+  stopBonyaJump();
+  if(document.hidden||window.matchMedia('(prefers-reduced-motion: reduce)').matches||
+     artboard.classList.contains('stage-exiting')||artboard.classList.contains('stage-exited'))return;
+  bonyaJumpTimer=setTimeout(()=>{
+    bonyaJumpTimer=null;
+    if(document.hidden||artboard.classList.contains('stage-exiting')||
+       artboard.classList.contains('stage-exited'))return;
+    bonyaWalker?.classList.add('bonya-hopping');
+    kickWordAboveBonya();
+    bonyaReleaseTimer=setTimeout(()=>{
+      bonyaWalker?.classList.remove('bonya-hopping');
+      bonyaReleaseTimer=null;
+      scheduleBonyaJump();
+    },510);
+  },3200+Math.random()*2000);
+}
+document.addEventListener('DOMContentLoaded',()=>{
+  if(!bonyaWords.length)refreshBonyaWords();
+  sizeBonyaPatrol();
+  scheduleBonyaJump();
+});
+window.addEventListener('resize',()=>requestAnimationFrame(sizeBonyaPatrol),{passive:true});
+document.addEventListener('visibilitychange',()=>{
+  if(document.hidden)stopBonyaJump();
+  else if(!artboard.classList.contains('stage-exiting')&&!artboard.classList.contains('stage-exited'))scheduleBonyaJump();
+});
+
 // The Works click transition is defined after the logo initialization.
 
 let lastPointer=null;
@@ -399,10 +497,13 @@ function resetScene(){
   signatureHit.setAttribute('aria-label','Return to SALATIC home screen');
   comingNext.textContent='';
   dogPinned=false;showBonya(false);
+  sizeBonyaPatrol();
+  scheduleBonyaJump();
   armIdleEyes();
 }
 function openWorks(){
   if(scene!=='home')return;
+  stopBonyaJump();
   cancelIdleEyes();
   scene='falling';stopWriting();dogPinned=false;showBonya(false);
   comingNext.textContent='Opening works.';
