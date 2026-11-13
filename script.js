@@ -56,6 +56,8 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'){dogPinned=false;sho
 let lastPointer=null;
 let animationQueued=false;
 const username=document.querySelector('.username');
+const roleTrigger=document.querySelector('.masthead .role');
+const portraitTriggers=[username,roleTrigger];
 const usernamePhoto=document.querySelector('.username-photo');
 let lookingAtPortrait=false;
 function pointEyesAtPortrait(){
@@ -79,7 +81,7 @@ username.addEventListener('pointerenter',event=>{
   if(event.pointerType!=='touch')setPortraitGaze(true);
 });
 username.addEventListener('pointerleave',event=>{
-  if(event.pointerType!=='touch'&&!username.matches(':focus-visible'))setPortraitGaze(false);
+  if(event.pointerType!=='touch'&&!username.matches(':focus-visible')&&!roleTrigger.matches(':hover')&&!roleTrigger.matches(':focus-visible'))setPortraitGaze(false);
 });
 username.addEventListener('focus',()=>{
   if(username.matches(':focus-visible'))setPortraitGaze(true);
@@ -87,29 +89,58 @@ username.addEventListener('focus',()=>{
 username.addEventListener('blur',()=>{
   // Mobile :hover can stay active after a tap, so it is not the source of truth.
   if(window.innerWidth<=900){
-    setPortraitGaze(username.classList.contains('portrait-touch-open'));
+    setPortraitGaze(portraitTriggers.some(el=>el.classList.contains('portrait-touch-open')));
     return;
   }
-  setPortraitGaze(username.matches(':hover'));
+  setPortraitGaze(portraitTriggers.some(el=>el.matches(':hover')||el.matches(':focus-visible')));
+});
+// Same portrait, spring and eye-tracking can also be activated from the role.
+roleTrigger.addEventListener('pointerenter',event=>{
+  if(event.pointerType!=='touch')setPortraitGaze(true);
+});
+roleTrigger.addEventListener('pointerleave',event=>{
+  if(event.pointerType!=='touch'&&!roleTrigger.matches(':focus-visible')&&!username.matches(':hover')&&!username.matches(':focus-visible'))setPortraitGaze(false);
+});
+roleTrigger.addEventListener('focus',()=>{
+  if(roleTrigger.matches(':focus-visible'))setPortraitGaze(true);
+});
+roleTrigger.addEventListener('blur',()=>{
+  if(window.innerWidth<=900){
+    setPortraitGaze(portraitTriggers.some(el=>el.classList.contains('portrait-touch-open')));
+    return;
+  }
+  setPortraitGaze(portraitTriggers.some(el=>el.matches(':hover')||el.matches(':focus-visible')));
 });
 // Touchscreens have no real hover. First tap opens portrait and gaze;
 // second tap closes both. A tap elsewhere also dismisses them.
-function setMobilePortraitOpen(open){
-  username.classList.toggle('portrait-touch-open',open);
+function setMobilePortraitOpen(open,source=username){
+  portraitTriggers.forEach(el=>el.classList.toggle('portrait-touch-open',open&&el===source));
   setPortraitGaze(open);
 }
-username.addEventListener('click',event=>{
-  if(window.innerWidth>900)return;
-  event.stopPropagation();
-  setMobilePortraitOpen(!username.classList.contains('portrait-touch-open'));
-});
+for(const target of portraitTriggers){
+  target.addEventListener('click',event=>{
+    if(window.innerWidth>900)return;
+    event.stopPropagation();
+    setMobilePortraitOpen(!target.classList.contains('portrait-touch-open'),target);
+  });
+  target.addEventListener('keydown',event=>{
+    if(event.key!=='Enter'&&event.key!==' ')return;
+    event.preventDefault();
+    if(window.innerWidth<=900){
+      event.stopPropagation();
+      setMobilePortraitOpen(!target.classList.contains('portrait-touch-open'),target);
+    }else{
+      setPortraitGaze(true);
+    }
+  });
+}
 document.addEventListener('pointerdown',event=>{
-  if(window.innerWidth>900||!username.classList.contains('portrait-touch-open'))return;
-  if(username.contains(event.target))return;
+  if(window.innerWidth>900||!portraitTriggers.some(el=>el.classList.contains('portrait-touch-open')))return;
+  if(portraitTriggers.some(el=>el.contains(event.target)))return;
   setMobilePortraitOpen(false);
 });
 window.addEventListener('resize',()=>{
-  if(window.innerWidth>900&&username.classList.contains('portrait-touch-open')){
+  if(window.innerWidth>900&&portraitTriggers.some(el=>el.classList.contains('portrait-touch-open'))){
     setMobilePortraitOpen(false);
   }else{
     pointEyesAtPortrait();
