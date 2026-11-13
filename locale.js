@@ -181,13 +181,11 @@
     if(contact?.firstChild)contact.firstChild.nodeValue=ru?'написать мне ':en.contact;
     const bioLines=ru?russianBio:englishBio;
     document.querySelectorAll('.bio > span').forEach((span,index)=>{
-      let textNode=span.firstChild?.nodeType===Node.TEXT_NODE?span.firstChild:null;
-      if(!textNode){
-        textNode=document.createTextNode('');
-        span.insertBefore(textNode,span.firstChild);
-      }
-      textNode.nodeValue=bioLines[index]||'';
+      const name=span.querySelector(':scope > .bonya-name-anchor');
+      const textNode=document.createTextNode(bioLines[index]||'');
+      span.replaceChildren(...(name?[textNode,name]:[textNode]));
     });
+    window.salaticBonya?.refreshText();
     setText('#bonyaTrigger',ru?'боня.':'bonya.');
     setText('.works-bar-name',ru?'избранные_работы':en.archive);
     const columns=document.querySelectorAll('.works-columns span');
