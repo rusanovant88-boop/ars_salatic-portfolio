@@ -174,7 +174,7 @@
       toggle.title=ru?'English':'Русский';
     }
     artboard.dataset.lang=language;
-    setText('.role',ru?'старший арт-директор / креатив / режиссёр':en.role);
+    setText('.role-label',ru?'старший арт-директор / креатив / режиссёр':en.role);
     setText('.folder-name',ru?'кейсы':en.folder);
     folder.setAttribute('aria-label',ru?'Открыть кейсы':'Open works transition');
     const contact=get('.contact-entry');
