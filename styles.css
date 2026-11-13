@@ -1555,10 +1555,10 @@ button.works-file:hover,button.works-file:focus-visible {background:var(--blue);
 
 
 
-/* BONYA: tiny original pet patrols the FULL width below the biography.
-   No text is displaced; individual words bounce only when she jumps. */
-.bio .bonya-name-anchor {display:inline-block;position:relative;white-space:nowrap;vertical-align:baseline}
-.bonya-patrol {position:absolute;z-index:2;left:379px;top:232px;width:1054px;height:27px;pointer-events:none;opacity:1;transition:opacity .2s ease;--bonya-travel:1030px}
+/* BONYA: same original height beside the last-line name; she now crosses
+   the full width and only nudges words in the adjacent bottom full row. */
+.bio .bonya-name-anchor {display:inline-block;position:relative;z-index:3;white-space:nowrap;vertical-align:baseline}
+.bonya-patrol {position:absolute;z-index:2;left:379px;top:207px;width:1054px;height:27px;pointer-events:none;opacity:1;visibility:hidden;transition:opacity .2s ease;--bonya-travel:1030px}
 .bonya-patrol-traveler {position:absolute;top:0;left:0;width:24px;height:26px;pointer-events:auto;cursor:pointer;touch-action:manipulation;transition:top .22s cubic-bezier(.12,.8,.26,1);animation:bonyaPatrolPath 31s linear infinite;will-change:transform}
 .bonya-patrol-traveler.bonya-hopping {top:-15px}
 .bonya-patrol-sprite {display:block;position:absolute;inset:0;width:24px;height:26px;background-repeat:no-repeat;background-size:192px 26px;image-rendering:auto;animation-duration:.78s,31s;animation-iteration-count:infinite,infinite;animation-timing-function:steps(8),linear;animation-fill-mode:both,both}
@@ -1572,7 +1572,7 @@ button.works-file:hover,button.works-file:focus-visible {background:var(--blue);
 .artboard.stage-exiting .bonya-patrol {opacity:0;pointer-events:none}
 .artboard.stage-exiting .bonya-patrol-traveler,.artboard.stage-exited .bonya-patrol-traveler,.artboard.stage-exiting .bonya-patrol-sprite,.artboard.stage-exited .bonya-patrol-sprite {animation-play-state:paused}
 @media (max-width:900px) {
-  .bottom .bonya-patrol {position:relative;top:auto;left:auto;width:100%;height:34px;margin:7px 0 0;pointer-events:auto;cursor:pointer;touch-action:manipulation}
+  .bottom .bonya-patrol {position:absolute;height:27px;margin:0;pointer-events:auto;cursor:pointer;touch-action:manipulation}
   .bonya-patrol-traveler::after {content:'';position:absolute;inset:-7px;pointer-events:auto}
 }
 @media (prefers-reduced-motion:reduce) {
