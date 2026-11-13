@@ -75,7 +75,7 @@ button:focus-visible { outline:2px dashed var(--blue);outline-offset:4px; }
 @media (prefers-reduced-motion:reduce) {.contact-arrow{animation:none}}
 .artboard.stage-exiting .contact-entry,
 .artboard.stage-exited .contact-entry {opacity:0;visibility:hidden;pointer-events:none}
-.role { position:absolute; top:34px; left:378px; white-space:nowrap; }
+.role { position:absolute; top:34px; left:378px; white-space:nowrap; cursor:pointer; }
 .eyes { position:absolute; right:25px; top:34px; width:88px;height:28px; }
 .eyes svg { display:block; overflow:visible; }
 .works-position { position:absolute; top:263px;left:625px;width:190px;height:235px; }
@@ -1649,4 +1649,29 @@ button.works-file:hover,button.works-file:focus-visible {background:var(--blue);
   .bonya-patrol-left {display:none}
   .bonya-patrol-right {background-position:0 0}
   .bonya-patrol {transition:none!important}
+}
+
+/* Role text uses the EXACT same portrait, bounce and gaze interaction as
+   the name. Animate only glyphs, never shift its original hit area. */
+.masthead .role-label {
+  display:inline-block;
+  transform-origin:center center;
+}
+@media (hover:hover) and (pointer:fine) {
+  .masthead:has(.role:hover) {z-index:12}
+  .masthead:has(.role:hover) .username-photo {opacity:1;visibility:visible}
+  .masthead .role:hover .role-label {animation:salaticLogoBounce .64s both}
+}
+.masthead:has(.role:focus-visible) {z-index:12}
+.masthead:has(.role:focus-visible) .username-photo {opacity:1;visibility:visible}
+.masthead .role:focus-visible .role-label {animation:salaticLogoBounce .64s both}
+@media (max-width:900px) {
+  .masthead:has(.role.portrait-touch-open) {z-index:12}
+  .masthead:has(.role.portrait-touch-open) .username-photo {opacity:1;visibility:visible}
+}
+@media (max-width:900px) and (hover:none) and (prefers-reduced-motion:no-preference) {
+  .masthead .role.portrait-touch-open .role-label {animation:salaticLogoBounce .64s both}
+}
+@media (prefers-reduced-motion:reduce) {
+  .masthead .role-label {animation:none!important}
 }
