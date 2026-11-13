@@ -56,21 +56,23 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'){dogPinned=false;sho
    During occasional hops, gently toss the nearest word on the last line.
    Text wrapping and language switching remain owned by the locale module. */
 const bonyaBio=document.querySelector('.bottom .bio');
+const bonyaFooter=document.querySelector('.bottom');
 let bonyaWords=[];
 let bonyaJumpTimer=null;
 let bonyaReleaseTimer=null;
 function sizeBonyaPatrol(){
-  if(!bonyaPatrol||!bonyaBio)return;
-  if(window.innerWidth>900){
-    bonyaPatrol.style.left=bonyaBio.offsetLeft+'px';
-    bonyaPatrol.style.top=(bonyaBio.offsetTop+bonyaBio.offsetHeight+5)+'px';
-    bonyaPatrol.style.width=bonyaBio.offsetWidth+'px';
-  }else{
-    bonyaPatrol.style.removeProperty('left');
-    bonyaPatrol.style.removeProperty('top');
-    bonyaPatrol.style.removeProperty('width');
-  }
+  if(!bonyaPatrol||!bonyaBio||!bonyaFooter||!bonyaTrigger)return;
+  // Recover the ORIGINAL Bonya height: 1px above the name's top edge,
+  // not below the entire paragraph. Traverse the full width at that Y.
+  const footer=bonyaFooter.getBoundingClientRect();
+  const text=bonyaBio.getBoundingClientRect();
+  const name=bonyaTrigger.getBoundingClientRect();
+  const scale=footer.width/bonyaFooter.offsetWidth||1;
+  bonyaPatrol.style.left=((text.left-footer.left)/scale)+'px';
+  bonyaPatrol.style.top=((name.top-footer.top)/scale-1)+'px';
+  bonyaPatrol.style.width=(text.width/scale)+'px';
   bonyaPatrol.style.setProperty('--bonya-travel',Math.max(0,bonyaPatrol.clientWidth-24)+'px');
+  bonyaPatrol.style.visibility='visible';
 }
 function refreshBonyaWords(){
   if(!bonyaBio)return;
@@ -96,17 +98,25 @@ window.salaticBonya={refreshText:refreshBonyaWords};
 function kickWordAboveBonya(){
   if(!bonyaWalker||!bonyaWords.length)return;
   const dog=bonyaWalker.getBoundingClientRect();
-  const dogX=(dog.left+dog.right)/2, dogY=dog.top;
+  const dogX=(dog.left+dog.right)/2;
+  const nameY=bonyaTrigger.getBoundingClientRect().top;
+  // Only the bottom FULL row immediately above the name and Bonya.
+  // Never throw words from any upper biography rows.
+  let bottomRow=-Infinity;
+  for(const word of bonyaWords){
+    const box=word.getBoundingClientRect();
+    if(box.width>2&&box.top<nameY-5&&box.top>bottomRow)bottomRow=box.top;
+  }
+  if(!Number.isFinite(bottomRow))return;
   let nearest=null,score=Infinity;
   for(const word of bonyaWords){
-    const r=word.getBoundingClientRect();
-    if(r.width<2||r.bottom>dogY+5)continue;
-    const dx=Math.abs((r.left+r.right)/2-dogX);
-    const dy=Math.max(0,dogY-r.bottom);
-    const rating=dx+dy*.65;
-    if(rating<score){score=rating;nearest=word;}
+    const box=word.getBoundingClientRect();
+    if(Math.abs(box.top-bottomRow)>4||box.width<2)continue;
+    // A word only reacts when the little dog passes directly beneath it.
+    const dx=Math.max(box.left-dogX,0,dogX-box.right);
+    if(dx<score){score=dx;nearest=word;}
   }
-  if(nearest&&score<100){
+  if(nearest&&score<11){
     nearest.getAnimations().forEach(a=>a.cancel());
     nearest.animate([
       {transform:'translateY(0) rotate(0deg)',offset:0},
