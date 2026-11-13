@@ -62,16 +62,31 @@ let bonyaJumpTimer=null;
 let bonyaReleaseTimer=null;
 function sizeBonyaPatrol(){
   if(!bonyaPatrol||!bonyaBio||!bonyaFooter||!bonyaTrigger)return;
-  // Recover the ORIGINAL Bonya height: 1px above the name's top edge,
-  // not below the entire paragraph. Traverse the full width at that Y.
   const footer=bonyaFooter.getBoundingClientRect();
   const text=bonyaBio.getBoundingClientRect();
   const name=bonyaTrigger.getBoundingClientRect();
   const scale=footer.width/bonyaFooter.offsetWidth||1;
-  bonyaPatrol.style.left=((text.left-footer.left)/scale)+'px';
+  const petWidth=24;
+  // Keep exactly the old height. Start just beyond the arrow with the
+  // original 29px name-to-pet separation, never on the name or arrow.
+  const originalFullTravel=Math.max(0,text.width/scale-petWidth);
+  const desiredHalfTravel=originalFullTravel/2;
+  const rightEdge=(text.right-footer.left)/scale;
+  const nameEnd=(name.right-footer.left)/scale;
+  const gapAfterName=29;
+  let startX=nameEnd+gapAfterName;
+  let available=rightEdge-startX-petWidth;
+  // If the arrow is at the right edge on a narrow phone, use the space
+  // BEFORE the name instead, with the same protected separation.
+  if(available<petWidth&&window.innerWidth<=900){
+    startX=(text.left-footer.left)/scale;
+    available=(name.left-footer.left)/scale-gapAfterName-startX-petWidth;
+  }
+  const travel=Math.max(0,Math.min(desiredHalfTravel,available));
+  bonyaPatrol.style.left=startX+'px';
   bonyaPatrol.style.top=((name.top-footer.top)/scale-1)+'px';
-  bonyaPatrol.style.width=(text.width/scale)+'px';
-  bonyaPatrol.style.setProperty('--bonya-travel',Math.max(0,bonyaPatrol.clientWidth-24)+'px');
+  bonyaPatrol.style.width=(travel+petWidth)+'px';
+  bonyaPatrol.style.setProperty('--bonya-travel',travel+'px');
   bonyaPatrol.style.visibility='visible';
 }
 function refreshBonyaWords(){
@@ -95,41 +110,85 @@ function refreshBonyaWords(){
   requestAnimationFrame(sizeBonyaPatrol);
 }
 window.salaticBonya={refreshText:refreshBonyaWords};
-function kickWordAboveBonya(){
-  if(!bonyaWalker||!bonyaWords.length)return;
+let bonyaJumpFrame=null;
+let bonyaHopAnimation=null;
+let bonyaWordAnimation=null;
+function nextBottomRowWord(){
+  if(!bonyaWalker||!bonyaWords.length)return null;
   const dog=bonyaWalker.getBoundingClientRect();
-  const dogX=(dog.left+dog.right)/2;
-  const nameY=bonyaTrigger.getBoundingClientRect().top;
-  // Only the bottom FULL row immediately above the name and Bonya.
-  // Never throw words from any upper biography rows.
-  let bottomRow=-Infinity;
+  const dogCenter=(dog.left+dog.right)/2;
+  const nameTop=bonyaTrigger.getBoundingClientRect().top;
+  // Only the lowest complete text row above 'bonya.', in both languages.
+  let rowTop=-Infinity;
   for(const word of bonyaWords){
     const box=word.getBoundingClientRect();
-    if(box.width>2&&box.top<nameY-5&&box.top>bottomRow)bottomRow=box.top;
+    if(box.width>2&&box.top<nameTop-5)rowTop=Math.max(rowTop,box.top);
   }
-  if(!Number.isFinite(bottomRow))return;
-  let nearest=null,score=Infinity;
+  if(!Number.isFinite(rowTop))return null;
+  let nearest=null,dist=Infinity;
   for(const word of bonyaWords){
     const box=word.getBoundingClientRect();
-    if(Math.abs(box.top-bottomRow)>4||box.width<2)continue;
-    // A word only reacts when the little dog passes directly beneath it.
-    const dx=Math.max(box.left-dogX,0,dogX-box.right);
-    if(dx<score){score=dx;nearest=word;}
+    if(box.width<2||Math.abs(box.top-rowTop)>4)continue;
+    const delta=Math.abs((box.left+box.right)/2-dogCenter);
+    if(delta<dist){dist=delta;nearest={word,box};}
   }
-  if(nearest&&score<11){
-    nearest.getAnimations().forEach(a=>a.cancel());
-    nearest.animate([
-      {transform:'translateY(0) rotate(0deg)',offset:0},
-      {transform:'translateY(-10px) rotate(-2deg)',offset:.31},
-      {transform:'translateY(2px) rotate(1deg)',offset:.72},
-      {transform:'translateY(0) rotate(0deg)',offset:1}
-    ],{duration:660,easing:'cubic-bezier(.2,.7,.2,1)'});
-  }
+  // The dog must physically arrive UNDER the target word, not jump
+  // earlier and carry on walking through it.
+  return nearest&&dist<=Math.min(9,nearest.box.width*.35+2)?nearest.word:null;
+}
+function pauseBonyaRun(paused){
+  if(!bonyaWalker)return;
+  const state=paused?'paused':'';
+  bonyaWalker.style.animationPlayState=state;
+  bonyaWalker.querySelectorAll('.bonya-patrol-sprite').forEach(p=>p.style.animationPlayState=state);
+}
+function throwWordAndHop(word){
+  if(!word||!bonyaWalker)return;
+  if(bonyaJumpFrame!==null){cancelAnimationFrame(bonyaJumpFrame);bonyaJumpFrame=null;}
+  pauseBonyaRun(true); // Freeze horizontal travel beneath this SAME word.
+  // Dog leaps and lands in place, then resumes walking.
+  bonyaHopAnimation=bonyaWalker.animate([
+    {top:'0px',offset:0},
+    {top:'-13px',offset:.27,easing:'ease-out'},
+    {top:'-15px',offset:.4},
+    {top:'-2px',offset:.69,easing:'ease-in'},
+    {top:'-5px',offset:.81},
+    {top:'0px',offset:1}
+  ],{duration:900,easing:'linear'});
+  // The word follows the impact, falls under gravity, then settles
+  // with a tiny secondary bounce. Transforms never affect line layout.
+  bonyaWordAnimation=word.animate([
+    {transform:'translateY(0) rotate(0deg)',offset:0},
+    {transform:'translateY(-4px) rotate(-1deg)',offset:.12,easing:'ease-out'},
+    {transform:'translateY(-12px) rotate(-2deg)',offset:.28},
+    {transform:'translateY(-9px) rotate(-1deg)',offset:.42,easing:'ease-in'},
+    {transform:'translateY(2px) rotate(1deg)',offset:.7},
+    {transform:'translateY(-3px) rotate(-.5deg)',offset:.82},
+    {transform:'translateY(0) rotate(0deg)',offset:1}
+  ],{duration:850,delay:65,easing:'linear'});
+  bonyaReleaseTimer=setTimeout(()=>{
+    bonyaReleaseTimer=null;
+    bonyaHopAnimation=null;
+    bonyaWordAnimation=null;
+    pauseBonyaRun(false);
+    scheduleBonyaJump();
+  },960);
 }
 function stopBonyaJump(){
   if(bonyaJumpTimer!==null){clearTimeout(bonyaJumpTimer);bonyaJumpTimer=null;}
   if(bonyaReleaseTimer!==null){clearTimeout(bonyaReleaseTimer);bonyaReleaseTimer=null;}
-  bonyaWalker?.classList.remove('bonya-hopping');
+  if(bonyaJumpFrame!==null){cancelAnimationFrame(bonyaJumpFrame);bonyaJumpFrame=null;}
+  bonyaHopAnimation?.cancel();bonyaHopAnimation=null;
+  bonyaWordAnimation?.cancel();bonyaWordAnimation=null;
+  pauseBonyaRun(false);
+}
+function watchForBonyaWord(){
+  bonyaJumpFrame=null;
+  if(document.hidden||artboard.classList.contains('stage-exiting')||
+     artboard.classList.contains('stage-exited'))return;
+  const word=nextBottomRowWord();
+  if(word){throwWordAndHop(word);return;}
+  bonyaJumpFrame=requestAnimationFrame(watchForBonyaWord);
 }
 function scheduleBonyaJump(){
   stopBonyaJump();
@@ -137,15 +196,7 @@ function scheduleBonyaJump(){
      artboard.classList.contains('stage-exiting')||artboard.classList.contains('stage-exited'))return;
   bonyaJumpTimer=setTimeout(()=>{
     bonyaJumpTimer=null;
-    if(document.hidden||artboard.classList.contains('stage-exiting')||
-       artboard.classList.contains('stage-exited'))return;
-    bonyaWalker?.classList.add('bonya-hopping');
-    kickWordAboveBonya();
-    bonyaReleaseTimer=setTimeout(()=>{
-      bonyaWalker?.classList.remove('bonya-hopping');
-      bonyaReleaseTimer=null;
-      scheduleBonyaJump();
-    },510);
+    bonyaJumpFrame=requestAnimationFrame(watchForBonyaWord);
   },3200+Math.random()*2000);
 }
 document.addEventListener('DOMContentLoaded',()=>{
