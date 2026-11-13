@@ -1675,3 +1675,17 @@ button.works-file:hover,button.works-file:focus-visible {background:var(--blue);
 @media (prefers-reduced-motion:reduce) {
   .masthead .role-label {animation:none!important}
 }
+
+/* Home idle invitation: the eyes turn red, glance at WORKS, blink twice,
+   and return to their default cursor-following behavior. */
+@keyframes salaticIdleEyesBlink {
+  0%,13%,31%,47%,100% {transform:scaleY(1)}
+  20%,39% {transform:scaleY(.045)}
+}
+.eyes.eyes-idle-look .eye-squint > ellipse {fill:#f32932}
+.eyes.eyes-idle-look .eye-squint {
+  animation:salaticIdleEyesBlink 1.25s .36s ease-in-out 1 both;
+}
+@media (prefers-reduced-motion:reduce) {
+  .eyes.eyes-idle-look .eye-squint {animation:none!important}
+}
