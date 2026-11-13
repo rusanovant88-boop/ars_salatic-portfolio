@@ -192,17 +192,12 @@ button:focus-visible { outline:2px dashed var(--blue);outline-offset:4px; }
   height:1.5px;
   border-radius:1px;
   background:#4c0b0a;
-  opacity:0;
+  opacity:1;
   pointer-events:none;
   transform-origin:center;
 }
 .works-close::before {transform:translate(-50%,-50%) rotate(45deg)}
 .works-close::after {transform:translate(-50%,-50%) rotate(-45deg)}
-.works-close:is(:hover,:focus-visible)::before,
-.works-close:is(:hover,:focus-visible)::after {opacity:1}
-@media (hover:none) {
-  .works-close::before,.works-close::after {opacity:1}
-}
 .works-close:hover,.works-close:focus-visible {color:#4c0b0a}
 .works-yellow {background:#ffbd2b}.works-green {background:#23ca40}
 .works-bar-name {margin-left:40px;margin-top:1px;font-size:16px;letter-spacing:.04em}
