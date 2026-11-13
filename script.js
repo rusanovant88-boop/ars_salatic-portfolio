@@ -246,8 +246,47 @@ function stopWriting(){}
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
 
-// v0.4: letters fall away; original signature becomes the only remaining UI.
+// The home idle cue runs once per quiet period. New user input re-arms it;
+// opening WORKS cancels it, so the case gallery is never interrupted.
 let scene='home', rain=null, endRainTimer=null;
+let idleEyesTimer=null, idleEyesRestoreTimer=null;
+function restoreIdleEyes(){
+  eyes.classList.remove('eyes-idle-look');
+  if(lookingAtPortrait)pointEyesAtPortrait();
+  else if(lastPointer)aimEyes(...lastPointer);
+  else pupils.forEach(p=>p.removeAttribute('transform'));
+}
+function cancelIdleEyes(){
+  if(idleEyesTimer!==null){clearTimeout(idleEyesTimer);idleEyesTimer=null;}
+  if(idleEyesRestoreTimer!==null){clearTimeout(idleEyesRestoreTimer);idleEyesRestoreTimer=null;}
+  if(eyes.classList.contains('eyes-idle-look'))restoreIdleEyes();
+}
+function armIdleEyes(){
+  cancelIdleEyes();
+  if(scene!=='home'||document.hidden||reducedMotion.matches)return;
+  idleEyesTimer=setTimeout(()=>{
+    idleEyesTimer=null;
+    if(scene!=='home'||document.hidden||reducedMotion.matches
+      ||lookingAtPortrait||bonyaOverlay.classList.contains('is-visible'))return;
+    const target=folder.getBoundingClientRect();
+    eyes.classList.add('eyes-idle-look');
+    aimEyes(target.left+target.width/2,target.top+target.height/2);
+    idleEyesRestoreTimer=setTimeout(()=>{
+      idleEyesRestoreTimer=null;
+      restoreIdleEyes();
+      // Remains dormant until actual new input, rather than looping endlessly.
+    },2100);
+  },5000);
+}
+for(const type of ['pointermove','pointerdown','keydown','wheel','touchstart']){
+  document.addEventListener(type,armIdleEyes,{passive:true});
+}
+document.addEventListener('scroll',armIdleEyes,{passive:true,capture:true});
+window.addEventListener('blur',cancelIdleEyes);
+document.addEventListener('visibilitychange',()=>{
+  if(document.hidden)cancelIdleEyes();else armIdleEyes();
+});
+armIdleEyes();
 const charRange=document.createRange();
 
 function randomUnit(seed){
@@ -348,6 +387,7 @@ function clearLetters(){
 }
 function resetScene(){
   cancelWindowDotWave();
+  cancelIdleEyes();
   const stage=document.getElementById('caseStage');
   if(stage)stage.classList.remove('kv-fallback-fullscreen');
   clearLetters();
@@ -359,9 +399,11 @@ function resetScene(){
   signatureHit.setAttribute('aria-label','Return to SALATIC home screen');
   comingNext.textContent='';
   dogPinned=false;showBonya(false);
+  armIdleEyes();
 }
 function openWorks(){
   if(scene!=='home')return;
+  cancelIdleEyes();
   scene='falling';stopWriting();dogPinned=false;showBonya(false);
   comingNext.textContent='Opening works.';
   let chars=[];
