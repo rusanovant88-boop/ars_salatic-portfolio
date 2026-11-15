@@ -457,9 +457,11 @@ function createLettersFromRoots(roots,clipEl=null){
   const overlay=document.createElement('div');
   overlay.className='letter-rain';overlay.setAttribute('aria-hidden','true');
   const fragment=document.createDocumentFragment();
-  const chars=[],scale=previousScale||1;
+  const chars=[];
   for(const root of roots){
     if(!root||Number(getComputedStyle(root).opacity)<0.05)continue;
+    // Portal-based maximized windows render at native viewport scale.
+    const scale=root.closest('.finder-maximized,.case-maximized')?1:(previousScale||1);
     const clipRect=clipEl&&clipEl.contains(root)?clipEl.getBoundingClientRect():null;
     const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);
     let node;
@@ -505,8 +507,11 @@ function createLetters(){
 }
 function createFinderLetters(){
   const list=worksWindow.querySelector('.works-list');
-  const roots=portfolioStage.querySelectorAll(
-    '.works-bar-name, .works-bar-version, .works-columns, .works-file, .works-footer'
+  // The maximized Finder is moved to <body>, outside portfolioStage.
+  // Collect its ON-SCREEN letters directly from that window, including
+  // the expanded mobile-style inline preview's "open case" caption.
+  const roots=worksWindow.querySelectorAll(
+    '.works-bar-name, .works-bar-version, .works-columns, .works-file, .works-footer, .mobile-case-preview.is-open .mobile-case-open'
   );
   return createLettersFromRoots(roots,list);
 }
@@ -514,9 +519,10 @@ function createCaseLetters(){
   // The iframe/imagery does not fall: only text that belongs to the case UI.
   // Do not duplicate invisible content from projects further down the page.
   const roots=setkaCase.querySelectorAll(
-    '.case-back, #caseTitle, #caseTag, #caseRole, #caseIntro, #caseConcept, #caseContribution, #casePagination'
+    '.case-back, #caseTitle, #caseTag, #caseRole, #caseIntro, #caseConcept, #caseContribution'
   );
-  return createLettersFromRoots([...roots].filter(root=>{
+  // The case player (and pagination) may live directly under <body> too.
+  return createLettersFromRoots([...roots,casePagination].filter(root=>{
     const box=root.getBoundingClientRect();
     return box.bottom>0&&box.top<window.innerHeight&&box.right>0&&box.left<window.innerWidth;
   }));
@@ -626,7 +632,7 @@ let expandedWindow=null, expandedSlot=null;
 function restoreFinderWindow(){
   if(!expandedWindow)return;
   const old=expandedWindow;
-  old.classList.remove('finder-maximized','case-maximized');
+  old.classList.remove('finder-maximized','case-maximized','case-raining');
   expandedSlot?.replaceWith(old);
   expandedWindow=null;expandedSlot=null;
   document.body.classList.remove('salatic-window-maximized');
@@ -1163,27 +1169,32 @@ function showWorksList(){
 // also handle Case → Works, Case → Home, and Works → Home.
 function transitionOutOfPortfolio(destination){
   if(scene!=='case'&&scene!=='empty')return;
-  restoreFinderWindow();
   cancelWindowDotWave();
   const fromCase=scene==='case';
+  const wasMaximized=Boolean(expandedWindow);
   const finish=()=>destination==='home'?resetScene():showWorksList();
   if(reducedMotion.matches){finish();return;}
-  hideCasePreviews();
+  // Measure the CURRENT fullscreen geometry before restoring the portal.
+  // Otherwise the falling glyphs jump back to the small Finder rectangle.
   const {overlay,chars}=fromCase?createCaseLetters():createFinderLetters();
   if(!chars.length){overlay.remove();finish();return;}
+  if(wasMaximized)overlay.classList.add('letter-rain-fullscreen');
   rain=overlay;
   scene='return-falling'; // Lock buttons during transition.
   comingNext.textContent=destination==='home'?'Returning to home.':'Returning to selected works.';
   if(fromCase){
     setkaCase.classList.add('case-raining');
-    clearPlayer(); // Stop Vimeo immediately on navigation; keep case shell visible.
+    if(expandedWindow===casePlayerWindow)casePlayerWindow.classList.add('case-raining');
+    clearPlayer(); // Stop Vimeo immediately; fade the same expanded window.
   }else{
     worksWindow.classList.add('case-raining');
+    hideCasePreviews();
   }
   const lastEnd=animateFallingLetters(chars);
   endRainTimer=setTimeout(function(){
     if(scene!=='return-falling')return;
     clearLetters();
+    // Only NOW restore the original Finder size and DOM location.
     finish();
   },lastEnd+35);
 }
@@ -1227,9 +1238,9 @@ function displayProjectCase(key){
 }
 function showProjectCase(key,animate=true){
   if(scene!=='empty'||!projects[key])return;
-  restoreFinderWindow();
-  hideCasePreviews();
-  // Accessibility and automatic next-case navigation skip the visual transition.
+  // Opening a case from the expanded archive should also rain its
+  // expanded typography, not the restored small-window geometry.
+  const wasMaximized=expandedWindow===worksWindow;
   if(!animate||reducedMotion.matches){
     displayProjectCase(key);
     return;
@@ -1240,11 +1251,13 @@ function showProjectCase(key,animate=true){
     displayProjectCase(key);
     return;
   }
+  if(wasMaximized)overlay.classList.add('letter-rain-fullscreen');
   rain=overlay;
   scene='case-falling'; // Also prevents a double-click from opening another case.
   comingNext.textContent='Opening '+key+' case.';
-  // Keep the Finder frame visible, but remove its source text after measuring.
+  // Keep the same-size frame visible and remove text after measuring it.
   worksWindow.classList.add('case-raining');
+  hideCasePreviews();
   const lastEnd=animateFallingLetters(chars);
   endRainTimer=setTimeout(function(){
     if(scene!=='case-falling')return;
