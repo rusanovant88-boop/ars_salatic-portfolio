@@ -1807,3 +1807,15 @@ button.works-dot:focus-visible::after {opacity:1}
 @media(prefers-reduced-motion:reduce){
   button.works-dot::before,button.works-dot::after {transition:none!important}
 }
+
+/* Falling typography must overlay a maximized Finder (z-index:3000).
+   Normal home and normal-sized archive keep their existing layering. */
+.letter-rain.letter-rain-fullscreen {z-index:3500}
+.case-player-window.case-maximized.case-raining {
+  opacity:0!important;
+  pointer-events:none!important;
+  transition:opacity .25s ease-out;
+}
+@media(prefers-reduced-motion:reduce){
+  .case-player-window.case-maximized.case-raining {transition:none!important}
+}
