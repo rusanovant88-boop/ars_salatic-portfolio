@@ -690,17 +690,28 @@ function placePrankLeftOfWindow(windowEl){
 function fakeMinimizeFinder(windowEl){
   if(finderPrankTimer||!windowEl)return;
   placePrankLeftOfWindow(windowEl);
+  const reduce=reducedMotion.matches;
+  // Two distinct phases prevent the old hard pop-back from 6% to full size.
+  // The yellow light leaves together with the window, never as a loose button.
+  windowEl.classList.remove('finder-fake-restore');
   windowEl.classList.add('finder-fake-minimize');
+  const shrinkTime=reduce?100:610;
+  const returnTime=reduce?100:620;
   finderPrankTimer=setTimeout(()=>{
-    windowEl.classList.remove('finder-fake-minimize');
     finderPrank.classList.add('is-visible');
     finderPrank.setAttribute('aria-hidden','false');
+    // The restore starts at exactly the minimized frame, so no jump.
+    windowEl.classList.remove('finder-fake-minimize');
+    windowEl.classList.add('finder-fake-restore');
     finderPrankTimer=setTimeout(()=>{
-      finderPrank.classList.remove('is-visible');
-      finderPrank.setAttribute('aria-hidden','true');
-      finderPrankTimer=null;
-    },1400);
-  },reducedMotion.matches?120:350);
+      windowEl.classList.remove('finder-fake-restore');
+      finderPrankTimer=setTimeout(()=>{
+        finderPrank.classList.remove('is-visible');
+        finderPrank.setAttribute('aria-hidden','true');
+        finderPrankTimer=null;
+      },reduce?200:500);
+    },returnTime);
+  },shrinkTime);
 }
 document.getElementById('worksMinimize').addEventListener('click',()=>fakeMinimizeFinder(worksWindow));
 document.getElementById('caseMinimize').addEventListener('click',()=>fakeMinimizeFinder(casePlayerWindow));
