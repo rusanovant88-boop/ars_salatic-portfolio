@@ -1633,7 +1633,7 @@ body.salatic-window-maximized {overflow:hidden!important}
   margin:0!important;padding:0!important;
   border:0!important;border-radius:0!important;box-shadow:none!important;
   background:#000!important;
-  transform:none!important;
+  transform:none;
   box-sizing:border-box!important;
   z-index:3000!important;
   display:flex!important;flex-direction:column!important;
@@ -1725,10 +1725,29 @@ body.salatic-window-maximized {overflow:hidden!important}
 .case-player-window.case-maximized .case-navigation {
   height:84px!important;min-height:84px!important;flex:0 0 84px!important;
 }
-.finder-fake-minimize {animation:salaticFinderFakeMinimize .35s cubic-bezier(.4,0,.7,.2) forwards!important;pointer-events:none!important}
+/* A softer Finder minimize and matched return. No sudden scale snap.
+   The buttons move as part of the whole window, not independently. */
+.finder-fake-minimize {
+  animation:salaticFinderFakeMinimize .61s cubic-bezier(.42,0,.62,1) both!important;
+  pointer-events:none!important;
+  transform-origin:50% 52%;
+}
+.finder-fake-restore {
+  animation:salaticFinderRestore .62s cubic-bezier(.2,.68,.26,1) both!important;
+  pointer-events:none!important;
+  transform-origin:50% 52%;
+}
 @keyframes salaticFinderFakeMinimize {
-  0% {opacity:1;transform:translateY(0) scale(1)}
-  100% {opacity:0;transform:translateY(44px) scale(.06)}
+  0% {opacity:1;transform:translate3d(0,0,0) scale(1)}
+  20% {opacity:1;transform:translate3d(0,3px,0) scale(.97)}
+  60% {opacity:.84;transform:translate3d(0,28px,0) scale(.63)}
+  100% {opacity:0;transform:translate3d(0,66px,0) scale(.16)}
+}
+@keyframes salaticFinderRestore {
+  0% {opacity:0;transform:translate3d(0,66px,0) scale(.16)}
+  50% {opacity:.88;transform:translate3d(0,18px,0) scale(.74)}
+  85% {opacity:1;transform:translate3d(0,-2px,0) scale(1.006)}
+  100% {opacity:1;transform:translate3d(0,0,0) scale(1)}
 }
 .finder-prank {
   /* Positioned against the ACTUAL left edge of the active Finder window. */
@@ -1762,7 +1781,7 @@ body.salatic-window-maximized {overflow:hidden!important}
 }
 @media(prefers-reduced-motion:reduce){
   .works-window.finder-maximized,.case-player-window.case-maximized,
-  .finder-fake-minimize {animation:none!important}
+  .finder-fake-minimize,.finder-fake-restore {animation:none!important}
   .finder-prank,.works-window.finder-maximized .mobile-case-preview {transition:none!important}
 }
 
