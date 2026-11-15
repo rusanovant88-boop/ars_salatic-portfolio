@@ -545,6 +545,7 @@ function clearLetters(){
   if(rain){rain.remove();rain=null;}
 }
 function resetScene(){
+  restoreFinderWindow();
   cancelWindowDotWave();
   cancelIdleEyes();
   const stage=document.getElementById('caseStage');
@@ -618,6 +619,64 @@ document.addEventListener('keydown',function(event){
 const portfolioStage=document.getElementById('portfolioStage');
 const worksWindow=document.getElementById('worksWindow');
 const setkaCase=document.getElementById('projectCase');
+const casePlayerWindow=setkaCase.querySelector('.case-player-window');
+// Both Finder green lights maximize the ACTUAL window, keeping mobile
+// inline case previews accessible in the expanded archive.
+let expandedWindow=null, expandedSlot=null;
+function restoreFinderWindow(){
+  if(!expandedWindow)return;
+  const old=expandedWindow;
+  old.classList.remove('finder-maximized','case-maximized');
+  expandedSlot?.replaceWith(old);
+  expandedWindow=null;expandedSlot=null;
+  document.body.classList.remove('salatic-window-maximized');
+  document.getElementById('worksMaximize').setAttribute('aria-expanded','false');
+  document.getElementById('caseMaximize').setAttribute('aria-expanded','false');
+  if(old===worksWindow)hideCasePreviews();
+}
+function toggleFinderWindow(target){
+  if(expandedWindow===target){restoreFinderWindow();return;}
+  if(expandedWindow)restoreFinderWindow();
+  if((target===worksWindow&&scene!=='empty')||(target===casePlayerWindow&&scene!=='case'))return;
+  if(target===worksWindow)hideCasePreviews();
+  expandedSlot=document.createComment('original Finder window position');
+  target.parentNode.insertBefore(expandedSlot,target);
+  document.body.appendChild(target); // leave the scaled 1440px artboard
+  expandedWindow=target;
+  document.body.classList.add('salatic-window-maximized');
+  target.classList.add(target===worksWindow?'finder-maximized':'case-maximized');
+  const id=target===worksWindow?'worksMaximize':'caseMaximize';
+  document.getElementById(id).setAttribute('aria-expanded','true');
+}
+document.getElementById('worksMaximize').addEventListener('click',()=>toggleFinderWindow(worksWindow));
+document.getElementById('caseMaximize').addEventListener('click',()=>toggleFinderWindow(casePlayerWindow));
+document.addEventListener('keydown',event=>{
+  if(event.key!=='Escape'||!expandedWindow)return;
+  event.preventDefault();
+  event.stopImmediatePropagation();
+  restoreFinderWindow();
+},true);
+
+// The yellow lights fake-minimize the current window before instantly
+// bringing back Anton's original red portrait and the joke.
+const finderPrank=document.getElementById('finderPrank');
+let finderPrankTimer=null;
+function fakeMinimizeFinder(windowEl){
+  if(finderPrankTimer||!windowEl)return;
+  windowEl.classList.add('finder-fake-minimize');
+  finderPrankTimer=setTimeout(()=>{
+    windowEl.classList.remove('finder-fake-minimize');
+    finderPrank.classList.add('is-visible');
+    finderPrank.setAttribute('aria-hidden','false');
+    finderPrankTimer=setTimeout(()=>{
+      finderPrank.classList.remove('is-visible');
+      finderPrank.setAttribute('aria-hidden','true');
+      finderPrankTimer=null;
+    },1400);
+  },reducedMotion.matches?120:350);
+}
+document.getElementById('worksMinimize').addEventListener('click',()=>fakeMinimizeFinder(worksWindow));
+document.getElementById('caseMinimize').addEventListener('click',()=>fakeMinimizeFinder(casePlayerWindow));
 /* Bounce window lights in sequence, one second after each scene opens.
    A new scene cancels the old wave, so navigation never leaks animations. */
 let dotWaveTimer=null;
@@ -1066,6 +1125,7 @@ function hideCasePreviews(){
   }
 }
 function showWorksList(){
+  restoreFinderWindow();
   cancelWindowDotWave();
   hideCasePreviews();
   worksWindow.classList.remove('case-raining');
@@ -1082,6 +1142,7 @@ function showWorksList(){
 // also handle Case → Works, Case → Home, and Works → Home.
 function transitionOutOfPortfolio(destination){
   if(scene!=='case'&&scene!=='empty')return;
+  restoreFinderWindow();
   cancelWindowDotWave();
   const fromCase=scene==='case';
   const finish=()=>destination==='home'?resetScene():showWorksList();
@@ -1119,6 +1180,7 @@ function returnHomeWithLetters(){
   resetScene();
 }
 function displayProjectCase(key){
+  restoreFinderWindow();
   cancelWindowDotWave();
   hideCasePreviews();
   activeProject=key;
@@ -1144,6 +1206,7 @@ function displayProjectCase(key){
 }
 function showProjectCase(key,animate=true){
   if(scene!=='empty'||!projects[key])return;
+  restoreFinderWindow();
   hideCasePreviews();
   // Accessibility and automatic next-case navigation skip the visual transition.
   if(!animate||reducedMotion.matches){
@@ -1197,31 +1260,39 @@ function bindCaseRow(rowId,previewId,projectKey){
   row.setAttribute('aria-controls',mobilePreview.id);
   row.setAttribute('aria-expanded','false');
 
+  const inlineMode=()=>window.innerWidth<=900||worksWindow.classList.contains('finder-maximized');
+  function showInlinePreview(){
+    if(scene!=='empty'||worksWindow.hidden)return;
+    if(mobilePreview.classList.contains('is-open'))return;
+    hideCasePreviews();
+    mobilePreview.classList.add('is-open');
+    mobilePreview.setAttribute('aria-hidden','false');
+    mobilePreview.tabIndex=0;
+    row.setAttribute('aria-expanded','true');
+  }
   function toggle(show){
-    if(window.innerWidth<=900)return; // Mobile taps own the preview.
+    if(inlineMode()){
+      if(show&&worksWindow.classList.contains('finder-maximized'))showInlinePreview();
+      return;
+    }
     const visible=show&&scene==='empty'&&!worksWindow.hidden;
     if(visible)hideCasePreviews();
     preview.classList.toggle('is-visible',visible);
     preview.setAttribute('aria-hidden',String(!visible));
   }
   row.addEventListener('pointerenter',event=>{if(event.pointerType!=='touch')toggle(true)});
-  row.addEventListener('pointerleave',()=>toggle(false));
+  row.addEventListener('pointerleave',()=>{if(!inlineMode())toggle(false)});
   row.addEventListener('focus',()=>toggle(true));
-  row.addEventListener('blur',()=>toggle(false));
+  row.addEventListener('blur',()=>{if(!inlineMode())toggle(false)});
   row.addEventListener('click',()=>{
-    if(window.innerWidth>900){showProjectCase(projectKey);return;}
+    if(!inlineMode()){showProjectCase(projectKey);return;}
     if(scene!=='empty'||worksWindow.hidden)return;
-    const wasOpen=mobilePreview.classList.contains('is-open');
-    if(wasOpen){
-      // A second tap on the same filename opens its case, just like the preview.
+    if(mobilePreview.classList.contains('is-open')){
+      // On phones tap twice; maximized desktop: hover reveals, click opens.
       showProjectCase(projectKey);
       return;
     }
-    hideCasePreviews();
-    mobilePreview.classList.add('is-open');
-    mobilePreview.setAttribute('aria-hidden','false');
-    mobilePreview.tabIndex=0;
-    row.setAttribute('aria-expanded','true');
+    showInlinePreview();
   });
   mobilePreview.addEventListener('click',()=>showProjectCase(projectKey));
 }
