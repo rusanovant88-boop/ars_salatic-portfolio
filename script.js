@@ -661,8 +661,29 @@ document.addEventListener('keydown',event=>{
 // bringing back Anton's original red portrait and the joke.
 const finderPrank=document.getElementById('finderPrank');
 let finderPrankTimer=null;
+function placePrankLeftOfWindow(windowEl){
+  const bounds=windowEl.getBoundingClientRect();
+  const spareSpace=Math.max(0,bounds.left);
+  let width,left;
+  if(spareSpace>=145){
+    // Normal Finder: fit photo + word wholly OUTSIDE the frame, to its left.
+    width=Math.min(205,spareSpace-40);
+    left=Math.max(12,(spareSpace-width)/2);
+  }else{
+    // Fullscreen or mobile has no area outside its window: keep the joke
+    // left-aligned without moving the actual Finder or overflowing the page.
+    width=Math.min(165,Math.max(110,window.innerWidth*.38));
+    left=16;
+  }
+  const midY=bounds.top+bounds.height*.5;
+  const y=Math.max(width*.5+44,Math.min(window.innerHeight-width*.5-44,midY));
+  finderPrank.style.setProperty('--prank-left',left+'px');
+  finderPrank.style.setProperty('--prank-top',y+'px');
+  finderPrank.style.setProperty('--prank-width',width+'px');
+}
 function fakeMinimizeFinder(windowEl){
   if(finderPrankTimer||!windowEl)return;
+  placePrankLeftOfWindow(windowEl);
   windowEl.classList.add('finder-fake-minimize');
   finderPrankTimer=setTimeout(()=>{
     windowEl.classList.remove('finder-fake-minimize');
