@@ -1780,16 +1780,17 @@ button.works-dot.works-green::after {
   opacity:0;pointer-events:none;
   transition:opacity .12s ease;
 }
+/* Glyphs visually match the small red X, including on 15px mobile lights. */
 button.works-dot.works-yellow::before {
-  width:55%;height:1.5px;left:22.5%;top:50%;
+  width:42%;height:1.5px;left:29%;top:50%;
   background:#805400;transform:translateY(-50%);
 }
 button.works-dot.works-green::before {
-  width:31%;height:31%;top:19%;right:19%;
+  width:23%;height:23%;top:26%;right:26%;
   border-top:1.5px solid #075b21;border-right:1.5px solid #075b21;
 }
 button.works-dot.works-green::after {
-  width:31%;height:31%;bottom:19%;left:19%;
+  width:23%;height:23%;bottom:26%;left:26%;
   border-bottom:1.5px solid #075b21;border-left:1.5px solid #075b21;
 }
 .works-bar:hover button.works-dot::before,
