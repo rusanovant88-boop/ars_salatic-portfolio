@@ -1731,16 +1731,27 @@ body.salatic-window-maximized {overflow:hidden!important}
   100% {opacity:0;transform:translateY(44px) scale(.06)}
 }
 .finder-prank {
-  position:fixed;z-index:3100;left:50%;top:50%;
-  width:min(300px,72vw);
-  display:flex;flex-direction:column;align-items:center;gap:16px;
+  /* Positioned against the ACTUAL left edge of the active Finder window. */
+  position:fixed;z-index:3100;
+  left:var(--prank-left,16px);top:var(--prank-top,50%);
+  width:var(--prank-width,190px);max-width:calc(100vw - 24px);
+  display:flex;flex-direction:column;align-items:center;gap:12px;
   opacity:0;visibility:hidden;pointer-events:none;
-  transform:translate(-50%,-45%) scale(.86);
+  transform:translateY(-45%) scale(.86);
+  transform-origin:center center;
   transition:opacity .16s ease,transform .3s cubic-bezier(.2,1.3,.25,1),visibility .16s;
 }
-.finder-prank.is-visible {opacity:1;visibility:visible;transform:translate(-50%,-50%) scale(1)}
-.finder-prank img {display:block;width:min(220px,56vw);height:auto;aspect-ratio:1;object-fit:cover;border-radius:15px;transform:rotate(-6deg);box-shadow:0 12px 44px rgba(0,0,0,.65)}
-.finder-prank span {font:700 clamp(22px,3vw,32px)/1.3 'Courier New',Courier,monospace;color:var(--blue);text-shadow:0 3px 12px #000;white-space:nowrap}
+.finder-prank.is-visible {opacity:1;visibility:visible;transform:translateY(-50%) scale(1)}
+.finder-prank img {
+  display:block;width:100%;height:auto;aspect-ratio:1;object-fit:cover;
+  border-radius:12px;transform:rotate(-5deg);
+  box-shadow:0 12px 44px rgba(0,0,0,.65)
+}
+.finder-prank span {
+  font:400 16px/20px 'Courier New',Courier,monospace;
+  color:var(--blue);text-align:center;
+  text-shadow:0 3px 12px #000;white-space:nowrap
+}
 @media(max-width:900px) {
   .works-window.finder-maximized .works-bar,
   .case-player-window.case-maximized .case-player-bar {height:58px!important;min-height:58px!important;flex:0 0 58px!important;padding:17px 16px!important}
@@ -1753,4 +1764,45 @@ body.salatic-window-maximized {overflow:hidden!important}
   .works-window.finder-maximized,.case-player-window.case-maximized,
   .finder-fake-minimize {animation:none!important}
   .finder-prank,.works-window.finder-maximized .mobile-case-preview {transition:none!important}
+}
+
+
+/* Mac Finder lights: actual minimize/expand glyphs on hover and keyboard
+   focus, including when hovering the group as on macOS. The red X stays
+   exactly as before and the three-wave bounce still targets the buttons. */
+button.works-dot.works-yellow,
+button.works-dot.works-green {position:relative;isolation:isolate}
+button.works-dot.works-yellow::before,
+button.works-dot.works-green::before,
+button.works-dot.works-green::after {
+  content:'';
+  position:absolute;box-sizing:border-box;
+  opacity:0;pointer-events:none;
+  transition:opacity .12s ease;
+}
+button.works-dot.works-yellow::before {
+  width:55%;height:1.5px;left:22.5%;top:50%;
+  background:#805400;transform:translateY(-50%);
+}
+button.works-dot.works-green::before {
+  width:31%;height:31%;top:19%;right:19%;
+  border-top:1.5px solid #075b21;border-right:1.5px solid #075b21;
+}
+button.works-dot.works-green::after {
+  width:31%;height:31%;bottom:19%;left:19%;
+  border-bottom:1.5px solid #075b21;border-left:1.5px solid #075b21;
+}
+.works-bar:hover button.works-dot::before,
+.works-bar:hover button.works-dot::after,
+.case-player-bar:hover button.works-dot::before,
+.case-player-bar:hover button.works-dot::after,
+button.works-dot:hover::before,
+button.works-dot:hover::after,
+button.works-dot:focus-visible::before,
+button.works-dot:focus-visible::after {opacity:1}
+@media(max-width:900px){
+  .finder-prank span {font-size:13px;line-height:18px}
+}
+@media(prefers-reduced-motion:reduce){
+  button.works-dot::before,button.works-dot::after {transition:none!important}
 }
