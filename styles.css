@@ -494,7 +494,7 @@ button.works-file:hover,button.works-file:focus-visible {background:var(--blue);
   .username {left:20px;top:23px;font:700 13px/17px 'Courier New',Courier,monospace}
   .role {left:20px;top:51px;font:700 12px/17px 'Courier New',Courier,monospace}
   .eyes {right:20px;top:24px;transform:scale(.82);transform-origin:top right}
-  .works-position {position:relative;left:auto;top:auto;width:190px;height:235px;margin:26px auto 7px}
+  .works-position {position:relative;left:auto;top:auto;width:190px;height:235px;margin:4px auto 0}
   .contact-entry {
     position:relative;
     left:auto;
@@ -1414,7 +1414,7 @@ button.works-file:hover,button.works-file:focus-visible {background:var(--blue);
     justify-content:space-between;
     gap:16px;
     min-height:44px;
-    margin:0 20px 10px;
+    margin:0 20px 4px;
   }
   .home-contact-row .contact-entry {
     flex:0 1 auto;
