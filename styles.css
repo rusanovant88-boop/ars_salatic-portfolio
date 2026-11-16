@@ -1838,3 +1838,10 @@ button.works-dot:focus-visible::after {opacity:1}
 @media(prefers-reduced-motion:reduce){
   .case-player-window.case-maximized.case-raining {transition:none!important}
 }
+
+/* Mobile Finder: no yellow minimize button in archive or case headers.
+   Preserve the desktop control, its animation and the other lights. */
+@media (max-width:900px) {
+  #worksMinimize,
+  #caseMinimize {display:none!important}
+}
