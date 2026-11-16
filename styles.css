@@ -494,7 +494,9 @@ button.works-file:hover,button.works-file:focus-visible {background:var(--blue);
   .username {left:20px;top:23px;font:700 13px/17px 'Courier New',Courier,monospace}
   .role {left:20px;top:51px;font:700 12px/17px 'Courier New',Courier,monospace}
   .eyes {right:20px;top:24px;transform:scale(.82);transform-origin:top right}
-  .works-position {position:relative;left:auto;top:auto;width:190px;height:235px;margin:4px auto 0}
+  /* Lift only the folder drawing; keep Contact and the lower bio block in place.
+     Its visible icon now sits between the header and Contact on phones. */
+  .works-position {position:relative;left:auto;top:-28px;width:190px;height:235px;margin:4px auto 0}
   .contact-entry {
     position:relative;
     left:auto;
@@ -1448,6 +1450,8 @@ button.works-file:hover,button.works-file:focus-visible {background:var(--blue);
   /* The eye illustration gets its own line on very narrow phones. */
   .masthead {height:113px}
   .masthead .eyes {top:78px;right:20px}
+  /* Avoid overlapping the separate eye row on small phones. */
+  .works-position {top:-12px}
 }
 
 /* Give the home username the EXACT spring animation of the Salatic logo.
