@@ -1847,3 +1847,96 @@ button.works-dot:focus-visible::after {opacity:1}
    It has no minimizing action; the red and green controls remain active. */
 #worksMinimize:disabled,
 #caseMinimize:disabled {display:inline-block;opacity:1;cursor:default}
+
+
+/* SALATIC home portrait-triggered red palette.
+   One visual state for both name and profession, desktop hover and touch.
+   The exact red #f32932 is already used by the idle/portrait eyes. */
+.artboard {
+  transition:color .28s ease;
+}
+.artboard .contact-entry,
+.artboard .username::before,
+.artboard .bonya-trigger::before {
+  transition:color .28s ease;
+}
+.artboard .folder-name {
+  transition:opacity .1s linear,color .28s ease;
+}
+.artboard.portrait-red-mode:not(.stage-exiting):not(.stage-exited) {
+  --blue:#f32932;
+}
+.artboard.portrait-red-mode:not(.stage-exiting):not(.stage-exited) .folder-name {
+  color:#f32932;
+}
+.artboard.portrait-red-mode .eyes .eye-squint > ellipse {
+  fill:#f32932;
+}
+
+/* Color the transparent original artwork with the precise existing red.
+   Mask overlays preserve the existing image assets and folder bounce,
+   instead of tinting photographs or affecting the Finder archive. */
+.works-folder::before {
+  content:'';
+  position:absolute;
+  left:4.2px;top:48.8px;
+  width:181.562px;height:181.562px;
+  background:#f32932;
+  -webkit-mask-image:url('assets/works-folder.webp');
+  mask-image:url('assets/works-folder.webp');
+  -webkit-mask-position:center;mask-position:center;
+  -webkit-mask-size:contain;mask-size:contain;
+  -webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;
+  opacity:0;pointer-events:none;
+  transition:opacity .28s ease;
+}
+.artboard.portrait-red-mode:not(.stage-exiting):not(.stage-exited) .works-folder::before {
+  opacity:1;
+}
+.artboard.portrait-red-mode:not(.stage-exiting):not(.stage-exited) .folder-base {
+  opacity:0;
+}
+.works-folder .folder-base {
+  transition:opacity .28s ease;
+}
+.signature-hit::after {
+  content:'';
+  position:absolute;inset:0;
+  background:#f32932;
+  -webkit-mask-image:url('assets/salatic-signature.webp');
+  mask-image:url('assets/salatic-signature.webp');
+  -webkit-mask-position:center;mask-position:center;
+  -webkit-mask-size:contain;mask-size:contain;
+  -webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;
+  opacity:0;pointer-events:none;
+  transform-origin:center center;
+  transition:opacity .28s ease;
+}
+.signature-hit .signature {
+  transition:opacity .28s ease;
+}
+.artboard.portrait-red-mode:not(.stage-exiting):not(.stage-exited) .signature-hit::after {
+  opacity:1;
+}
+.artboard.portrait-red-mode:not(.stage-exiting):not(.stage-exited) .signature-hit .signature {
+  opacity:0;
+}
+@media (hover:hover) and (pointer:fine) {
+  .artboard.portrait-red-mode .signature-hit:hover::after {
+    animation:salaticLogoBounce .64s both;
+  }
+}
+.artboard.portrait-red-mode .signature-hit:focus-visible::after {
+  animation:salaticLogoBounce .64s both;
+}
+@media (prefers-reduced-motion:reduce) {
+  .artboard,.artboard .contact-entry,.artboard .username::before,
+  .artboard .bonya-trigger::before,.artboard .folder-name,
+  .works-folder::before,.works-folder .folder-base,
+  .signature-hit::after,.signature-hit .signature {
+    transition:none!important;
+  }
+  .artboard.portrait-red-mode .signature-hit:is(:hover,:focus-visible)::after {
+    animation:none!important;
+  }
+}
