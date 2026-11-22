@@ -228,6 +228,9 @@ function setPortraitGaze(show){
   if(lookingAtPortrait===show)return;
   lookingAtPortrait=show;
   eyes.classList.toggle('eyes-portrait-gaze',show);
+  // Existing portrait hover/focus/touch now also drives the home palette.
+  // Finder and project pages keep their original cyan design.
+  artboard.classList.toggle('portrait-red-mode',show);
   if(show){
     pointEyesAtPortrait();
   }else if(lastPointer){
