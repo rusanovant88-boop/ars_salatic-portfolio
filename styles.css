@@ -1843,7 +1843,7 @@ button.works-dot:focus-visible::after {opacity:1}
   .case-player-window.case-maximized.case-raining {transition:none!important}
 }
 
-/* Finder no longer offers minimizing on any screen size.
-   Keep the red close and green maximize/restore controls unchanged. */
-#worksMinimize,
-#caseMinimize {display:none!important}
+/* Preserve the yellow Finder light on every screen as a visual macOS detail.
+   It has no minimizing action; the red and green controls remain active. */
+#worksMinimize:disabled,
+#caseMinimize:disabled {display:inline-block;opacity:1;cursor:default}
