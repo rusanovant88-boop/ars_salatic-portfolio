@@ -9,8 +9,8 @@
   <meta name="theme-color" content="#000000">
   <link rel="preload" href="assets/works-folder.webp" as="image" type="image/webp">
   <link rel="preload" href="assets/salatic-portrait.webp" as="image" type="image/webp">
-<link rel="stylesheet" href="styles.css?v=20261122-no-finder-minimize">
-  <script src="script.js?v=20261115-finder-smooth-minimize" defer></script>
+<link rel="stylesheet" href="styles.css?v=20261122-minimize-light-visible-inert">
+  <script src="script.js?v=20261122-minimize-light-visible-inert" defer></script>
   <script src="locale.js?v=20261113-bonya-full-bio-kicks" defer></script>
 </head>
 <body>
@@ -83,7 +83,7 @@
         <section class="works-window" id="worksWindow" aria-label="Selected works">
           <header class="works-bar">
             <button type="button" class="works-close" id="worksClose" aria-label="Close the works window">×</button>
-            <button type="button" class="works-dot works-yellow" id="worksMinimize" aria-label="Minimize Finder window" title="Minimize"></button>
+            <button type="button" class="works-dot works-yellow" id="worksMinimize" aria-label="Minimize unavailable" title="Minimize unavailable" disabled></button>
             <button type="button" class="works-dot works-green" id="worksMaximize" aria-label="Maximize Finder window" aria-expanded="false" title="Maximize"></button>
             <span class="works-bar-name">selected_works</span>
             <span class="works-bar-version">SALATIC / ARCHIVE</span>
@@ -230,7 +230,7 @@
           <div class="case-player-window">
             <header class="case-player-bar">
               <button type="button" id="caseClose" class="works-close" aria-label="Back to selected works">×</button>
-              <button type="button" class="works-dot works-yellow" id="caseMinimize" aria-label="Minimize case window" title="Minimize"></button>
+              <button type="button" class="works-dot works-yellow" id="caseMinimize" aria-label="Minimize unavailable" title="Minimize unavailable" disabled></button>
               <button type="button" class="works-dot works-green" id="caseMaximize" aria-label="Maximize case window" aria-expanded="false" title="Maximize"></button>
               <button type="button" class="language-toggle language-toggle-case" id="caseLocaleToggle" aria-label="Switch website to Russian" title="Русский">ru</button>
             </header>
