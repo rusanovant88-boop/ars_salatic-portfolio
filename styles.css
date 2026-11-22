@@ -1843,9 +1843,7 @@ button.works-dot:focus-visible::after {opacity:1}
   .case-player-window.case-maximized.case-raining {transition:none!important}
 }
 
-/* Mobile Finder: no yellow minimize button in archive or case headers.
-   Preserve the desktop control, its animation and the other lights. */
-@media (max-width:900px) {
-  #worksMinimize,
-  #caseMinimize {display:none!important}
-}
+/* Finder no longer offers minimizing on any screen size.
+   Keep the red close and green maximize/restore controls unchanged. */
+#worksMinimize,
+#caseMinimize {display:none!important}
