@@ -713,8 +713,7 @@ function fakeMinimizeFinder(windowEl){
     },returnTime);
   },shrinkTime);
 }
-document.getElementById('worksMinimize').addEventListener('click',()=>fakeMinimizeFinder(worksWindow));
-document.getElementById('caseMinimize').addEventListener('click',()=>fakeMinimizeFinder(casePlayerWindow));
+/* Yellow Finder lights are decorative: minimizing is disabled on all screens. */
 /* Bounce window lights in sequence, one second after each scene opens.
    A new scene cancels the old wave, so navigation never leaks animations. */
 let dotWaveTimer=null;
